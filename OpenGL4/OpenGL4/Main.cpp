@@ -1,7 +1,11 @@
 #include "GameObject.h"
 
 GLFWwindow* RenderWindow = nullptr;
+glm::ivec2 WindowSize { 800,800 };
 float DeltaTime = 0.0f, LastFrame = 0.0f;
+GameObject* TestObject = nullptr; 
+Camera* SceneCamera = nullptr;
+Mesh* SphereMesh = nullptr;
 
 void InitGL();
 void InitGLFW();
@@ -55,6 +59,11 @@ void InitGLFW()
 
 void Start()
 {
+	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
+	SceneCamera = new Camera(WindowSize, { 0,0,-1 });
+	TestObject = new GameObject(*SceneCamera, { 0,0,0 });
+	TestObject->SetShader("", "");
+	TestObject->SetMesh(SphereMesh);
 }
 
 void Update()
@@ -71,6 +80,9 @@ void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	if (TestObject)
+		TestObject->Draw();
+
 	glfwSwapBuffers(RenderWindow);
 }
 
@@ -83,6 +95,10 @@ void CalculateDeltaTime()
 
 int Cleanup()
 {
+	if (TestObject)
+		delete TestObject;
+	TestObject = nullptr;
+
 	glfwDestroyWindow(RenderWindow);
 	glfwTerminate();
 
