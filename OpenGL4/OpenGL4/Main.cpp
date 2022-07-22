@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "TextureLoader.h"
 
 GLFWwindow* RenderWindow = nullptr;
 glm::ivec2 WindowSize { 800,800 };
@@ -60,10 +61,16 @@ void InitGLFW()
 void Start()
 {
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
-	SceneCamera = new Camera(WindowSize, { 0,0,-1 });
+	SceneCamera = new Camera(WindowSize, { 0,0,2 });
 	TestObject = new GameObject(*SceneCamera, { 0,0,0 });
-	TestObject->SetShader("", "");
+	
+	TextureLoader::Init({
+		"World.jpg"
+		});
+
+	TestObject->SetActiveTextures({TextureLoader::LoadTexture("World.jpg")});
 	TestObject->SetMesh(SphereMesh);
+	TestObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
 }
 
 void Update()
@@ -95,6 +102,14 @@ void CalculateDeltaTime()
 
 int Cleanup()
 {
+	if (SphereMesh)
+		delete SphereMesh;
+	SphereMesh = nullptr;
+
+	if (SceneCamera)
+		delete SceneCamera;
+	SceneCamera = nullptr;
+
 	if (TestObject)
 		delete TestObject;
 	TestObject = nullptr;

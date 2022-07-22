@@ -35,7 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -169,6 +169,20 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="TextLabel.h" />
     <ClInclude Include="TextureLoader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\BlinnFong3D.frag" />
+    <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag" />
+    <None Include="Resources\Shaders\Normals3D.vert" />
+    <None Include="Resources\Shaders\Reflection.frag" />
+    <None Include="Resources\Shaders\ReflectionMap.frag" />
+    <None Include="Resources\Shaders\SingleTexture.frag" />
+    <None Include="Resources\Shaders\SingleTexture.vert" />
+    <None Include="Resources\Shaders\Skybox.frag" />
+    <None Include="Resources\Shaders\Skybox.vert" />
+    <None Include="Resources\Shaders\TextLabel.frag" />
+    <None Include="Resources\Shaders\TextLabel.vert" />
+    <None Include="Resources\Shaders\UnlitColor.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
