@@ -19,5 +19,5 @@ uniform vec3 Color;
 // Main function that gets called per vertex fragment.
 void main()
 {
-    FragColor = vec4(Color,1.0f);
+    FragColor = vec4(1.0f,0.0f,0.0f,1.0f);
 }

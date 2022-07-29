@@ -33,8 +33,8 @@ using KEYMAP = std::map<int, bool>;
 /// </summary>
 struct ShaderProgramLocation
 {
-    const char* vertShader;
-    const char* fragShader;
+    std::string vertShader = "";
+	std::string fragShader = "";
 };
 
 /// <summary>

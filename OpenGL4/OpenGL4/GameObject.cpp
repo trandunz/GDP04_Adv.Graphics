@@ -15,6 +15,7 @@ GameObject::GameObject(Camera& _camera, glm::vec3 _position)
     m_ActiveCamera = &_camera;
     // Set starting position
     SetTranslation(_position);
+    m_StencilShaderID = ShaderLoader::CreateShader("SingleTexture.vert", "UnlitColor.frag");
 }
 
 GameObject::~GameObject()
@@ -92,11 +93,19 @@ void GameObject::Draw()
 {
     if (m_Mesh)
     {
+        
+
         // Bind shader
         glUseProgram(m_ShaderID);
 
         // If shader program is single texture
-        if (m_ShaderLocation.vertShader == "SingleTexture.vert" && 
+        if (m_ShaderLocation.vertShader == "SingleTexture.vert" &&
+            m_ShaderLocation.fragShader == "UnlitColor.frag")
+        {
+            SetSingleTextureUniforms();
+            ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Color", { 1.0f,1.0f,1.0f });
+        }
+        else if (m_ShaderLocation.vertShader == "SingleTexture.vert" && 
             m_ShaderLocation.fragShader == "SingleTexture.frag")
         {
             SetSingleTextureUniforms();
@@ -129,16 +138,44 @@ void GameObject::Draw()
                 SetRimLighingUniforms();
                 SetReflectionMapUniforms();
             }
-        }
+        } 
         
+        glEnable(GL_STENCIL_TEST);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
 
         // Draw the mesh
         m_Mesh->Draw();
+
+        
+        
+        ////
+        //// Draw Stencil Outline
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+
+        Transform originalTransform = m_Transform;
+        
+        m_Transform.scale *= 1.01f;
+        UpdateModelValueOfTransform(m_Transform);
+
+        glUseProgram(m_StencilShaderID);
+
+        SetSingleTextureUniforms();
+
+        m_Mesh->Draw();
+        
+        glStencilMask(0x00); //disable writing to stencil mask 
+        glDisable(GL_STENCIL_TEST); // Disable stencil test
+        glStencilMask(0xFF); // Enable writing again for next time
 
         // Unbind
         glUseProgram(0);
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+        m_Transform = originalTransform;
     }
 }
 
@@ -153,6 +190,11 @@ Mesh* GameObject::GetMesh()
         return m_Mesh;
     else
         return nullptr;
+}
+
+Transform GameObject::GetTransform() const
+{
+    return m_Transform;
 }
 
 void GameObject::SetTranslation(glm::vec3 _newPosition)
@@ -228,7 +270,7 @@ std::vector<Texture> GameObject::GetActiveTextures()
     return m_ActiveTextures;
 }
 
-void GameObject::SetShader(const char* _vertexSource,const char* _fragmentSource)
+void GameObject::SetShader(std::string _vertexSource, std::string _fragmentSource)
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _fragmentSource);
     m_ShaderLocation = { _vertexSource , _fragmentSource };

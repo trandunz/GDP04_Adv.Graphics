@@ -61,6 +61,8 @@ public:
 	/// <returns></returns>
 	Mesh* GetMesh();
 
+	Transform GetTransform() const;
+
 	/// <summary>
 	/// Sets the position of the gameObject
 	/// </summary>
@@ -90,6 +92,7 @@ public:
 	/// </summary>
 	/// <param name="_newScale"></param>
 	void SetScale(glm::vec3 _newScale);
+
 	/// <summary>
 	/// Scales the gameObject by amount
 	/// </summary>
@@ -130,7 +133,7 @@ public:
 	/// Sets the shader program to use for rendering
 	/// </summary>
 	/// <param name="_newShader"></param>
-	void SetShader(const char* _vertexSource, const char* _fragmentSource);
+	void SetShader(std::string _vertexSource, std::string _fragmentSource);
 	/// <summary>
 	/// Returns the current shader program used for rendering
 	/// </summary>
@@ -159,7 +162,14 @@ public:
 	/// </summary>
 	/// <param name="_rimLighting"></param>
 	void SetRimLighting(bool _rimLighting);
+
+
 private:
+
+	/// <summary>
+	/// Sets Uniforms for Use With Normals3D.vert
+	/// </summary>
+	void SetNormals3DVertUniforms();
 
 	/// <summary>
 	/// Handles Setting Blinn-Phong Shader Uniforms.
@@ -185,11 +195,6 @@ private:
 	void SetReflectionMapUniforms();
 
 	/// <summary>
-	/// Sets Uniforms for Use With Normals3D.vert
-	/// </summary>
-	void SetNormals3DVertUniforms();
-
-	/// <summary>
 	/// Set Uniforms For Single Texture
 	/// </summary>
 	void SetSingleTextureUniforms();
@@ -197,7 +202,8 @@ private:
 	bool m_RimLighting = false;
 	std::vector<Texture> m_ActiveTextures{};
 	GLuint m_ShaderID{0};
-	ShaderProgramLocation m_ShaderLocation{nullptr,nullptr};
+	GLuint m_StencilShaderID{ 0 };
+	ShaderProgramLocation m_ShaderLocation{};
 	glm::vec4 m_Input{};
 	float m_MovementSpeed = 10.0f;
 	Mesh* m_Mesh = nullptr;

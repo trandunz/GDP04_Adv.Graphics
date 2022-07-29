@@ -26,7 +26,7 @@ ShaderLoader::~ShaderLoader()
     m_ShaderPrograms.clear();
 }
 
-GLuint ShaderLoader::CreateShader(std::string&& _vertexShader, std::string&& _fragmentShader)
+GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _fragmentShader)
 {
     // Create A Default Program
     GLuint program = glCreateProgram();
@@ -70,7 +70,7 @@ GLuint ShaderLoader::CreateShader(std::string&& _vertexShader, std::string&& _fr
     }
 
     // Push The New Shader Program To Vector
-    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ _vertexShader.c_str(), _fragmentShader.c_str() }, program));
+    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ _vertexShader, _fragmentShader}, program));
 
     // Return Program ID
     return program;
@@ -126,7 +126,7 @@ void ShaderLoader::SetUniformMatrix4fv(GLuint&& _program, std::string_view&& _lo
     glUniformMatrix4fv(glGetUniformLocation(_program, _location.data()), 1, GL_FALSE, glm::value_ptr(_value));
 }
 
-GLuint ShaderLoader::CompileShader(GLenum&& _type, std::string&& _source)
+GLuint ShaderLoader::CompileShader(GLenum&& _type, std::string _source)
 {
     // Check If there Is Already A Shader With The Same Specifications Created
     for (auto& item : m_Shaders)
@@ -200,7 +200,7 @@ GLuint ShaderLoader::CompileShader(GLenum&& _type, std::string&& _source)
     return shader;
 }
 
-std::string ShaderLoader::PassFileToString(const std::string& _fileName)
+std::string ShaderLoader::PassFileToString(std::string _fileName)
 {
     // Container For File Information
     std::string content{ "" };

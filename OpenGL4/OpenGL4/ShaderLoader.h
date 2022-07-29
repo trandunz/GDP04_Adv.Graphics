@@ -27,7 +27,7 @@ public:
     /// <param name="_vertexShader"></param>
     /// <param name="_fragmentShader"></param>
     /// <returns></returns>
-    static GLuint CreateShader(std::string&& _vertexShader, std::string&& _fragmentShader);
+    static GLuint CreateShader(std::string _vertexShader, std::string _fragmentShader);
 
     /// <summary>
     /// Sets Uniform 1i At Location
@@ -121,14 +121,14 @@ private:
     /// <param name="_type"></param>
     /// <param name="_source"></param>
     /// <returns></returns>
-    static GLuint CompileShader(GLenum&& _type, std::string&& _source);
+    static GLuint CompileShader(GLenum&& _type, std::string _source);
 
     /// <summary>
     /// Passes A File At The Given Adress Into A String And Returns It.
     /// </summary>
     /// <param name="_fileAddress"></param>
     /// <returns></returns>
-    static std::string PassFileToString(const std::string& _fileName);
+    static std::string PassFileToString(std::string _fileName);
 
     inline static std::vector<std::pair<ShaderProgramLocation, GLuint>> m_ShaderPrograms;
     inline static std::vector<std::pair<std::string, GLuint>> m_Shaders;

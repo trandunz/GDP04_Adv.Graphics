@@ -7,6 +7,7 @@ float DeltaTime = 0.0f, LastFrame = 0.0f;
 GameObject* TestObject = nullptr; 
 Camera* SceneCamera = nullptr;
 Mesh* SphereMesh = nullptr;
+Mesh* CubeMesh = nullptr;
 
 void InitGL();
 void InitGLFW();
@@ -35,7 +36,7 @@ void InitGL()
 	if (glewInit() != GLEW_OK)
 		exit(0);
 
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
@@ -61,7 +62,8 @@ void InitGLFW()
 void Start()
 {
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
-	SceneCamera = new Camera(WindowSize, { 0,0,2 });
+	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
+	SceneCamera = new Camera(WindowSize, { 1,1,5 });
 	TestObject = new GameObject(*SceneCamera, { 0,0,0 });
 	
 	TextureLoader::Init({
@@ -69,7 +71,7 @@ void Start()
 		});
 
 	TestObject->SetActiveTextures({TextureLoader::LoadTexture("World.jpg")});
-	TestObject->SetMesh(SphereMesh);
+	TestObject->SetMesh(CubeMesh);
 	TestObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
 }
 
@@ -85,7 +87,7 @@ void Update()
 
 void Render()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	if (TestObject)
 		TestObject->Draw();
@@ -102,6 +104,10 @@ void CalculateDeltaTime()
 
 int Cleanup()
 {
+	if (CubeMesh)
+		delete CubeMesh;
+	CubeMesh = nullptr;
+
 	if (SphereMesh)
 		delete SphereMesh;
 	SphereMesh = nullptr;
