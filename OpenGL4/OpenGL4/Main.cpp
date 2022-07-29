@@ -8,6 +8,7 @@ GameObject* TestObject = nullptr;
 Camera* SceneCamera = nullptr;
 Mesh* SphereMesh = nullptr;
 Mesh* CubeMesh = nullptr;
+Mesh* StatueMesh = nullptr;
 
 void InitGL();
 void InitGLFW();
@@ -63,6 +64,7 @@ void Start()
 {
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
 	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
+	StatueMesh = new Mesh("the-death-and-the-mother/source/deathmother/TheDeathAndTheMother.obj");
 	SceneCamera = new Camera(WindowSize, { 1,1,5 });
 	TestObject = new GameObject(*SceneCamera, { 0,0,0 });
 	
@@ -70,9 +72,9 @@ void Start()
 		"World.jpg"
 		});
 
-	TestObject->SetActiveTextures({TextureLoader::LoadTexture("World.jpg")});
-	TestObject->SetMesh(CubeMesh);
-	TestObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
+	//TestObject->SetActiveTextures({TextureLoader::LoadTexture("World.jpg")});
+	TestObject->SetMesh(StatueMesh);
+	TestObject->SetShader("Normals3D.vert", "UnlitColor.frag");
 }
 
 void Update()
@@ -104,6 +106,10 @@ void CalculateDeltaTime()
 
 int Cleanup()
 {
+	if (StatueMesh)
+		delete StatueMesh;
+	StatueMesh = nullptr;
+
 	if (CubeMesh)
 		delete CubeMesh;
 	CubeMesh = nullptr;

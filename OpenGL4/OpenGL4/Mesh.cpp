@@ -10,6 +10,9 @@
 
 #include "Mesh.h"
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <TinyOBJ/tiny_obj_loader.h>
+
 Mesh::Mesh(SHAPE _shape, GLenum _windingOrder)
 {
 	m_WindingOrder = _windingOrder;
@@ -26,6 +29,47 @@ Mesh::Mesh(unsigned int _numberOfSides, GLenum _windingOrder)
 	CreatePolygonVertices(_numberOfSides);
 	CreatePolygonIndices(_numberOfSides);
 	CreateAndInitializeBuffers();
+}
+
+Mesh::Mesh(std::string _objModel)
+{
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string error;
+	_objModel = "Resources/Models/" + _objModel;
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &error, _objModel.c_str()))
+	{
+		throw std::runtime_error(error);
+	}
+
+	for (const auto& shape : shapes)
+	{
+		for (const auto& index : shape.mesh.indices)
+		{
+			Vertex vertice{};
+			vertice.position =
+			{
+				attrib.vertices[3 * index.vertex_index + 0],
+				attrib.vertices[3 * index.vertex_index + 1],
+				attrib.vertices[3 * index.vertex_index + 2]
+			};
+			vertice.normals =
+			{
+				attrib.normals[3 * index.normal_index + 0],
+				attrib.normals[3 * index.normal_index + 1],
+				attrib.normals[3 * index.normal_index + 2]
+			};
+			vertice.texCoords =
+			{
+				attrib.texcoords[2 * index.texcoord_index + 0],
+				attrib.texcoords[2 * index.texcoord_index + 1]
+			};
+			m_Vertices.push_back(vertice);
+		}
+	}
+
+	CreateAndInitializeBuffers(false);
 }
 
 Mesh::~Mesh()
@@ -51,7 +95,10 @@ void Mesh::Draw()
 {
 	glBindVertexArray(m_VertexArrayID);
 
-	glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+	if (m_Indices.size() > 0)
+		glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+	else
+		glDrawArrays(GL_TRIANGLES, GL_UNSIGNED_INT, m_Vertices.size());
 
 	glBindVertexArray(0);
 }
@@ -260,7 +307,7 @@ void Mesh::CreatePolygonIndices(unsigned int _numberOfSides)
 	}
 }
 
-void Mesh::CreateAndInitializeBuffers()
+void Mesh::CreateAndInitializeBuffers(bool _ebo)
 {
 	// Vertex Array
 	glGenVertexArrays(1, &m_VertexArrayID);
@@ -272,9 +319,12 @@ void Mesh::CreateAndInitializeBuffers()
 	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_STATIC_DRAW);
 
 	// Index Buffer
-	glGenBuffers(1, &m_IndexBufferID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);
+	if (_ebo)
+	{
+		glGenBuffers(1, &m_IndexBufferID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);
+	}
 
 	// Layouts
 	// Position

@@ -11,6 +11,7 @@
 #pragma once
 #include "Helper.h"
 #include "ShaderLoader.h"
+
 class Mesh
 {
 public:
@@ -24,6 +25,8 @@ public:
 	/// </summary>
 	/// <param name="_numberOfSides"></param>
 	Mesh(unsigned int _numberOfSides, GLenum _windingOrder);
+
+	Mesh(std::string _objModel);
 	/// <summary>
 	/// Mesh Destructor
 	/// </summary>
@@ -58,7 +61,7 @@ private:
 	/// Creates the vertexArray, vertex buffer and index buffer, 
 	/// populating them with the vertices and indices values.
 	/// </summary>
-	void CreateAndInitializeBuffers();
+	void CreateAndInitializeBuffers(bool _ebo = true);
 	/// <summary>
 	/// Converts the given positional value to texture coordinate space (0-1)
 	/// </summary>
@@ -84,6 +87,6 @@ private:
 	GLuint m_VertexBufferID{ 0 };
 	GLuint m_IndexBufferID{ 0 };
 
-	GLenum m_WindingOrder;
+	GLenum m_WindingOrder{GL_CCW};
 };
 
