@@ -135,6 +135,10 @@ void GameObject::Draw()
                 SetRimLighingUniforms();
                 SetReflectionMapUniforms();
             }
+            else if (m_ShaderLocation.fragShader == "SingleTexture.frag")
+            {
+                SetSingleTextureUniforms();
+            }
         } 
         
        /* glEnable(GL_STENCIL_TEST);

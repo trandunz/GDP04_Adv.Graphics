@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include "TextureLoader.h"
+#include "Skybox.h"
 
 GLFWwindow* RenderWindow = nullptr;
 glm::ivec2 WindowSize { 800,800 };
@@ -9,6 +10,37 @@ Camera* SceneCamera = nullptr;
 Mesh* SphereMesh = nullptr;
 Mesh* CubeMesh = nullptr;
 Mesh* StatueMesh = nullptr;
+LightManager* lightManager = nullptr;
+
+KEYMAP Keymap{};
+Skybox* skyboxRef = nullptr;
+
+static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+		Keymap[key] = true;
+	else if (action == GLFW_RELEASE)
+		Keymap[key] = false;
+
+	for (auto& key : Keymap)
+	{
+		if (key.second)
+		{
+			if (key.first == GLFW_KEY_ESCAPE)
+			{
+				glfwSetWindowShouldClose(RenderWindow, true);
+			}
+		}
+	}
+}
+
+static void CursorCallback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (SceneCamera)
+	{
+		SceneCamera->MouseLook(DeltaTime, { xpos, ypos });
+	}
+}
 
 void InitGL();
 void InitGLFW();
@@ -39,7 +71,7 @@ void InitGL()
 
 	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
@@ -58,23 +90,46 @@ void InitGLFW()
 	RenderWindow = glfwCreateWindow(800, 800, "Title", NULL, NULL);
 
 	glfwMakeContextCurrent(RenderWindow);
+
+	glfwSetKeyCallback(RenderWindow, KeyCallback);
+	glfwSetCursorPosCallback(RenderWindow, CursorCallback);
+
+	glfwSetInputMode(RenderWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Start()
 {
+	StatueMesh = new Mesh("Angel/Angel.obj");
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
 	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
-	StatueMesh = new Mesh("the-death-and-the-mother/source/deathmother/TheDeathAndTheMother.obj");
-	SceneCamera = new Camera(WindowSize, { 1,1,5 });
+	
+	SceneCamera = new Camera(WindowSize, { 0,0,5 });
 	TestObject = new GameObject(*SceneCamera, { 0,0,0 });
+
+	lightManager = new LightManager(*SceneCamera);
+	DirectionalLight sun{};
+	sun.Direction = {0,1,0};
+	lightManager->CreateDirectionalLight(sun);
 	
 	TextureLoader::Init({
-		"World.jpg"
+		"Angel/Diffuse.jpeg"
 		});
 
-	//TestObject->SetActiveTextures({TextureLoader::LoadTexture("World.jpg")});
+	TestObject->SetActiveTextures({TextureLoader::LoadTexture("Angel/Diffuse.png")});
 	TestObject->SetMesh(StatueMesh);
-	TestObject->SetShader("Normals3D.vert", "UnlitColor.frag");
+	TestObject->SetShader("Normals3D.vert", "SingleTexture.frag");
+	TestObject->SetLightManager(*lightManager);
+
+	skyboxRef = &Skybox::GetInstance(SceneCamera, TextureLoader::LoadCubemap(
+		{
+			"MountainOutpost/Right.jpg",
+			"MountainOutpost/Left.jpg",
+			"MountainOutpost/Up.jpg",
+			"MountainOutpost/Down.jpg",
+			"MountainOutpost/Back.jpg",
+			"MountainOutpost/Front.jpg",
+		}
+	));
 }
 
 void Update()
@@ -83,6 +138,14 @@ void Update()
 	{
 		CalculateDeltaTime();
 		glfwPollEvents();
+
+		if (SceneCamera)
+		{
+			SceneCamera->Movement_Capture(Keymap);
+			SceneCamera->Movement(DeltaTime);
+		}
+
+
 		Render();
 	}
 }
@@ -90,6 +153,8 @@ void Update()
 void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	skyboxRef->Draw();
 
 	if (TestObject)
 		TestObject->Draw();
@@ -106,6 +171,12 @@ void CalculateDeltaTime()
 
 int Cleanup()
 {
+	skyboxRef = nullptr;
+
+	if (lightManager)
+		delete lightManager;
+	lightManager = nullptr;
+
 	if (StatueMesh)
 		delete StatueMesh;
 	StatueMesh = nullptr;

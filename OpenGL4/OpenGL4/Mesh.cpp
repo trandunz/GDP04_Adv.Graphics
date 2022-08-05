@@ -48,23 +48,32 @@ Mesh::Mesh(std::string _objModel)
 		for (const auto& index : shape.mesh.indices)
 		{
 			Vertex vertice{};
-			vertice.position =
+			if (index.vertex_index >= 0)
 			{
-				attrib.vertices[3 * index.vertex_index + 0],
-				attrib.vertices[3 * index.vertex_index + 1],
-				attrib.vertices[3 * index.vertex_index + 2]
-			};
-			vertice.normals =
+				vertice.position =
+				{
+					attrib.vertices[3 * index.vertex_index + 0],
+					attrib.vertices[3 * index.vertex_index + 1],
+					attrib.vertices[3 * index.vertex_index + 2]
+				};
+			}
+			if (index.normal_index >= 0)
 			{
-				attrib.normals[3 * index.normal_index + 0],
-				attrib.normals[3 * index.normal_index + 1],
-				attrib.normals[3 * index.normal_index + 2]
-			};
-			vertice.texCoords =
+				vertice.normals =
+				{
+					attrib.normals[3 * index.normal_index + 0],
+					attrib.normals[3 * index.normal_index + 1],
+					attrib.normals[3 * index.normal_index + 2]
+				};
+			}
+			if (index.texcoord_index >= 0)
 			{
-				attrib.texcoords[2 * index.texcoord_index + 0],
-				attrib.texcoords[2 * index.texcoord_index + 1]
-			};
+				vertice.texCoords =
+				{
+					attrib.texcoords[2 * index.texcoord_index + 0],
+					attrib.texcoords[2 * index.texcoord_index + 1]
+				};
+			}
 			m_Vertices.push_back(vertice);
 		}
 	}
@@ -98,7 +107,7 @@ void Mesh::Draw()
 	if (m_Indices.size() > 0)
 		glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
 	else
-		glDrawArrays(GL_TRIANGLES, GL_UNSIGNED_INT, m_Vertices.size());
+		glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
 
 	glBindVertexArray(0);
 }
@@ -316,14 +325,14 @@ void Mesh::CreateAndInitializeBuffers(bool _ebo)
 	// Vertex Buffer
 	glGenBuffers(1, &m_VertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
 
 	// Index Buffer
 	if (_ebo)
 	{
 		glGenBuffers(1, &m_IndexBufferID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
 	}
 
 	// Layouts

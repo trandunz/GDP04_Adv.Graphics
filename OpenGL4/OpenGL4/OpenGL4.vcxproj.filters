@@ -115,5 +115,11 @@
     <None Include="Resources\Shaders\UnlitColor.frag">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Shaders\Fog.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Shaders\Fog.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
