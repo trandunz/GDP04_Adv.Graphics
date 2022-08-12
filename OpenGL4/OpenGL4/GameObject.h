@@ -123,6 +123,7 @@ public:
 	/// </summary>
 	/// <param name="_textures"></param>
 	void SetActiveTextures(std::vector<Texture> _textures);
+
 	/// <summary>
 	/// Returns the vector of active textures
 	/// </summary>
@@ -134,6 +135,7 @@ public:
 	/// </summary>
 	/// <param name="_newShader"></param>
 	void SetShader(std::string _vertexSource, std::string _fragmentSource);
+
 	/// <summary>
 	/// Returns the current shader program used for rendering
 	/// </summary>
@@ -198,6 +200,8 @@ private:
 	/// Set Uniforms For Single Texture
 	/// </summary>
 	void SetSingleTextureUniforms();
+
+	void SetFogUniforms();
 
 	bool m_RimLighting = false;
 	std::vector<Texture> m_ActiveTextures{};

@@ -140,6 +140,11 @@ void GameObject::Draw()
                 SetSingleTextureUniforms();
             }
         } 
+        else if (m_ShaderLocation.vertShader == "Fog.vert"
+                && m_ShaderLocation.fragShader == "Fog.frag")
+        {
+            SetFogUniforms();
+        }
         
        /* glEnable(GL_STENCIL_TEST);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -441,6 +446,27 @@ void GameObject::SetSingleTextureUniforms()
 
     // Projection * View * Model Matrix
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", m_ActiveCamera->GetPVMatrix() * m_Transform.transform);
+}
+
+void GameObject::SetFogUniforms()
+{
+    // Apply Texture
+    if (m_ActiveTextures.size() > 0)
+    {
+        ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_ActiveTextures[0].ID);
+        ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
+    }
+
+    // Set Model Matrix
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", m_ActiveCamera->GetPVMatrix());
+
+    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
+    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
+    ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", m_ActiveCamera->GetPosition());
+    ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", {0.5f, 0.5f, 0.5f, 1.0f});
 }
 
 

@@ -4,7 +4,7 @@
 layout (location = 0) out vec4 FragColor;
 
 // Input from Previous Shader
-in vec3 TexCoords;
+in vec2 TexCoords;
 in vec4 WorldPos;
 
 // Outside Variables Passed In As 'Uniforms'
@@ -12,7 +12,7 @@ uniform sampler2D Texture0;
 uniform float FogStart;
 uniform float FogDepth;
 uniform vec3 CameraPos;
-uniform vec3 FogColor;
+uniform vec4 FogColor;
 
 // Main function that gets called per vertex fragment.
 void main()

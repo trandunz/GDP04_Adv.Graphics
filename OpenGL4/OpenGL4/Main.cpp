@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "TextureLoader.h"
 #include "Skybox.h"
+#include "Terrain.h"
 
 GLFWwindow* RenderWindow = nullptr;
 glm::ivec2 WindowSize { 800,800 };
@@ -10,6 +11,7 @@ Camera* SceneCamera = nullptr;
 Mesh* SphereMesh = nullptr;
 Mesh* CubeMesh = nullptr;
 Mesh* StatueMesh = nullptr;
+Terrain* TerrainMesh = nullptr;
 LightManager* lightManager = nullptr;
 
 KEYMAP Keymap{};
@@ -99,25 +101,26 @@ void InitGLFW()
 
 void Start()
 {
-	StatueMesh = new Mesh("Angel/Angel.obj");
+	//StatueMesh = new Mesh("Angel/Angel.obj");
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
 	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
-	
+
 	SceneCamera = new Camera(WindowSize, { 0,0,5 });
 	TestObject = new GameObject(*SceneCamera, { 0,0,0 });
 
 	lightManager = new LightManager(*SceneCamera);
 	DirectionalLight sun{};
-	sun.Direction = {0,1,0};
+	sun.Direction = {-1,-1,0};
 	lightManager->CreateDirectionalLight(sun);
 	
 	TextureLoader::Init({
-		"Angel/Diffuse.jpeg"
+		"World.jpg",
+		"Grass.jpg"
 		});
 
-	TestObject->SetActiveTextures({TextureLoader::LoadTexture("Angel/Diffuse.png")});
-	TestObject->SetMesh(StatueMesh);
-	TestObject->SetShader("Normals3D.vert", "SingleTexture.frag");
+	TestObject->SetActiveTextures({TextureLoader::LoadTexture("World.jpg")});
+	TestObject->SetMesh(SphereMesh);
+	TestObject->SetShader("Fog.vert", "Fog.frag");
 	TestObject->SetLightManager(*lightManager);
 
 	skyboxRef = &Skybox::GetInstance(SceneCamera, TextureLoader::LoadCubemap(
@@ -130,6 +133,12 @@ void Start()
 			"MountainOutpost/Front.jpg",
 		}
 	));
+
+	TerrainMesh = new Terrain(*SceneCamera);
+	TerrainMesh->SetLightManager(*lightManager);
+	TerrainMesh->SetTexture(TextureLoader::LoadTexture("Grass.jpg"));
+	TerrainMesh->SetScale({ 0.05f,0.05f,0.05f });
+	TerrainMesh->SetTranslation({ 0.0f,-20.0f,0.0f });
 }
 
 void Update()
@@ -159,6 +168,9 @@ void Render()
 	if (TestObject)
 		TestObject->Draw();
 
+	if (TerrainMesh)
+		TerrainMesh->Draw();
+
 	glfwSwapBuffers(RenderWindow);
 }
 
@@ -176,6 +188,10 @@ int Cleanup()
 	if (lightManager)
 		delete lightManager;
 	lightManager = nullptr;
+
+	if (TerrainMesh)
+		delete TerrainMesh;
+	TerrainMesh = nullptr;
 
 	if (StatueMesh)
 		delete StatueMesh;

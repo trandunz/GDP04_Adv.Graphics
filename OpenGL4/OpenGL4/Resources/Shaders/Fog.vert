@@ -6,11 +6,11 @@ layout (location = 1) in vec2 l_texCoords;
 layout (location = 2) in vec3 l_normals;
 
 // Input from Previous Shader
-out vec3 TexCoords;
+out vec2 TexCoords;
 out vec4 WorldPos;
 
-uniform Model;
-uniform PVMatrix;
+uniform mat4 Model;
+uniform mat4 PVMatrix;
 
 // Main function that gets called per vertex fragment.
 void main()
