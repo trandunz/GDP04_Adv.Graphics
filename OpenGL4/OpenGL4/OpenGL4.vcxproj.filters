@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\Frag Shaders">
+      <UniqueIdentifier>{8decc71f-7c76-44bc-82a3-8e00771e472b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Vert Shader">
+      <UniqueIdentifier>{a876d30f-8863-4165-9359-8236ec94ac5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Geo Shaders">
+      <UniqueIdentifier>{333bc835-9614-4fe1-8eb0-944eeaabb739}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -46,6 +55,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Statics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,49 +95,64 @@
     <ClInclude Include="Terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Statics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlinnFong3D.frag">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Frag Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\Normals3D.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\Reflection.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\ReflectionMap.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\SingleTexture.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\SingleTexture.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\Skybox.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\Skybox.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\TextLabel.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\TextLabel.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\Shaders\UnlitColor.frag">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Frag Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\Fog.frag">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Reflection.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ReflectionMap.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\SingleTexture.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Skybox.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\TextLabel.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\UnlitColor.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\Fog.vert">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Normals3D.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\SingleTexture.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Skybox.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\TextLabel.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="PointToTriangle.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Outline.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Terrain.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\TerrainTextures.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

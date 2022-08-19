@@ -15,7 +15,7 @@ GameObject::GameObject(Camera& _camera, glm::vec3 _position)
     m_ActiveCamera = &_camera;
     // Set starting position
     SetTranslation(_position);
-    m_StencilShaderID = ShaderLoader::CreateShader("SingleTexture.vert", "UnlitColor.frag");
+    m_StencilShaderID = ShaderLoader::CreateShader("Outline.vert", "UnlitColor.frag");
 }
 
 GameObject::~GameObject()
@@ -146,40 +146,40 @@ void GameObject::Draw()
             SetFogUniforms();
         }
         
-       /* glEnable(GL_STENCIL_TEST);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);*/
+        if (Statics::StencilTest)
+        {
+            glEnable(GL_STENCIL_TEST);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+        }
 
         // Draw the mesh
         m_Mesh->Draw();
         
-        ////
-        //// Draw Stencil Outline
-        //glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        //glStencilMask(0x00);
 
-        //Transform originalTransform = m_Transform;
-        //
-        //m_Transform.scale *= 1.01f;
-        //UpdateModelValueOfTransform(m_Transform);
-
-        //glUseProgram(m_StencilShaderID);
-
-        //SetSingleTextureUniforms();
-
-        //m_Mesh->Draw();
-        //
-        //glStencilMask(0x00); //disable writing to stencil mask 
-        //glDisable(GL_STENCIL_TEST); // Disable stencil test
-        //glStencilMask(0xFF); // Enable writing again for next time
-
-        //// Unbind
-        //glUseProgram(0);
-        //glBindTexture(GL_TEXTURE_2D, 0);
-        //glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-        //m_Transform = originalTransform;
+        if (Statics::StencilTest)
+        { 
+            ////
+            //// Draw Stencil Outline
+            glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+            glStencilMask(0x00);
+            
+            glUseProgram(m_StencilShaderID);
+            
+            SetNormals3DVertUniforms();
+            
+            m_Mesh->Draw();
+            
+            glStencilMask(0x00); //disable writing to stencil mask 
+            glDisable(GL_STENCIL_TEST); // Disable stencil test
+            glStencilMask(0xFF); // Enable writing again for next time
+            
+            // Unbind
+            glUseProgram(0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        }
     }
 }
 
@@ -277,7 +277,13 @@ std::vector<Texture> GameObject::GetActiveTextures()
 void GameObject::SetShader(std::string _vertexSource, std::string _fragmentSource)
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _fragmentSource);
-    m_ShaderLocation = { _vertexSource , _fragmentSource };
+    m_ShaderLocation = { _vertexSource , "",_fragmentSource};
+}
+
+void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, std::string _fragmentSource)
+{
+    m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource,_fragmentSource);
+    m_ShaderLocation = { _vertexSource , _geoSource,_fragmentSource };
 }
 
 GLuint GameObject::GetShader()

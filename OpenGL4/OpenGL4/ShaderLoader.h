@@ -30,6 +30,15 @@ public:
     static GLuint CreateShader(std::string _vertexShader, std::string _fragmentShader);
 
     /// <summary>
+    /// Creates A Given Shader Program With The Specified Vertex Shader, Geometry Shader And Fragment Shader Paths And Returns Its ID.
+    /// </summary>
+    /// <param name="_vertexShader"></param>
+    /// <param name="_geoShader"></param>
+    /// <param name="_fragmentShader"></param>
+    /// <returns></returns>
+    static GLuint CreateShader(std::string _vertexShader, std::string _geoShader,std::string _fragmentShader);
+
+    /// <summary>
     /// Sets Uniform 1i At Location
     /// </summary>
     /// <param name="_program"></param>

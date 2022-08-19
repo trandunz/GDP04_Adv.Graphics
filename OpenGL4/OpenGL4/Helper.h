@@ -34,6 +34,7 @@ using KEYMAP = std::map<int, bool>;
 struct ShaderProgramLocation
 {
     std::string vertShader = "";
+	std::string geoShader = "";
 	std::string fragShader = "";
 };
 

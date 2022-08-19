@@ -106,7 +106,7 @@ void Camera::MouseLook(float& _dt, glm::vec2 _mousePos)
     m_Pitch += (m_LookSensitivity * (m_LastMousePos.y - _mousePos.y) * _dt);
 
     // Clamp Pitch To 89 degrees
-    glm::clamp(m_Pitch, -89.0f, 89.0f);
+    m_Pitch = glm::clamp(m_Pitch, -89.0f, 89.0f);
 
     // Update Last Mouse Pos
     m_LastMousePos = _mousePos;

@@ -155,6 +155,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="Statics.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextLabel.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
@@ -168,22 +169,27 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="Statics.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextLabel.h" />
     <ClInclude Include="TextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="PointToTriangle.geo" />
     <None Include="Resources\Shaders\BlinnFong3D.frag" />
     <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag" />
     <None Include="Resources\Shaders\Fog.frag" />
     <None Include="Resources\Shaders\Fog.vert" />
     <None Include="Resources\Shaders\Normals3D.vert" />
+    <None Include="Resources\Shaders\Outline.vert" />
     <None Include="Resources\Shaders\Reflection.frag" />
     <None Include="Resources\Shaders\ReflectionMap.frag" />
     <None Include="Resources\Shaders\SingleTexture.frag" />
     <None Include="Resources\Shaders\SingleTexture.vert" />
     <None Include="Resources\Shaders\Skybox.frag" />
     <None Include="Resources\Shaders\Skybox.vert" />
+    <None Include="Resources\Shaders\Terrain.vert" />
+    <None Include="Resources\Shaders\TerrainTextures.frag" />
     <None Include="Resources\Shaders\TextLabel.frag" />
     <None Include="Resources\Shaders\TextLabel.vert" />
     <None Include="Resources\Shaders\UnlitColor.frag" />

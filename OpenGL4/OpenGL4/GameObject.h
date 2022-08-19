@@ -10,6 +10,7 @@
 
 #pragma once
 #include "LightManager.h"
+#include "Statics.h"
 
 class GameObject
 {
@@ -135,6 +136,12 @@ public:
 	/// </summary>
 	/// <param name="_newShader"></param>
 	void SetShader(std::string _vertexSource, std::string _fragmentSource);
+
+	/// <summary>
+	/// Sets the shader program to use for rendering
+	/// </summary>
+	/// <param name="_newShader"></param>
+	void SetShader(std::string _vertexSource, std::string _geoSource, std::string _fragmentSource);
 
 	/// <summary>
 	/// Returns the current shader program used for rendering

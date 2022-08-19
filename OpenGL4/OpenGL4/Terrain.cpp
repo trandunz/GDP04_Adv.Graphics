@@ -152,7 +152,8 @@ void Terrain::CreateAndInitializeBuffers()
 
 void Terrain::GenerateVertices()
 {
-	std::vector<Vertex> vertices(513 * 513);
+	m_Vertices.clear();
+	m_Vertices.resize(513 * 513);
 
 	float halfWidth = (513 - 1) * 0.5f;
 	float halfDepth = (513 - 1) * 0.5f;
@@ -167,12 +168,12 @@ void Terrain::GenerateVertices()
 			float x = -halfWidth + j;
 
 			float y = m_HeightMap[i * 513 + j];
-			vertices[i * 513 + j].position = { x, y, z };
-			vertices[i * 513 + j].normals = { 0.0f, 1.0f, 0.0f };
+			m_Vertices[i * 513 + j].position = { x, y, z };
+			m_Vertices[i * 513 + j].normals = { 0.0f, 1.0f, 0.0f };
 
 			// Stretch texture over grid.
-			vertices[i * 513 + j].texCoords.x = j * du;
-			vertices[i * 513 + j].texCoords.y = i * dv;
+			m_Vertices[i * 513 + j].texCoords.x = j * du;
+			m_Vertices[i * 513 + j].texCoords.y = i * dv;
 		}
 	}
 
@@ -194,36 +195,32 @@ void Terrain::GenerateVertices()
 			
 			glm::vec3 normal = glm::normalize(glm::cross(tanZ, tanX));
 
-			vertices[i * 513 + j].normals = normal;
+			m_Vertices[i * 513 + j].normals = normal;
 		}
 	}
-
-	m_Vertices = vertices;
 }
 
 void Terrain::GenerateIndices()
 {
-	std::vector<unsigned> indices((513 - 1) * (513 - 1) * 2 * 3); // 3 indices per face
-
+	m_Indices.clear();
+	m_Indices.resize((513 - 1) * (513 - 1) * 2 * 3);
 	// Iterate over each quad and compute indices.
 	int k = 0;
 	for (unsigned i = 0; i < 513 - 1; ++i)
 	{
 		for (unsigned j = 0; j < 513 - 1; ++j)
 		{
-			indices[k] = i * 513 + j;
-			indices[k + 1] = i * 513 + j + 1;
-			indices[k + 2] = (i + 1) * 513 + j;
+			m_Indices[k] = i * 513 + j;
+			m_Indices[k + 1] = i * 513 + j + 1;
+			m_Indices[k + 2] = (i + 1) * 513 + j;
 
-			indices[k + 3] = (i + 1) * 513 + j;
-			indices[k + 4] = i * 513 + j + 1;
-			indices[k + 5] = (i + 1) * 513 + j + 1;
+			m_Indices[k + 3] = (i + 1) * 513 + j;
+			m_Indices[k + 4] = i * 513 + j + 1;
+			m_Indices[k + 5] = (i + 1) * 513 + j + 1;
 
 			k += 6; // next quad
 		}
 	}
-
-	m_Indices = indices;
 }
 
 void Terrain::LoadHeightmap(std::string _fileName)

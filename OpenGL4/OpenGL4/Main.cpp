@@ -5,12 +5,12 @@
 
 GLFWwindow* RenderWindow = nullptr;
 glm::ivec2 WindowSize { 800,800 };
-float DeltaTime = 0.0f, LastFrame = 0.0f;
-GameObject* TestObject = nullptr; 
+bool BlackBars = true;
+GameObject* ModelObject = nullptr;
 Camera* SceneCamera = nullptr;
 Mesh* SphereMesh = nullptr;
 Mesh* CubeMesh = nullptr;
-Mesh* StatueMesh = nullptr;
+Mesh* CrossMesh = nullptr;
 Terrain* TerrainMesh = nullptr;
 LightManager* lightManager = nullptr;
 
@@ -32,6 +32,16 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 			{
 				glfwSetWindowShouldClose(RenderWindow, true);
 			}
+			if (key.first == GLFW_KEY_Z)
+			{
+				key.second = false;
+				BlackBars = !BlackBars;
+			}
+			if (key.first == GLFW_KEY_X)
+			{
+				key.second = false;
+				Statics::StencilTest = !Statics::StencilTest;
+			}
 		}
 	}
 }
@@ -40,7 +50,7 @@ static void CursorCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (SceneCamera)
 	{
-		SceneCamera->MouseLook(DeltaTime, { xpos, ypos });
+		SceneCamera->MouseLook(Statics::DeltaTime, { xpos, ypos });
 	}
 }
 
@@ -50,8 +60,6 @@ void InitGLFW();
 void Start();
 void Update();
 void Render();
-
-void CalculateDeltaTime();
 
 int Cleanup();
 
@@ -101,12 +109,12 @@ void InitGLFW()
 
 void Start()
 {
-	//StatueMesh = new Mesh("Angel/Angel.obj");
+	CrossMesh = new Mesh("Cross/Cross.obj");
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
 	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
 
 	SceneCamera = new Camera(WindowSize, { 0,0,5 });
-	TestObject = new GameObject(*SceneCamera, { 0,0,0 });
+	ModelObject = new GameObject(*SceneCamera, { 0,0,0 });
 
 	lightManager = new LightManager(*SceneCamera);
 	DirectionalLight sun{};
@@ -118,10 +126,11 @@ void Start()
 		"Grass.jpg"
 		});
 
-	TestObject->SetActiveTextures({TextureLoader::LoadTexture("World.jpg")});
-	TestObject->SetMesh(SphereMesh);
-	TestObject->SetShader("Fog.vert", "Fog.frag");
-	TestObject->SetLightManager(*lightManager);
+	ModelObject->SetActiveTextures({TextureLoader::LoadTexture("Cross/Cross.png")});
+	ModelObject->SetMesh(CrossMesh);
+	ModelObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
+	ModelObject->SetLightManager(*lightManager);
+	ModelObject->SetScale({ 0.01f,0.01f,0.01f });
 
 	skyboxRef = &Skybox::GetInstance(SceneCamera, TextureLoader::LoadCubemap(
 		{
@@ -145,15 +154,19 @@ void Update()
 {
 	while (glfwWindowShouldClose(RenderWindow) == false)
 	{
-		CalculateDeltaTime();
+		Statics::CalculateDeltaTime();
 		glfwPollEvents();
 
 		if (SceneCamera)
 		{
 			SceneCamera->Movement_Capture(Keymap);
-			SceneCamera->Movement(DeltaTime);
+			SceneCamera->Movement(Statics::DeltaTime);
 		}
 
+		if (ModelObject)
+		{
+			ModelObject->Rotate({ 0,1,0 }, 2 * glm::radians(glfwGetTime()));
+		}
 
 		Render();
 	}
@@ -163,22 +176,26 @@ void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+	if (BlackBars)
+	{
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(0, 50, WindowSize.x, WindowSize.y - 100);
+	}
+	
 	skyboxRef->Draw();
 
-	if (TestObject)
-		TestObject->Draw();
+	if (ModelObject)
+		ModelObject->Draw();
 
 	if (TerrainMesh)
 		TerrainMesh->Draw();
 
-	glfwSwapBuffers(RenderWindow);
-}
+	if (BlackBars)
+	{
+		glDisable(GL_SCISSOR_TEST);
+	}
 
-void CalculateDeltaTime()
-{
-	float currentFrame = (float)glfwGetTime();
-	DeltaTime = currentFrame - LastFrame;
-	LastFrame = currentFrame;
+	glfwSwapBuffers(RenderWindow);
 }
 
 int Cleanup()
@@ -193,9 +210,9 @@ int Cleanup()
 		delete TerrainMesh;
 	TerrainMesh = nullptr;
 
-	if (StatueMesh)
-		delete StatueMesh;
-	StatueMesh = nullptr;
+	if (CrossMesh)
+		delete CrossMesh;
+	CrossMesh = nullptr;
 
 	if (CubeMesh)
 		delete CubeMesh;
@@ -209,9 +226,9 @@ int Cleanup()
 		delete SceneCamera;
 	SceneCamera = nullptr;
 
-	if (TestObject)
-		delete TestObject;
-	TestObject = nullptr;
+	if (ModelObject)
+		delete ModelObject;
+	ModelObject = nullptr;
 
 	glfwDestroyWindow(RenderWindow);
 	glfwTerminate();
