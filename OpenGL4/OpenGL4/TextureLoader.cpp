@@ -131,3 +131,26 @@ Texture TextureLoader::LoadCubemap(std::vector<std::string> _fileNames)
 
     return m_Textures.back();
 }
+
+std::vector<unsigned char> TextureLoader::LoadHeightMap(std::string&& _fileName)
+{
+    stbi_set_flip_vertically_on_load(false);
+
+    // A height for each vertex
+    std::vector<unsigned char> in(513 * 513);
+
+    GLint width, height, components;
+
+    // Grab Image Data Using STB_Image And Store It In A const char*
+    GLubyte* imageData = stbi_load(("Resources/Textures/Heightmaps/" + _fileName).data(), &width, &height, &components, 0);
+
+    for (int i = 0; i < width * height; i++)
+    {
+        in[i] = imageData[i];
+    }
+
+    stbi_image_free(imageData);
+    imageData = nullptr;
+
+    return in;
+}

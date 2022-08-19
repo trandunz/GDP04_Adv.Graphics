@@ -2,6 +2,7 @@
 #include "TextureLoader.h"
 #include "Skybox.h"
 #include "Terrain.h"
+#include "Noise.h"
 
 GLFWwindow* RenderWindow = nullptr;
 glm::ivec2 WindowSize { 800,800 };
@@ -10,7 +11,7 @@ GameObject* ModelObject = nullptr;
 Camera* SceneCamera = nullptr;
 Mesh* SphereMesh = nullptr;
 Mesh* CubeMesh = nullptr;
-Mesh* CrossMesh = nullptr;
+Mesh* ModelMesh = nullptr;
 Terrain* TerrainMesh = nullptr;
 LightManager* lightManager = nullptr;
 
@@ -109,7 +110,9 @@ void InitGLFW()
 
 void Start()
 {
-	CrossMesh = new Mesh("Cross/Cross.obj");
+	Noise::CreateNoiseRAW("RandomNoise", 513, 513);
+
+	ModelMesh = new Mesh("LowPoly/Cross.obj");
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
 	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
 
@@ -126,8 +129,8 @@ void Start()
 		"Grass.jpg"
 		});
 
-	ModelObject->SetActiveTextures({TextureLoader::LoadTexture("Cross/Cross.png")});
-	ModelObject->SetMesh(CrossMesh);
+	ModelObject->SetActiveTextures({TextureLoader::LoadTexture("LowPoly/Cross.png")});
+	ModelObject->SetMesh(ModelMesh);
 	ModelObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
 	ModelObject->SetLightManager(*lightManager);
 	ModelObject->SetScale({ 0.01f,0.01f,0.01f });
@@ -145,7 +148,13 @@ void Start()
 
 	TerrainMesh = new Terrain(*SceneCamera);
 	TerrainMesh->SetLightManager(*lightManager);
-	TerrainMesh->SetTexture(TextureLoader::LoadTexture("Grass.jpg"));
+	TerrainMesh->SetActiveTextures(
+		{
+			TextureLoader::LoadTexture("Sand.jpg"),
+			TextureLoader::LoadTexture("Dirt.jpg"),
+			TextureLoader::LoadTexture("Grass.jpg"),
+			TextureLoader::LoadTexture("Snow.jpg")
+		});
 	TerrainMesh->SetScale({ 0.05f,0.05f,0.05f });
 	TerrainMesh->SetTranslation({ 0.0f,-20.0f,0.0f });
 }
@@ -165,7 +174,7 @@ void Update()
 
 		if (ModelObject)
 		{
-			ModelObject->Rotate({ 0,1,0 }, 2 * glm::radians(glfwGetTime()));
+			ModelObject->Rotate({ 0,1,0 }, 1000 * glm::radians(Statics::DeltaTime));
 		}
 
 		Render();
@@ -210,9 +219,9 @@ int Cleanup()
 		delete TerrainMesh;
 	TerrainMesh = nullptr;
 
-	if (CrossMesh)
-		delete CrossMesh;
-	CrossMesh = nullptr;
+	if (ModelMesh)
+		delete ModelMesh;
+	ModelMesh = nullptr;
 
 	if (CubeMesh)
 		delete CubeMesh;

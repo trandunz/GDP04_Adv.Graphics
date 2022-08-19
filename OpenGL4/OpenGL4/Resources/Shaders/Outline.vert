@@ -29,6 +29,6 @@ void main()
 {
     TexCoords = l_texCoords;
 	Normals = normalize(mat3(transpose(inverse(ModelMatrix))) * l_normals);
-	Position = vec3(ModelMatrix * vec4(l_position + l_normals, 1.0f));
-	gl_Position = PVMMatrix * vec4(l_position + l_normals,1.0f);
+	Position = vec3(ModelMatrix * vec4(l_position, 1.0f));
+	gl_Position = PVMMatrix * vec4(l_position + l_normals ,1.0f);
 }

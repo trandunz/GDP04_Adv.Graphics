@@ -1,11 +1,12 @@
 #include "Terrain.h"
+#include "Noise.h"
 
 Terrain::Terrain(Camera& _camera, std::string _heightMap)
 {
-	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert","BlinnFong3D.frag");
+	m_ShaderID = ShaderLoader::CreateShader("Terrain.vert","TerrainTextures.frag");
 	m_ActiveCamera = &_camera;
 
-	LoadHeightmap(_heightMap);
+	LoadRAWHeightmap(_heightMap);
 	Smooth();
 	GenerateVertices();
 	GenerateIndices();
@@ -14,10 +15,10 @@ Terrain::Terrain(Camera& _camera, std::string _heightMap)
 
 Terrain::Terrain(Camera& _camera)
 {
-	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "BlinnFong3D.frag");
+	m_ShaderID = ShaderLoader::CreateShader("Terrain.vert", "TerrainTextures.frag");
 	m_ActiveCamera = &_camera;
 
-	LoadHeightmap("Basic.raw");
+	GenerateRandomHeightmap();
 	Smooth();
 	GenerateVertices();
 	GenerateIndices();
@@ -60,6 +61,11 @@ void Terrain::Draw()
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "ModelMatrix", m_Transform.transform);
 
 	SetBlinnFong3DUniforms();
+
+	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture0Height", 0.0f);
+	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture1Height", 8.0f);
+	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture2Height", 30.0f);
+	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture3Height", 150.0f);
 
 	glBindVertexArray(m_VertexArrayID);
 
@@ -116,6 +122,11 @@ void Terrain::Scale(glm::vec3 _scaleFactor)
 {
 	m_Transform.scale *= _scaleFactor;
 	UpdateModelValueOfTransform(m_Transform);
+}
+
+void Terrain::SetActiveTextures(std::vector<Texture> _textures)
+{
+	m_ActiveTextures = _textures;
 }
 
 void Terrain::CreateAndInitializeBuffers()
@@ -223,7 +234,7 @@ void Terrain::GenerateIndices()
 	}
 }
 
-void Terrain::LoadHeightmap(std::string _fileName)
+void Terrain::LoadRAWHeightmap(std::string _fileName)
 {
 	// A height for each vertex
 	std::vector<unsigned char> in(513 * 513);
@@ -246,6 +257,29 @@ void Terrain::LoadHeightmap(std::string _fileName)
 	for (unsigned i = 0; i < 513 * 513; ++i)
 	{
 		m_HeightMap[i] = (float)in[i] * 1.0f;
+	}
+}
+
+void Terrain::LoadHeightmap(std::string _fileName)
+{
+	std::vector<unsigned char> in = TextureLoader::LoadHeightMap(std::move(_fileName));
+	m_HeightMap.resize(513*513, 0);
+	for (unsigned i = 0; i < in.size(); ++i)
+	{
+		m_HeightMap[i] = (float)in[i] * 1.0f;
+	}
+}
+
+void Terrain::GenerateRandomHeightmap()
+{
+	int index = 0;
+	m_HeightMap.resize(513 * 513, 0);
+	for (int i = 0; i < 513; i++)
+	{
+		for (int j = 0; j < 513; j++)
+		{
+			m_HeightMap[index++] = 255 * Noise::TotalNoisePerPoint(j, i, 4, 128) + 128;
+		}
 	}
 }
 
@@ -294,10 +328,13 @@ bool Terrain::InBounds(unsigned _i, unsigned _j)
 void Terrain::SetBlinnFong3DUniforms()
 {
 	// Apply Texture
-	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_Texture.ID);
-	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
+	for(int i = 0 ; i < m_ActiveTextures.size(); i++)
+	{
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", m_ActiveTextures.size());
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, m_ActiveTextures[i].ID);
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture" + std::to_string(i), i);
+	}
 
 	// Set Global Ambient Colour And Strength
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "AmbientStrength", 0.15f);

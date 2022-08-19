@@ -19,6 +19,7 @@ layout (location = 2) in vec3 l_normals;
 out vec2 TexCoords;
 out vec3 Position;
 out vec3 Normals;
+out float Height;
 
 // Outside Variables Passed In As 'Uniforms'
 uniform mat4 PVMMatrix;
@@ -27,7 +28,8 @@ uniform mat4 ModelMatrix;
 // Main function that gets called per vertex.
 void main()
 {
-    TexCoords = l_texCoords;
+    TexCoords = l_texCoords * 513;
+	Height = l_position.y;
 	Normals = normalize(mat3(transpose(inverse(ModelMatrix))) * l_normals);
 	Position = vec3(ModelMatrix * vec4(l_position, 1.0f));
 	gl_Position = PVMMatrix * vec4(l_position,1.0f);
