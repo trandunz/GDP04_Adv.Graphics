@@ -140,10 +140,14 @@ void GameObject::Draw()
                 SetSingleTextureUniforms();
             }
         } 
-        else if (m_ShaderLocation.vertShader == "Fog.vert"
-                && m_ShaderLocation.fragShader == "Fog.frag")
+        else if (m_ShaderLocation.vertShader == "Fog.vert")
         {
             SetFogUniforms();
+            if (m_ShaderLocation.fragShader == "Lit_Fog.frag")
+            {
+                SetBlinnFong3DUniforms();
+                SetRimLighingUniforms();
+            }
         }
         
         if (Statics::StencilTest)

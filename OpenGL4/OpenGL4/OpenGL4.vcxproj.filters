@@ -160,5 +160,8 @@
     <None Include="Resources\Shaders\TerrainTextures.frag">
       <Filter>Resource Files\Frag Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\Lit_Fog.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
