@@ -19,7 +19,7 @@ public:
     /// </summary>
     /// <param name="_keyMap"></param>
     /// <param name="_position"></param>
-    Camera(glm::ivec2& _windowSize, glm::vec3 _position = glm::vec3(0.0f, 0.0f, 0.0f));
+    Camera(glm::vec3 _position = glm::vec3(0.0f, 0.0f, 0.0f));
     
     /// <summary>
     /// Cleans Up Any Pointers Or Objects (e.g KeyPresses*, WidnowSize*)
@@ -29,13 +29,13 @@ public:
     /// <summary>
     /// Captures Camera Input for movement
     /// </summary>
-    void Movement_Capture(KEYMAP& _keymap);
+    void Movement_Capture();
 
     /// <summary>
     /// Handles Camera Movement Based On Input. Does Not Run If No Input.
     /// </summary>
     /// <param name="_dt"></param>
-    void Movement(float& _dt);
+    void Movement();
 
     /// <summary>
     /// Handles Mouse Look.
@@ -43,7 +43,7 @@ public:
     /// </summary>
     /// <param name="_dt"></param>
     /// <param name="_mousePos"></param>
-    void MouseLook(float& _dt, glm::vec2 _mousePos);
+    void MouseLook(glm::vec2 _mousePos);
 
     /// <summary>
     /// Returns The Camera's Position
@@ -111,14 +111,12 @@ private:
     /// </summary>
     /// <param name="_dt"></param>
     /// <returns></returns>
-    void UpdatePosition(float& _dt);
+    void UpdatePosition();
 
     /// <summary>
     /// Updates the up, front and right vectors for the camera based on pitch and yaw.
     /// </summary>
     void UpdateRotationVectors();
-
-    glm::ivec2* m_WindowSize = nullptr;
 
     float m_MoveSpeed = 10.0f;
     float m_LookSensitivity = 5.0f;

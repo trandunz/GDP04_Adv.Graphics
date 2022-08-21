@@ -9,15 +9,14 @@
 // Mail : william.inman@mds.ac.nz
 
 #include "TextLabel.h"
+#include "Statics.h"
 
-TextLabel::TextLabel(glm::ivec2& _windowSize, std::string_view&& _text, Font& _loadedFont, float& _deltaTime, glm::vec2&& _position, glm::vec4&& _colour , glm::vec2&& _scale)
+TextLabel::TextLabel(std::string_view&& _text, Font& _loadedFont, glm::vec2&& _position, glm::vec4&& _colour , glm::vec2&& _scale)
 {
 	m_Label = _text;
 	m_Position = _position;
 	m_Colour = _colour;
 	m_Scale = _scale;
-	m_WindowSize = &_windowSize;
-	m_DeltaTime = &_deltaTime;
 	m_Font = &_loadedFont;
 
 	// Check if font is valid
@@ -25,7 +24,7 @@ TextLabel::TextLabel(glm::ivec2& _windowSize, std::string_view&& _text, Font& _l
 		m_FontLoaded = true;
 
 	// Assign Projection Matrix with near = 0 and far = 10 (might be overkill to have 10)
-	m_ProjectionMatrix = glm::ortho(0.0f, (float)m_WindowSize->x, 0.0f, (float)m_WindowSize->y, 0.0f, 10.0f);
+	m_ProjectionMatrix = glm::ortho(0.0f, (float)Statics::WindowSize.x, 0.0f, (float)Statics::WindowSize.y, 0.0f, 10.0f);
 	// Create or assign the texlabel shader program
 	m_ProgramID = ShaderLoader::CreateShader("TextLabel.vert", "TextLabel.frag");
 
@@ -60,8 +59,6 @@ TextLabel::TextLabel(glm::ivec2& _windowSize, std::string_view&& _text, Font& _l
 
 TextLabel::~TextLabel()
 {
-	m_WindowSize = nullptr;
-	m_DeltaTime = nullptr;
 	m_Font = nullptr;
 }
 
@@ -158,17 +155,17 @@ glm::vec4 TextLabel::GetBounds()
 	{
 	case TEXTALIGNMENT::LEFT:
 	{
-		return { m_Position.x, m_Position.x + textSize.x , m_WindowSize->y - m_Position.y,  m_WindowSize->y - (m_Position.y + textSize.y) };
+		return { m_Position.x, m_Position.x + textSize.x , Statics::WindowSize.y - m_Position.y,  Statics::WindowSize.y - (m_Position.y + textSize.y) };
 		break;
 	}
 	case TEXTALIGNMENT::MIDDLE:
 	{
-		return { m_Position.x - textSize.x / 2.0, m_Position.x + textSize.x / 2.0f , m_WindowSize->y - (m_Position.y - textSize.y / 2),  m_WindowSize->y - (m_Position.y + textSize.y / 2) };
+		return { m_Position.x - textSize.x / 2.0, m_Position.x + textSize.x / 2.0f , Statics::WindowSize.y - (m_Position.y - textSize.y / 2),  Statics::WindowSize.y - (m_Position.y + textSize.y / 2) };
 		break;
 	}
 	case TEXTALIGNMENT::RIGHT:
 	{
-		return { m_Position.x - textSize.x, m_Position.x , m_WindowSize->y - m_Position.y,  m_WindowSize->y - (m_Position.y + textSize.y) };
+		return { m_Position.x - textSize.x, m_Position.x , Statics::WindowSize.y - m_Position.y,  Statics::WindowSize.y - (m_Position.y + textSize.y) };
 		break;
 	}
 	default:

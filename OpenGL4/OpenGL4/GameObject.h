@@ -38,13 +38,13 @@ public:
 	/// E: Up
 	/// </summary>
 	/// <param name="_keypresses"></param>
-	void Movement_WASDEQ(KEYMAP& _keymap);
+	void Movement_WASDEQ();
 
 	/// <summary>
 	/// Update function for GameObject.
 	/// Should be called every frame.
 	/// </summary>
-	void Update(float& _deltaTime);
+	void Update();
 
 	/// <summary>
 	/// Draws The gameobject if it has a mesh attached

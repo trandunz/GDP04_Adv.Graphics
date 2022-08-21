@@ -32,12 +32,12 @@ GameObject::~GameObject()
     m_ActiveTextures.clear();
 }
 
-void GameObject::Movement_WASDEQ(KEYMAP& _keymap)
+void GameObject::Movement_WASDEQ()
 {
     // Grab keyboard input for moving Object With WASDQE
     m_Input = {};
 
-    for (auto& key : _keymap)
+    for (auto& key : Statics::Keymap)
     {
         if (key.second)
         {
@@ -79,14 +79,14 @@ void GameObject::Movement_WASDEQ(KEYMAP& _keymap)
     glm::normalize(m_Input);
 }
 
-void GameObject::Update(float& _deltaTime)
+void GameObject::Update()
 {
     // If player provides input, Translate the gameobject accordingly.
     if (Magnitude((glm::vec3)m_Input) > 0)
-        Translate(m_Input * _deltaTime * m_MovementSpeed);
+        Translate(m_Input * m_MovementSpeed * Statics::DeltaTime);
     // If player provides Rotational input, rotate accordingly
     if (m_Input.w != 0)
-        Rotate({ 0,1,0 }, m_Input.w * _deltaTime * 100);
+        Rotate({ 0,1,0 }, m_Input.w * 100 * Statics::DeltaTime);
 }
 
 void GameObject::Draw()

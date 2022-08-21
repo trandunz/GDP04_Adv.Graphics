@@ -1,58 +1,28 @@
-#include "GameObject.h"
-#include "TextureLoader.h"
-#include "Skybox.h"
-#include "Terrain.h"
-#include "Noise.h"
-
-GLFWwindow* RenderWindow = nullptr;
-glm::ivec2 WindowSize { 800,800 };
-bool BlackBars = true;
-GameObject* ModelObject = nullptr;
-Camera* SceneCamera = nullptr;
-Mesh* SphereMesh = nullptr;
-Mesh* CubeMesh = nullptr;
-Mesh* ModelMesh = nullptr;
-Terrain* TerrainMesh = nullptr;
-LightManager* lightManager = nullptr;
-
-KEYMAP Keymap{};
-Skybox* skyboxRef = nullptr;
+#include "Helper.h"
+#include "Statics.h"
+#include "SceneManager.h"
 
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS)
-		Keymap[key] = true;
-	else if (action == GLFW_RELEASE)
-		Keymap[key] = false;
-
-	for (auto& key : Keymap)
 	{
-		if (key.second)
-		{
-			if (key.first == GLFW_KEY_ESCAPE)
-			{
-				glfwSetWindowShouldClose(RenderWindow, true);
-			}
-			if (key.first == GLFW_KEY_Z)
-			{
-				key.second = false;
-				BlackBars = !BlackBars;
-			}
-			if (key.first == GLFW_KEY_X)
-			{
-				key.second = false;
-				Statics::StencilTest = !Statics::StencilTest;
-			}
-		}
+		Statics::Keymap[key] = true;
 	}
+	else if (action == GLFW_RELEASE)
+		Statics::Keymap[key] = false;
+
+	for (auto& key : Statics::Keymap)
+	{
+		if (key.first == GLFW_KEY_ESCAPE)
+			glfwSetWindowShouldClose(Statics::RenderWindow, true);
+	}
+
+	SceneManager::KeyEvents();
 }
 
 static void CursorCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (SceneCamera)
-	{
-		SceneCamera->MouseLook(Statics::DeltaTime, { xpos, ypos });
-	}
+	SceneManager::MouseEvents(xpos, ypos);
 }
 
 void InitGL();
@@ -98,86 +68,34 @@ void InitGLFW()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	RenderWindow = glfwCreateWindow(800, 800, "Title", NULL, NULL);
+	Statics::RenderWindow = glfwCreateWindow(800, 800, "Title", NULL, NULL);
 
-	glfwMakeContextCurrent(RenderWindow);
+	glfwMakeContextCurrent(Statics::RenderWindow);
 
-	glfwSetKeyCallback(RenderWindow, KeyCallback);
-	glfwSetCursorPosCallback(RenderWindow, CursorCallback);
+	glfwSetKeyCallback(Statics::RenderWindow, KeyCallback);
+	glfwSetCursorPosCallback(Statics::RenderWindow, CursorCallback);
 
-	glfwSetInputMode(RenderWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(Statics::RenderWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Start()
 {
-	Noise::CreateNoiseRAW("RandomNoise", 513, 513);
-
-	ModelMesh = new Mesh("LowPoly/Cross.obj");
-	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
-	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
-
-	SceneCamera = new Camera(WindowSize, { 0,0,5 });
-	ModelObject = new GameObject(*SceneCamera, { 0,0,0 });
-
-	lightManager = new LightManager(*SceneCamera);
-	DirectionalLight sun{};
-	sun.Direction = {-1,-1,0};
-	lightManager->CreateDirectionalLight(sun);
-	
-	TextureLoader::Init({
-		"World.jpg",
-		"Grass.jpg"
-		});
-
-	ModelObject->SetActiveTextures({TextureLoader::LoadTexture("LowPoly/Cross.png")});
-	ModelObject->SetMesh(ModelMesh);
-	ModelObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
-	ModelObject->SetLightManager(*lightManager);
-	ModelObject->SetScale({ 0.01f,0.01f,0.01f });
-
-	skyboxRef = &Skybox::GetInstance(SceneCamera, TextureLoader::LoadCubemap(
-		{
-			"MountainOutpost/Right.jpg",
-			"MountainOutpost/Left.jpg",
-			"MountainOutpost/Up.jpg",
-			"MountainOutpost/Down.jpg",
-			"MountainOutpost/Back.jpg",
-			"MountainOutpost/Front.jpg",
-		}
-	));
-
-	TerrainMesh = new Terrain(*SceneCamera);
-	TerrainMesh->SetLightManager(*lightManager);
-	TerrainMesh->SetActiveTextures(
-		{
-			TextureLoader::LoadTexture("Sand.jpg"),
-			TextureLoader::LoadTexture("Dirt.jpg"),
-			TextureLoader::LoadTexture("Grass.jpg"),
-			TextureLoader::LoadTexture("Snow.jpg")
-		});
-	TerrainMesh->SetScale({ 0.05f,0.05f,0.05f });
-	TerrainMesh->SetTranslation({ 0.0f,-20.0f,0.0f });
+	SceneManager::LoadScene(SCENES::ASSESSMENT1);
 }
 
 void Update()
 {
-	while (glfwWindowShouldClose(RenderWindow) == false)
+	while (glfwWindowShouldClose(Statics::RenderWindow) == false)
 	{
 		Statics::CalculateDeltaTime();
+		Statics::UpdateWindowSize();
 		glfwPollEvents();
 
-		if (SceneCamera)
-		{
-			SceneCamera->Movement_Capture(Keymap);
-			SceneCamera->Movement(Statics::DeltaTime);
-		}
-
-		if (ModelObject)
-		{
-			ModelObject->Rotate({ 0,1,0 }, 1000 * glm::radians(Statics::DeltaTime));
-		}
+		SceneManager::Update();
 
 		Render();
+
+		SceneManager::ChangeToPendingScene();
 	}
 }
 
@@ -185,62 +103,15 @@ void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	if (BlackBars)
-	{
-		glEnable(GL_SCISSOR_TEST);
-		glScissor(0, 50, WindowSize.x, WindowSize.y - 100);
-	}
-	
-	skyboxRef->Draw();
+	SceneManager::Draw();
 
-	if (ModelObject)
-		ModelObject->Draw();
-
-	if (TerrainMesh)
-		TerrainMesh->Draw();
-
-	if (BlackBars)
-	{
-		glDisable(GL_SCISSOR_TEST);
-	}
-
-	glfwSwapBuffers(RenderWindow);
+	glfwSwapBuffers(Statics::RenderWindow);
 }
 
 int Cleanup()
 {
-	skyboxRef = nullptr;
-
-	if (lightManager)
-		delete lightManager;
-	lightManager = nullptr;
-
-	if (TerrainMesh)
-		delete TerrainMesh;
-	TerrainMesh = nullptr;
-
-	if (ModelMesh)
-		delete ModelMesh;
-	ModelMesh = nullptr;
-
-	if (CubeMesh)
-		delete CubeMesh;
-	CubeMesh = nullptr;
-
-	if (SphereMesh)
-		delete SphereMesh;
-	SphereMesh = nullptr;
-
-	if (SceneCamera)
-		delete SceneCamera;
-	SceneCamera = nullptr;
-
-	if (ModelObject)
-		delete ModelObject;
-	ModelObject = nullptr;
-
-	glfwDestroyWindow(RenderWindow);
-	glfwTerminate();
+	SceneManager::CleanupScene();
+	Statics::Cleanup();
 
 	return 0;
 }

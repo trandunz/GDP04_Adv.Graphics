@@ -23,9 +23,6 @@
 #include <fstream>
 #include <functional>
 
-/// <summary>
-/// Alias For Keymap (int = Key, bool = bPressed)
-/// </summary>
 using KEYMAP = std::map<int, bool>;
 
 /// <summary>

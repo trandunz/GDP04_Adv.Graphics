@@ -29,7 +29,7 @@ public:
 	/// <param name="_position"></param>
 	/// <param name="_colour"></param>
 	/// <param name="_scale"></param>
-	TextLabel(glm::ivec2& _windowSize, std::string_view&& _text, Font& _loadedFont, float& _deltaTime, glm::vec2&& _position = { 0.0f,0.0f }, glm::vec4&& _colour = { 0.0f, 0.0f, 0.0f ,1.0f }, glm::vec2&& _scale = {1.0f,1.0f});
+	TextLabel(std::string_view&& _text, Font& _loadedFont, glm::vec2&& _position = { 0.0f,0.0f }, glm::vec4&& _colour = { 0.0f, 0.0f, 0.0f ,1.0f }, glm::vec2&& _scale = {1.0f,1.0f});
 	
 	/// <summary>
 	/// TextLabel Destructor.
@@ -125,7 +125,6 @@ private:
 	bool m_FontLoaded = false;
 	bool m_IsScrolling = false;
 	bool m_ScrollRight = true;
-	float* m_DeltaTime = nullptr;
 	float m_ScrollSpeed = 100.0f;
 	float m_RightClip = 250.0f;
 	float m_LeftClip = 250.0f;
@@ -142,7 +141,6 @@ private:
 	GLuint m_IndexBufferID;
 	GLuint m_ProgramID;
 	glm::mat4 m_ProjectionMatrix;
-	glm::ivec2* m_WindowSize = nullptr;
 	Font* m_Font = nullptr;
 };
 

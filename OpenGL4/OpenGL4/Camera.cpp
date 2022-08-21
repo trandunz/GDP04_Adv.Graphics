@@ -9,16 +9,15 @@
 // Mail : william.inman@mds.ac.nz
 
 #include "Camera.h"
+#include "Statics.h"
 
-Camera::Camera(glm::ivec2& _windowSize, glm::vec3 _position)
+Camera::Camera(glm::vec3 _position)
 {
     m_Position = _position;
-    m_WindowSize = &_windowSize;
 }
 
 Camera::~Camera()
 {
-    m_WindowSize = nullptr;
 }
 
 glm::mat4 Camera::GetViewMatrix()
@@ -33,16 +32,16 @@ glm::mat4 Camera::GetProjectionMatrix()
         ? 
         glm::perspective(
             glm::radians(m_Fov), 
-            (float)m_WindowSize->x / 
-            (float)m_WindowSize->y, 
+            (float)Statics::WindowSize.x / 
+            (float)Statics::WindowSize.y,
             m_NearPlane, 
             m_FarPlane) 
         : 
         glm::ortho(
-            (float)-m_WindowSize->x / 2, 
-            (float)m_WindowSize->x / 2, 
-            (float)-m_WindowSize->y / 2, 
-            (float)m_WindowSize->y / 2, 
+            (float)-Statics::WindowSize.x / 2,
+            (float)Statics::WindowSize.x / 2,
+            (float)-Statics::WindowSize.y / 2,
+            (float)Statics::WindowSize.y / 2,
             m_NearPlane, 
             m_FarPlane);
 }
@@ -89,21 +88,21 @@ float Camera::GetLookSensitivity()
     return m_LookSensitivity;
 }
 
-void Camera::Movement(float& _dt)
+void Camera::Movement()
 {
     UpdateRotationVectors();
-    UpdatePosition(_dt);
+    UpdatePosition();
 }
 
-void Camera::MouseLook(float& _dt, glm::vec2 _mousePos)
+void Camera::MouseLook(glm::vec2 _mousePos)
 {
     // Reset Mouse Pos If First Time Moving Mouse
     if (m_LastMousePos == glm::vec2(0, 0))
         m_LastMousePos = _mousePos;
 
     // Update Pitch And Yaw
-    m_Yaw += (m_LookSensitivity * (_mousePos.x - m_LastMousePos.x) * _dt);
-    m_Pitch += (m_LookSensitivity * (m_LastMousePos.y - _mousePos.y) * _dt);
+    m_Yaw += (m_LookSensitivity * (_mousePos.x - m_LastMousePos.x) * Statics::DeltaTime);
+    m_Pitch += (m_LookSensitivity * (m_LastMousePos.y - _mousePos.y) * Statics::DeltaTime);
 
     // Clamp Pitch To 89 degrees
     m_Pitch = glm::clamp(m_Pitch, -89.0f, 89.0f);
@@ -112,7 +111,7 @@ void Camera::MouseLook(float& _dt, glm::vec2 _mousePos)
     m_LastMousePos = _mousePos;
 }
 
-void Camera::UpdatePosition(float& _dt)
+void Camera::UpdatePosition()
 {
     float x;
     float y;
@@ -129,33 +128,33 @@ void Camera::UpdatePosition(float& _dt)
     else
     {
         // Scale With Move Speed * Window Size
-        x = m_InputVec.x * m_MoveSpeed * m_WindowSize->x;
-        y = m_InputVec.y * m_MoveSpeed * m_WindowSize->x;
-        z = m_InputVec.z * m_MoveSpeed * m_WindowSize->x;
+        x = m_InputVec.x * m_MoveSpeed * Statics::WindowSize.x;
+        y = m_InputVec.y * m_MoveSpeed * Statics::WindowSize.x;
+        z = m_InputVec.z * m_MoveSpeed * Statics::WindowSize.x;
     }
 
     // Update position values if changed
     if (x != 0)
     {
-        m_Position += m_Right * x * _dt;
+        m_Position += m_Right * x * Statics::DeltaTime;
     }
     if (y != 0)
     {
-        m_Position += glm::vec3{0,1,0} * y * _dt;
+        m_Position += glm::vec3{0,1,0} * y * Statics::DeltaTime;
     }
     if (z != 0)
     {
-        m_Position += m_Front * z * _dt;
+        m_Position += m_Front * z * Statics::DeltaTime;
     }
 }
 
-void Camera::Movement_Capture(KEYMAP& _keymap)
+void Camera::Movement_Capture()
 {
     // Reset Input Vec
     m_InputVec = {};
 
     // Grab Input From Keymap
-    for (auto& key : (_keymap))
+    for (auto& key : Statics::Keymap)
     {
         if (key.second == true)
         {
