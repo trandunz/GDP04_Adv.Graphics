@@ -19,12 +19,12 @@ public:
 	/// Contruct a mesh with the given shape
 	/// </summary>
 	/// <param name="_shape"></param>
-	Mesh(SHAPE _shape, GLenum _windingOrder);
+	Mesh(SHAPE _shape, GLenum _windingOrder = GL_CCW);
 	/// <summary>
 	/// Construct a 2D Mesh with the given number of sides
 	/// </summary>
 	/// <param name="_numberOfSides"></param>
-	Mesh(unsigned int _numberOfSides, GLenum _windingOrder);
+	Mesh(unsigned int _numberOfSides, GLenum _windingOrder = GL_CCW);
 
 	Mesh(std::string _objModel);
 	/// <summary>
@@ -79,6 +79,8 @@ private:
 	/// </summary>
 	/// <param name="_fidelity"></param>
 	void GenerateSphereIndices(int _fidelity);
+
+	void GenerateHemiSphereVertices(int _fidelity);
 
 	std::vector<unsigned int> m_Indices{};
 	std::vector<Vertex> m_Vertices{};

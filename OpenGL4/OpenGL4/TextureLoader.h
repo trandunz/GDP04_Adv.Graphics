@@ -38,7 +38,6 @@ public:
 	static Texture LoadCubemap(std::vector<std::string> _fileNames);
 
 	static std::vector<unsigned char> LoadHeightMap(std::string&& _fileName);
-
 private:
 	inline static std::vector<Texture> m_Textures;
 };

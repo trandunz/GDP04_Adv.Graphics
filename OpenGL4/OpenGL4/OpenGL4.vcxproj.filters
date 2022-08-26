@@ -190,5 +190,11 @@
     <None Include="Resources\Shaders\Lit_Fog.frag">
       <Filter>Resource Files\Frag Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\Fog_Skybox.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Fog_Skybox.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

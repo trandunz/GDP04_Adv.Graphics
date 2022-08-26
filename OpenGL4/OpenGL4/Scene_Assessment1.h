@@ -23,6 +23,7 @@ private:
 	GameObject* ModelObject = nullptr;
 	Camera* SceneCamera = nullptr;
 	Mesh* SphereMesh = nullptr;
+	Mesh* HemiSphereMesh = nullptr;
 	Mesh* CubeMesh = nullptr;
 	Mesh* ModelMesh = nullptr;
 	Terrain* TerrainMesh = nullptr;

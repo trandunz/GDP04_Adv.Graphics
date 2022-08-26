@@ -6,11 +6,12 @@
 #include <fstream>
 #include <vector>
 
+int Noise::Seed = time(NULL);
+
 float Noise::Random(int _x, int _y)
 {
 	double value;
-	int seed = time(NULL);
-	int noise = _x + _y * seed;
+	int noise = _x + _y * Seed;
 	noise = (noise << 13) ^ noise;
 	int t = (noise * (noise * noise * 15731 + 789221) + 1376312589) & 0x7fffffff;
 	value = 1.0 - double(t) * 0.931322574615478515625e-9;
@@ -30,6 +31,11 @@ double Noise::CosineInterpolate(double _y1, double _y2, double _mu)
 	double mu2;
 	mu2 = (1 - cos(_mu * PI)) / 2;
 	return (_y1 * (1 - mu2) + _y2 * mu2);
+}
+
+double Noise::LinearInterpolate(double _y1, double _y2, double _mu)
+{
+	return (_y1 * (1 - _mu) + _y2 * _mu);
 }
 
 float Noise::SmoothInterpolate(float _x, float _y)
@@ -73,13 +79,30 @@ void Noise::CreateNoiseJPG(std::string _fileName, unsigned _width, unsigned _hei
 	{
 		for (int i = 0; i < _width; i++)
 		{
-			int ir = uint8_t(256 * TotalNoisePerPoint(i, j, 4, 32));
-
-			pixels[index++] = ir;
+			pixels[index++] = uint8_t(128 * TotalNoisePerPoint(i, j) + 128);
 		}
 	}
 
 	stbi_write_jpg(("Resources/Textures/Heightmaps/" + _fileName + ".jpg").c_str(), _width, _height, 1, pixels, 100);
+
+	delete[] pixels;
+	pixels = nullptr;
+}
+
+void Noise::CreateNoisePNG(std::string _fileName, unsigned _width, unsigned _height)
+{
+	uint8_t* pixels = new uint8_t[_width * _height];
+
+	int index = 0;
+	for (int j = 0; j < _height; j++)
+	{
+		for (int i = 0; i < _width; i++)
+		{
+			pixels[index++] = uint8_t(128 * TotalNoisePerPoint(i, j) + 128);
+		}
+	}
+
+	stbi_write_png(("Resources/Textures/Heightmaps/" + _fileName + ".png").c_str(), _width, _height, 1, pixels, _width);
 
 	delete[] pixels;
 	pixels = nullptr;
@@ -94,8 +117,7 @@ void Noise::CreateNoiseRAW(std::string _fileName, unsigned _width, unsigned _hei
 	{
 		for (int i = 0; i < _width; i++)
 		{
-			float noiseValue = TotalNoisePerPoint(i, j, 4, 32);
-			pixels[index++] = (uint8_t)(256 * noiseValue);
+			pixels[index++] = (uint8_t)(128 * TotalNoisePerPoint(i, j) + 128);
 		}
 	}
 
@@ -105,6 +127,8 @@ void Noise::CreateNoiseRAW(std::string _fileName, unsigned _width, unsigned _hei
 		binaryFile.write((char*)&pixels[0], (std::streamsize)(_width * _height));
 		binaryFile.close();
 	}
+
+	stbi_write_jpg(("Resources/Textures/Heightmaps/" + _fileName + ".jpg").c_str(), _width, _height, 1, pixels, 100);
 
 	delete[] pixels;
 	pixels = nullptr;

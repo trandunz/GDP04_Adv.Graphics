@@ -20,22 +20,11 @@ public:
 	/// <param name="_activeCamera"></param>
 	/// <param name="_cubemapTexture"></param>
 	/// <returns></returns>
-	static Skybox& GetInstance(Camera* _activeCamera, Texture _cubemapTexture)
+	static Skybox& GetInstance(Camera* _activeCamera, Texture _cubemapTexture, bool _clouds = false)
 	{
-		static Skybox instance(_activeCamera, _cubemapTexture);
+		static Skybox instance(_activeCamera, _cubemapTexture, _clouds);
 		return instance;
 	}
-
-	/// <summary>
-	/// Delete Copy Contructor
-	/// </summary>
-	/// <param name=""></param>
-	Skybox(Skybox const&) = delete;
-	/// <summary>
-	/// Delete Assignment Operator
-	/// </summary>
-	/// <param name=""></param>
-	void operator=(Skybox const&) = delete;
 
 	/// <summary>
 	/// Handles Drawing of the skybox
@@ -101,21 +90,36 @@ private:
 	/// </summary>
 	/// <param name="_activeCamera"></param>
 	/// <param name="_cubemapTexture"></param>
-	Skybox(Camera* _activeCamera, Texture _cubemapTexture);
+	Skybox(Camera* _activeCamera, Texture _cubemapTexture, bool _clouds);
 	/// <summary>
 	/// Private Destructor
 	/// </summary>
 	~Skybox();
+	/// <summary>
+	/// Delete Copy Contructor
+	/// </summary>
+	/// <param name=""></param>
+	Skybox(Skybox const&) = delete;
+	/// <summary>
+	/// Delete Assignment Operator
+	/// </summary>
+	/// <param name=""></param>
+	void operator=(Skybox const&) = delete;
 
 	/// <summary>
 	/// Create An Inverted Cube VAO
 	/// </summary>
 	void CreateInvertedCubeVAO();
 
+	void CreateCloud();
+
 	Transform m_Transform{};
+	GLuint m_CloudShaderID{ 0 };
 	GLuint m_ShaderID{ 0 };
+	Mesh* m_Mesh{ nullptr };
 	Camera* m_ActiveCamera{ nullptr };
 	Texture m_CubemapTexture{};
+	Texture m_CloudTexture{};
 	GLuint m_VertexArrayID{ 0 };
 };
 

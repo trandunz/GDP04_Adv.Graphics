@@ -85,7 +85,8 @@ enum class SHAPE
 	UNASSIGNED,
 	CUBE,
 	PYRAMID,
-	SPHERE
+	SPHERE,
+	HEMISPHERE
 };
 
 /// <summary>

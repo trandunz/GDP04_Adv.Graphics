@@ -29,6 +29,10 @@ Scene_Assessment1::~Scene_Assessment1()
 		delete SphereMesh;
 	SphereMesh = nullptr;
 
+	if (HemiSphereMesh)
+		delete HemiSphereMesh;
+	HemiSphereMesh = nullptr;
+
 	if (SceneCamera)
 		delete SceneCamera;
 	SceneCamera = nullptr;
@@ -40,10 +44,14 @@ Scene_Assessment1::~Scene_Assessment1()
 
 void Scene_Assessment1::Start()
 {
-	Noise::CreateNoiseRAW("RandomNoise", 512, 512);
+	TextureLoader::Init({
+	"World.jpg",
+	"Grass.jpg"
+		});
 
-	ModelMesh = new Mesh("LowPoly/Cross.obj");
+	//ModelMesh = new Mesh("LowPoly/Cross.obj");
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
+	HemiSphereMesh = new Mesh(SHAPE::HEMISPHERE, GL_CW);
 	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
 
 	SceneCamera = new Camera({ 0,0,5 });
@@ -54,29 +62,9 @@ void Scene_Assessment1::Start()
 	sun.Direction = { -1,-1,0 };
 	lightManager->CreateDirectionalLight(sun);
 
-	TextureLoader::Init({
-		"World.jpg",
-		"Grass.jpg"
-		});
+	Noise::CreateNoisePNG("RandomNoise", 513, 513);
 
-	ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
-	ModelObject->SetMesh(ModelMesh);
-	ModelObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
-	ModelObject->SetLightManager(*lightManager);
-	ModelObject->SetScale({ 0.01f,0.01f,0.01f });
-
-	skyboxRef = &Skybox::GetInstance(SceneCamera, TextureLoader::LoadCubemap(
-		{
-			"MountainOutpost/Right.jpg",
-			"MountainOutpost/Left.jpg",
-			"MountainOutpost/Up.jpg",
-			"MountainOutpost/Down.jpg",
-			"MountainOutpost/Back.jpg",
-			"MountainOutpost/Front.jpg",
-		}
-	));
-
-	TerrainMesh = new Terrain(*SceneCamera, "RandomNoise",".RAW");
+	TerrainMesh = new Terrain(*SceneCamera, "RandomNoise", ".RAW");
 	TerrainMesh->SetLightManager(*lightManager);
 	TerrainMesh->SetActiveTextures(
 		{
@@ -87,6 +75,23 @@ void Scene_Assessment1::Start()
 		});
 	TerrainMesh->SetScale({ 0.05f,0.05f,0.05f });
 	TerrainMesh->SetTranslation({ 0.0f,-20.0f,0.0f });
+
+	ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
+	ModelObject->SetMesh(CubeMesh);
+	ModelObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
+	ModelObject->SetLightManager(*lightManager);
+	//ModelObject->SetScale({ 0.01f,0.01f,0.01f });
+
+	skyboxRef = &Skybox::GetInstance(SceneCamera, TextureLoader::LoadCubemap(
+		{
+			"MountainOutpost/Right.jpg",
+			"MountainOutpost/Left.jpg",
+			"MountainOutpost/Up.jpg",
+			"MountainOutpost/Down.jpg",
+			"MountainOutpost/Back.jpg",
+			"MountainOutpost/Front.jpg",
+		}
+	), true);
 }
 
 void Scene_Assessment1::Update()
@@ -118,6 +123,11 @@ void Scene_Assessment1::KeyEvents()
 			{
 				key.second = false;
 				Statics::StencilTest = !Statics::StencilTest;
+			}
+			if (key.first == GLFW_KEY_F)
+			{
+				key.second = false;
+				Statics::Foggy = !Statics::Foggy;
 			}
 		}
 	}

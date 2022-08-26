@@ -176,6 +176,11 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 		GenerateSphereVertices(36);
 		break;
 	}
+	case SHAPE::HEMISPHERE:
+	{
+		GenerateHemiSphereVertices(36);
+		break;
+	}
 	default:
 	{
 		break;
@@ -242,6 +247,11 @@ void Mesh::CreateShapeIndices(SHAPE _shape)
 		break;
 	}
 	case SHAPE::SPHERE:
+	{
+		GenerateSphereIndices(36);
+		break;
+	}
+	case SHAPE::HEMISPHERE:
 	{
 		GenerateSphereIndices(36);
 		break;
@@ -427,5 +437,45 @@ void Mesh::GenerateSphereIndices(int _fidelity)
 				m_Indices.emplace_back((i * _fidelity) + (j));
 			}
 		}
+	}
+}
+
+void Mesh::GenerateHemiSphereVertices(int _fidelity)
+{
+	// Angles to keep track of the sphere points 
+	float Phi = 0.0f;
+	float Theta = 0.0f;
+
+	// Cycle through x axis by increments of 1 / fidelity level
+	for (int i = 0; i < _fidelity; i++)
+	{
+		// Starting angle of 0 for each y axis ring
+		Theta = 0.0f;
+
+		// Cycle through y axis by increments of 1 / fidelity level
+		for (int j = 0; j < _fidelity; j++)
+		{
+			// Calculate new vertex positions based on 
+			// current y axis angle and x axis angle
+			float x = cos(Phi) * sin(Theta);
+			float y = cos(Theta);
+			float z = sin(Phi) * sin(Theta);
+
+			// Add the new vertex point to the vertices vector
+			m_Vertices.emplace_back(Vertex{
+				{ x * 0.5f, y * 0.5f, z * 0.5f }, // Position
+				{ 1 - (float)i / (_fidelity - 1), 1 - ((float)j / (_fidelity - 1)) }, // Texture coords
+				{ x,y,z } // Normals
+				});
+
+			// update y axis angle by increments of PI / fidelity level
+			// As the sphere is built ring by ring, 
+			// the angle is only needed to do half the circumferance therefore using just PI
+			Theta += (glm::pi<float>() / ((float)_fidelity - 1.0f));
+		}
+
+		// x and z axis angle is updated by increments of 2Pi / fidelity level
+		// Angle uses 2*PI to get the full circumference as this layer is built as a full ring
+		Phi += (glm::pi<float>()) / ((float)_fidelity - 1.0f);
 	}
 }

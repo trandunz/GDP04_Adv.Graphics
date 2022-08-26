@@ -16,6 +16,7 @@ public:
 
 	static float DeltaTime;
 	static bool StencilTest;
+	static bool Foggy;
 	static KEYMAP Keymap;
 
 	static void CalculateDeltaTime();

@@ -9,14 +9,19 @@
 // Mail : william.inman@mds.ac.nz
 
 #include "Skybox.h"
+#include "Statics.h"
+#include "TextureLoader.h"
 
-Skybox::Skybox(Camera* _activeCamera, Texture _cubemapTexture)
+Skybox::Skybox(Camera* _activeCamera, Texture _cubemapTexture, bool _clouds)
 {
 	m_ActiveCamera = _activeCamera;
 	m_CubemapTexture = _cubemapTexture;
 	SetScale({1000,1000,1000});
 
-	m_ShaderID = ShaderLoader::CreateShader("Skybox.vert","Skybox.frag");
+	m_ShaderID = ShaderLoader::CreateShader("Fog_Skybox.vert","Fog_Skybox.frag");
+
+	if (_clouds)
+		CreateCloud();
 
 	CreateInvertedCubeVAO();
 }
@@ -25,6 +30,10 @@ Skybox::~Skybox()
 {
 	if (m_ActiveCamera)
 		m_ActiveCamera = nullptr;
+
+	if (m_Mesh)
+		delete m_Mesh;
+	m_Mesh = nullptr;
 }
 
 void Skybox::Draw()
@@ -36,7 +45,17 @@ void Skybox::Draw()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_CubemapTexture.ID);
 	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
 
+	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Foggy", Statics::Foggy);
+	if (Statics::Foggy)
+	{
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", m_ActiveCamera->GetPosition());
+		ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
+	}
+
 	// Pass In PVM Matrix
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
 	if (m_ActiveCamera)
 		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", m_ActiveCamera->GetPVMatrix() * m_Transform.transform);
 
@@ -48,6 +67,29 @@ void Skybox::Draw()
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glUseProgram(0);
+
+	//Draw cloud
+	if (m_Mesh)
+	{
+		glUseProgram(m_CloudShaderID);
+
+		if (m_ActiveCamera)
+		{
+			Transform hemiSphereTransform = m_Transform;
+			hemiSphereTransform.translation = { 0,0,0 };
+			hemiSphereTransform.scale = { 2,2,2 };
+			UpdateModelValueOfTransform(hemiSphereTransform);
+			ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", m_ActiveCamera->GetPVMatrix() * hemiSphereTransform.transform);
+		}
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_CloudTexture.ID);
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 0);
+
+		m_Mesh->Draw();
+		glUseProgram(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
 
 void Skybox::SetTexture(Texture _cubemapTexture)
@@ -180,4 +222,14 @@ void Skybox::CreateInvertedCubeVAO()
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void Skybox::CreateCloud()
+{
+	if (m_Mesh)
+		delete m_Mesh;
+	m_Mesh = nullptr;
+	m_Mesh = new Mesh(SHAPE::HEMISPHERE);
+	m_CloudShaderID = ShaderLoader::CreateShader("SingleTexture.vert", "SingleTexture.frag");
+	m_CloudTexture = TextureLoader::LoadTexture("Heightmaps/RandomNoise.png");
 }

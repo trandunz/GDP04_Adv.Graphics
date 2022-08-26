@@ -13,12 +13,19 @@ public:
 
 	static double CosineInterpolate(double _y1, double _y2, double _mu);
 
+	static double LinearInterpolate(double _y1, double _y2, double _mu);
+
 	static float SmoothInterpolate(float _x, float _y);
 
 	static float TotalNoisePerPoint(int _x, int _y, int _octaves = 4, float _zoom = 64, float _persistance = 0.5f);
 
 	static void CreateNoiseJPG(std::string _fileName, unsigned _width, unsigned _height);
 
+	static void CreateNoisePNG(std::string _fileName, unsigned _width, unsigned _height);
+
 	static void CreateNoiseRAW(std::string _fileName, unsigned _width, unsigned _height);
+
+private:
+	static int Seed;
 };
 

@@ -250,7 +250,7 @@ void Terrain::LoadRAWHeightmap(std::string _fileName)
 	if (inFile)
 	{
 		// Read the RAW bytes.
-		inFile.read((char*)&in[0], (std::streamsize)in.size());
+		inFile.read((char*)&in[0], (std::streamsize)(513 * 513));
 
 		// Done with file.
 		inFile.close();
@@ -282,7 +282,7 @@ void Terrain::GenerateRandomHeightmap()
 	{
 		for (int j = 0; j < 513; j++)
 		{
-			m_HeightMap[index++] = 255 * Noise::TotalNoisePerPoint(j, i, 4, 128);
+			m_HeightMap[index++] = 128 * Noise::TotalNoisePerPoint(j, i) + 128;
 		}
 	}
 }
@@ -325,8 +325,7 @@ float Terrain::Average(unsigned _i, unsigned _j)
 
 bool Terrain::InBounds(unsigned _i, unsigned _j)
 {
-	return _i >= 0 && _i < 513
-			&& _j >= 0 && _j < 513;
+	return _i >= 0 && _i < 513 && _j >= 0 && _j < 513;
 }
 
 void Terrain::SetBlinnFong3DUniforms()

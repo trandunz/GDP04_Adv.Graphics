@@ -6,6 +6,7 @@ KEYMAP Statics::Keymap{};
 float Statics::DeltaTime{};
 float Statics::LastTime{};
 bool Statics::StencilTest{ true };
+bool Statics::Foggy{ true };
 
 void Statics::CalculateDeltaTime()
 {
