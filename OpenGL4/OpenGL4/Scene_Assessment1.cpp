@@ -40,7 +40,7 @@ Scene_Assessment1::~Scene_Assessment1()
 
 void Scene_Assessment1::Start()
 {
-	Noise::CreateNoiseRAW("RandomNoise", 513, 513);
+	Noise::CreateNoiseRAW("RandomNoise", 512, 512);
 
 	ModelMesh = new Mesh("LowPoly/Cross.obj");
 	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
@@ -76,7 +76,7 @@ void Scene_Assessment1::Start()
 		}
 	));
 
-	TerrainMesh = new Terrain(*SceneCamera);
+	TerrainMesh = new Terrain(*SceneCamera, "RandomNoise",".RAW");
 	TerrainMesh->SetLightManager(*lightManager);
 	TerrainMesh->SetActiveTextures(
 		{

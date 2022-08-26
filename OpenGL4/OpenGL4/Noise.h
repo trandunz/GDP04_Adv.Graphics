@@ -4,8 +4,6 @@
 #include <string>
 #define PI 3.14159265358979323846264338327950288
 
-typedef std::basic_ofstream<unsigned char, std::char_traits<unsigned char> > uofstream;
-
 class Noise
 {
 public:

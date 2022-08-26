@@ -1,12 +1,16 @@
 #include "Terrain.h"
 #include "Noise.h"
 
-Terrain::Terrain(Camera& _camera, std::string _heightMap)
+Terrain::Terrain(Camera& _camera, std::string _heightMap, std::string _fileExtension)
 {
 	m_ShaderID = ShaderLoader::CreateShader("Terrain.vert","TerrainTextures.frag");
 	m_ActiveCamera = &_camera;
 
-	LoadRAWHeightmap(_heightMap);
+	if (_fileExtension == ".jpg")
+		LoadHeightmap(_heightMap + _fileExtension);
+	else if (_fileExtension == ".RAW")
+		LoadRAWHeightmap(_heightMap + _fileExtension);
+
 	Smooth();
 	GenerateVertices();
 	GenerateIndices();
@@ -256,17 +260,17 @@ void Terrain::LoadRAWHeightmap(std::string _fileName)
 	m_HeightMap.resize(513 * 513, 0);
 	for (unsigned i = 0; i < 513 * 513; ++i)
 	{
-		m_HeightMap[i] = (float)in[i] * 1.0f;
+		m_HeightMap[i] = (float)in[i];
 	}
 }
 
 void Terrain::LoadHeightmap(std::string _fileName)
 {
 	std::vector<unsigned char> in = TextureLoader::LoadHeightMap(std::move(_fileName));
-	m_HeightMap.resize(513*513, 0);
+	m_HeightMap.resize(in.size(), 0);
 	for (unsigned i = 0; i < in.size(); ++i)
 	{
-		m_HeightMap[i] = (float)in[i] * 1.0f;
+		m_HeightMap[i] = (float)in[i];
 	}
 }
 
@@ -278,7 +282,7 @@ void Terrain::GenerateRandomHeightmap()
 	{
 		for (int j = 0; j < 513; j++)
 		{
-			m_HeightMap[index++] = 255 * Noise::TotalNoisePerPoint(j, i, 4, 128) + 128;
+			m_HeightMap[index++] = 255 * Noise::TotalNoisePerPoint(j, i, 4, 128);
 		}
 	}
 }

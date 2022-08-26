@@ -8,7 +8,7 @@
 class Terrain
 {
 public:
-	Terrain(Camera& _camera, std::string _heightMap);
+	Terrain(Camera& _camera, std::string _heightMap, std::string _fileExtension);
 	Terrain(Camera& _camera);
 	~Terrain();
 

@@ -73,11 +73,13 @@ void Noise::CreateNoiseJPG(std::string _fileName, unsigned _width, unsigned _hei
 	{
 		for (int i = 0; i < _width; i++)
 		{
-			pixels[index++] = (int)255 * TotalNoisePerPoint(i, j, 4, 32);
+			int ir = uint8_t(256 * TotalNoisePerPoint(i, j, 4, 32));
+
+			pixels[index++] = ir;
 		}
 	}
 
-	stbi_write_jpg(("Resources/Textures/Heightmaps/" + _fileName).c_str(), _width, _height, 1, pixels, 100);
+	stbi_write_jpg(("Resources/Textures/Heightmaps/" + _fileName + ".jpg").c_str(), _width, _height, 1, pixels, 100);
 
 	delete[] pixels;
 	pixels = nullptr;
@@ -85,20 +87,25 @@ void Noise::CreateNoiseJPG(std::string _fileName, unsigned _width, unsigned _hei
 
 void Noise::CreateNoiseRAW(std::string _fileName, unsigned _width, unsigned _height)
 {
-	std::vector<int> pixels;
-	pixels.resize(_width * _height);
+	uint8_t* pixels = new uint8_t[_width * _height];
 
 	int index = 0;
 	for (int j = 0; j < _height; j++)
 	{
 		for (int i = 0; i < _width; i++)
 		{
-			pixels[index++] = (int)255 * TotalNoisePerPoint(i, j, 4, 32);
+			float noiseValue = TotalNoisePerPoint(i, j, 4, 32);
+			pixels[index++] = (uint8_t)(256 * noiseValue);
 		}
 	}
 
-	uofstream binaryFile("Resources/Textures/Heightmaps/" + _fileName + ".RAW", std::ios_base::binary);
-	binaryFile.write((unsigned char*)&pixels[0], (std::streamsize)pixels.size());
-	binaryFile.close();
+	std::ofstream binaryFile("Resources/Textures/Heightmaps/" + _fileName + ".RAW", std::ios_base::binary);
+	if (binaryFile)
+	{
+		binaryFile.write((char*)&pixels[0], (std::streamsize)(_width * _height));
+		binaryFile.close();
+	}
 
+	delete[] pixels;
+	pixels = nullptr;
 }
