@@ -1,7 +1,5 @@
 #pragma once
-#include <GLFW/glfw3.h>
-#include <map>
-#include <glm/vec2.hpp>
+#include "Camera.h"
 
 /// <summary>
 /// Alias For Keymap (int = Key, bool = bPressed)
@@ -17,6 +15,8 @@ public:
 	static float DeltaTime;
 	static bool StencilTest;
 	static bool Foggy;
+	static bool BlackBars;
+	static Camera SceneCamera;
 	static KEYMAP Keymap;
 
 	static void CalculateDeltaTime();

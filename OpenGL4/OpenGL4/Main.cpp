@@ -1,6 +1,7 @@
 #include "Helper.h"
 #include "Statics.h"
 #include "SceneManager.h"
+#include "StaticMesh.h"
 
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -80,6 +81,7 @@ void InitGLFW()
 
 void Start()
 {
+	StaticMesh::Init();
 	SceneManager::LoadScene(SCENES::ASSESSMENT1);
 }
 
@@ -102,8 +104,16 @@ void Update()
 void Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	if (Statics::BlackBars)
+	{
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(0, 50, Statics::WindowSize.x, Statics::WindowSize.y - 100);
+	}
 
 	SceneManager::Draw();
+
+	if (Statics::BlackBars)
+		glDisable(GL_SCISSOR_TEST);
 
 	glfwSwapBuffers(Statics::RenderWindow);
 }
@@ -111,6 +121,7 @@ void Render()
 int Cleanup()
 {
 	SceneManager::CleanupScene();
+	StaticMesh::Cleanup();
 	Statics::Cleanup();
 
 	return 0;

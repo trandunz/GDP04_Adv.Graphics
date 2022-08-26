@@ -3,10 +3,12 @@
 glm::ivec2 Statics::WindowSize{};
 GLFWwindow* Statics::RenderWindow = nullptr;
 KEYMAP Statics::Keymap{};
+Camera Statics::SceneCamera{};
 float Statics::DeltaTime{};
 float Statics::LastTime{};
 bool Statics::StencilTest{ true };
 bool Statics::Foggy{ true };
+bool Statics::BlackBars{ true };
 
 void Statics::CalculateDeltaTime()
 {

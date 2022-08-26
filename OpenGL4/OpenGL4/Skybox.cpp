@@ -11,29 +11,25 @@
 #include "Skybox.h"
 #include "Statics.h"
 #include "TextureLoader.h"
+#include "ShaderLoader.h"
+#include "StaticMesh.h"
 
-Skybox::Skybox(Camera* _activeCamera, Texture _cubemapTexture, bool _clouds)
+Skybox::Skybox()
 {
-	m_ActiveCamera = _activeCamera;
-	m_CubemapTexture = _cubemapTexture;
 	SetScale({1000,1000,1000});
-
 	m_ShaderID = ShaderLoader::CreateShader("Fog_Skybox.vert","Fog_Skybox.frag");
-
-	if (_clouds)
-		CreateCloud();
-
-	CreateInvertedCubeVAO();
 }
 
 Skybox::~Skybox()
 {
-	if (m_ActiveCamera)
-		m_ActiveCamera = nullptr;
+}
 
-	if (m_Mesh)
-		delete m_Mesh;
-	m_Mesh = nullptr;
+void Skybox::SetCloudActive(bool _cloudActive)
+{
+	m_Cloud = _cloudActive;
+
+	if (m_Cloud)
+		InitCloud();
 }
 
 void Skybox::Draw()
@@ -50,56 +46,27 @@ void Skybox::Draw()
 	{
 		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
 		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
-		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", m_ActiveCamera->GetPosition());
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
 		ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
 	}
 
 	// Pass In PVM Matrix
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
-	if (m_ActiveCamera)
-		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", m_ActiveCamera->GetPVMatrix() * m_Transform.transform);
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
 
-	// Draw
-	glBindVertexArray(m_VertexArrayID);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
-
-	// Unbind
-	glBindVertexArray(0);
+	StaticMesh::InvertedCube->Draw();
+	
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glUseProgram(0);
-
-	//Draw cloud
-	if (m_Mesh)
-	{
-		glUseProgram(m_CloudShaderID);
-
-		if (m_ActiveCamera)
-		{
-			Transform hemiSphereTransform = m_Transform;
-			hemiSphereTransform.translation = { 0,0,0 };
-			hemiSphereTransform.scale = { 2,2,2 };
-			UpdateModelValueOfTransform(hemiSphereTransform);
-			ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", m_ActiveCamera->GetPVMatrix() * hemiSphereTransform.transform);
-		}
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_CloudTexture.ID);
-		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
-		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 0);
-
-		m_Mesh->Draw();
-		glUseProgram(0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
+	
+	// Draw Cloud If Enabled
+	if (m_Cloud)
+		DrawCloud();
 }
 
 void Skybox::SetTexture(Texture _cubemapTexture)
 {
 	m_CubemapTexture = _cubemapTexture;
-}
-
-void Skybox::SetActiveCamera(Camera* _camera)
-{
-	m_ActiveCamera = _camera;
 }
 
 Texture Skybox::GetTextureID()
@@ -145,91 +112,31 @@ void Skybox::Scale(glm::vec3 _scaleFactor)
 	UpdateModelValueOfTransform(m_Transform);
 }
 
-void Skybox::CreateInvertedCubeVAO()
+void Skybox::InitCloud()
 {
-	GLuint vertexBufferID;
-	GLuint indexBufferID;
-
-	// Define Cube Vertices
-	glm::vec3 vertexPositions[]
-	{
-		// Front
-		{ -0.5f,  0.5f, 0.5f },
-		{-0.5f,  -0.5f, 0.5f},
-		{0.5f,  -0.5f, 0.5f},
-		{0.5f,  0.5f, 0.5f},
-		// Back
-		{0.5f,  0.5f, -0.5f},
-		{0.5f,  -0.5f, -0.5f},
-		{-0.5f,  -0.5f, -0.5f},
-		{-0.5f,  0.5f, -0.5f},
-		// Right
-		{0.5f,  0.5f, 0.5f},
-		{0.5f,  -0.5f, 0.5f},
-		{0.5f,  -0.5f, -0.5f},
-		{0.5f,  0.5f, -0.5f},
-		// Left
-		{-0.5f,  0.5f, -0.5f},
-		{-0.5f,  -0.5f, -0.5f},
-		{-0.5f,  -0.5f, 0.5f},
-		{-0.5f,  0.5f, 0.5f},
-		// Top
-		{-0.5f,  0.5f, -0.5f},
-		{-0.5f,  0.5f, 0.5f},
-		{0.5f,  0.5f, 0.5f},
-		{0.5f,  0.5f, -0.5f},
-		// Bottom
-		{-0.5f,  -0.5f, 0.5f},
-		{-0.5f,  -0.5f, -0.5f},
-		{0.5f,  -0.5f, -0.5f},
-		{0.5f,  -0.5f, 0.5f} 
-	};
-
-	// Define Inverted Cube Indices
-	unsigned indicesValues[36];
-	unsigned element{ 0 };
-	for (int i = 0; i < 6; i++)
-	{
-		indicesValues[element++] = (4 * i);
-		indicesValues[element++] = ((4 * i) + 2);
-		indicesValues[element++] = ((4 * i) + 1);
-
-		indicesValues[element++] = (4 * i);
-		indicesValues[element++] = ((4 * i) + 3);
-		indicesValues[element++] = ((4 * i) + 2);
-	}
-	
-
-	// Vertex Array
-	glGenVertexArrays(1, &m_VertexArrayID);
-	glBindVertexArray(m_VertexArrayID);
-
-	// Vertex Buffer
-	glGenBuffers(1, &vertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, 24 * 3 * sizeof(GLfloat), &vertexPositions[0], GL_STATIC_DRAW);
-
-	// Index Buffer
-	glGenBuffers(1, &indexBufferID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(unsigned), &indicesValues[0], GL_STATIC_DRAW);
-
-	// Position Layout
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
-
-	// Unbind
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	m_CloudShaderID = ShaderLoader::CreateShader("SingleTexture.vert", "SingleTexture.frag");
+	m_CloudTexture = TextureLoader::LoadTexture("Heightmaps/RandomNoise.jpg");
 }
 
-void Skybox::CreateCloud()
+void Skybox::DrawCloud()
 {
-	if (m_Mesh)
-		delete m_Mesh;
-	m_Mesh = nullptr;
-	m_Mesh = new Mesh(SHAPE::HEMISPHERE);
-	m_CloudShaderID = ShaderLoader::CreateShader("SingleTexture.vert", "SingleTexture.frag");
-	m_CloudTexture = TextureLoader::LoadTexture("Heightmaps/RandomNoise.png");
+	glUseProgram(m_CloudShaderID);
+	Transform hemiSphereTransform = m_Transform;
+	hemiSphereTransform.scale *= 0.8f;
+	//hemiSphereTransform.scale = { 1,1,1 };
+	hemiSphereTransform.translation.y = hemiSphereTransform.scale.y / 2.0f;
+	hemiSphereTransform.rotation_axis = { 1,0,0 };
+	hemiSphereTransform.rotation_value = glm::radians(-90.0f);
+	UpdateModelValueOfTransform(hemiSphereTransform);
+
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * hemiSphereTransform.transform);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_CloudTexture.ID);
+	ShaderLoader::SetUniform1i(std::move(m_CloudShaderID), "TextureCount", 1);
+	ShaderLoader::SetUniform1i(std::move(m_CloudShaderID), "Texture0", 0);
+	
+	StaticMesh::Hemisphere->Draw();
+
+	glUseProgram(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

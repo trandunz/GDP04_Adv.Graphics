@@ -78,18 +78,6 @@ struct Texture
 };
 
 /// <summary>
-/// Shape Enum To Identify Shapes For Mesh Class
-/// </summary>
-enum class SHAPE
-{
-	UNASSIGNED,
-	CUBE,
-	PYRAMID,
-	SPHERE,
-	HEMISPHERE
-};
-
-/// <summary>
 /// Font Character Struct that contains the characters texture id, size, bearing and advance
 /// </summary>
 struct FontChar

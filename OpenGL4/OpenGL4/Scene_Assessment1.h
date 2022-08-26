@@ -1,10 +1,8 @@
 #pragma once
 #include "Scene.h"
 #include "GameObject.h"
-#include "TextureLoader.h"
 #include "Skybox.h"
 #include "Terrain.h"
-#include "Noise.h"
 
 class Scene_Assessment1 : public Scene
 {
@@ -19,15 +17,8 @@ public:
 	virtual void Draw() override;
 
 private:
-	bool BlackBars = true;
-	GameObject* ModelObject = nullptr;
-	Camera* SceneCamera = nullptr;
-	Mesh* SphereMesh = nullptr;
-	Mesh* HemiSphereMesh = nullptr;
-	Mesh* CubeMesh = nullptr;
-	Mesh* ModelMesh = nullptr;
-	Terrain* TerrainMesh = nullptr;
-	LightManager* lightManager = nullptr;
-	Skybox* skyboxRef = nullptr;
+	GameObject* m_ModelObject = nullptr;
+	Mesh* m_ModelMesh = nullptr;
+	Terrain* m_Terrain = nullptr;
 };
 

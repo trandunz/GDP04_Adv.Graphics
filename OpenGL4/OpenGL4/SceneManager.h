@@ -23,7 +23,7 @@ public:
 private:
 	SceneManager() {};
 	~SceneManager() { CleanupScene(); };
-	SceneManager(const SceneManager&){};
+	SceneManager(const SceneManager&) = delete;
 
 	static Scene* CurrentScene;
 	static SCENES SceneToLoad;

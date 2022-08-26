@@ -8,13 +8,12 @@
 class Terrain
 {
 public:
-	Terrain(Camera& _camera, std::string _heightMap, std::string _fileExtension);
-	Terrain(Camera& _camera);
+	Terrain(std::string _heightMap, std::string _fileExtension);
+	Terrain();
 	~Terrain();
 
 	void Draw();
 
-	void SetLightManager(LightManager& _lightManager);
 	void SetTexture(Texture _texture);
 
 	void SetTranslation(glm::vec3 _newPosition);
@@ -53,8 +52,6 @@ private:
 	std::vector<Texture> m_ActiveTextures{};
 
 	Transform m_Transform{};
-	Camera* m_ActiveCamera = nullptr;
-	LightManager* m_LightManager{ nullptr };
 	GLuint m_ShaderID{ 0 };
 	Texture m_Texture{};
 	GLuint m_VertexArrayID{ 0 };

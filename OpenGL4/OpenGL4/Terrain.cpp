@@ -1,10 +1,10 @@
 #include "Terrain.h"
 #include "Noise.h"
+#include "Statics.h"
 
-Terrain::Terrain(Camera& _camera, std::string _heightMap, std::string _fileExtension)
+Terrain::Terrain(std::string _heightMap, std::string _fileExtension)
 {
 	m_ShaderID = ShaderLoader::CreateShader("Terrain.vert","TerrainTextures.frag");
-	m_ActiveCamera = &_camera;
 
 	if (_fileExtension == ".jpg")
 		LoadHeightmap(_heightMap + _fileExtension);
@@ -17,10 +17,9 @@ Terrain::Terrain(Camera& _camera, std::string _heightMap, std::string _fileExten
 	CreateAndInitializeBuffers();
 }
 
-Terrain::Terrain(Camera& _camera)
+Terrain::Terrain()
 {
 	m_ShaderID = ShaderLoader::CreateShader("Terrain.vert", "TerrainTextures.frag");
-	m_ActiveCamera = &_camera;
 
 	GenerateRandomHeightmap();
 	Smooth();
@@ -46,12 +45,6 @@ Terrain::~Terrain()
 		glDeleteBuffers(1, &m_VertexBufferID);
 		glDeleteBuffers(1, &m_IndexBufferID);
 	}
-
-	if (m_ActiveCamera)
-		m_ActiveCamera = nullptr;
-
-	if (m_LightManager)
-		m_LightManager = nullptr;
 }
 
 void Terrain::Draw()
@@ -59,7 +52,7 @@ void Terrain::Draw()
 	glUseProgram(m_ShaderID);
 
 	// Projection * View * Model Matrix
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", m_ActiveCamera->GetPVMatrix() * m_Transform.transform);
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
 
 	// Set Model Matrix
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "ModelMatrix", m_Transform.transform);
@@ -78,11 +71,6 @@ void Terrain::Draw()
 	glBindVertexArray(0);
 	
 	glUseProgram(0);
-}
-
-void Terrain::SetLightManager(LightManager& _lightManager)
-{
-	m_LightManager = &_lightManager;
 }
 
 void Terrain::SetTexture(Texture _texture)
@@ -331,7 +319,7 @@ bool Terrain::InBounds(unsigned _i, unsigned _j)
 void Terrain::SetBlinnFong3DUniforms()
 {
 	// Apply Texture
-	for(int i = 0 ; i < m_ActiveTextures.size(); i++)
+	for(size_t i = 0 ; i < m_ActiveTextures.size(); i++)
 	{
 		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", m_ActiveTextures.size());
 		glActiveTexture(GL_TEXTURE0 + i);
@@ -347,55 +335,52 @@ void Terrain::SetBlinnFong3DUniforms()
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Shininess", 32.0f * 5);
 
 	// Set Camera Position
-	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", m_ActiveCamera->GetPosition());
+	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
 
-	if (m_LightManager)
+	// Set Point Light Uniforms From Light Manager
+	std::vector<PointLight>& pointLights = LightManager::GetInstance().GetPointLights();
+	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "NumberOfPointLights", (int)pointLights.size());
+	for (unsigned i = 0; i < pointLights.size(); i++)
 	{
-		// Set Point Light Uniforms From Light Manager
-		std::vector<PointLight>& pointLights = m_LightManager->GetPointLights();
-		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "NumberOfPointLights", (int)pointLights.size());
-		for (unsigned i = 0; i < pointLights.size(); i++)
-		{
-			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].Position", pointLights[i].Position);
-			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].Color", pointLights[i].Color);
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].SpecularStrength", pointLights[i].SpecularStrength);
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].AttenuationLinear", pointLights[i].AttenuationLinear);
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].AttenuationExponent", pointLights[i].AttenuationExponent);
-		}
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].Position", pointLights[i].Position);
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].Color", pointLights[i].Color);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].SpecularStrength", pointLights[i].SpecularStrength);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].AttenuationLinear", pointLights[i].AttenuationLinear);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "PointLights[" + std::to_string(i) + "].AttenuationExponent", pointLights[i].AttenuationExponent);
+	}
 
-		// Set Directional Light Uniforms From Light Manager
-		std::vector<DirectionalLight>& directionalLights = m_LightManager->GetDirectionalLights();
-		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "NumberOfDirectionalLights", (int)directionalLights.size());
-		for (unsigned i = 0; i < directionalLights.size(); i++)
-		{
-			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "DirectionalLights[" + std::to_string(i) + "].Direction", directionalLights[i].Direction);
-			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "DirectionalLights[" + std::to_string(i) + "].Color", directionalLights[i].Color);
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "DirectionalLights[" + std::to_string(i) + "].SpecularStrength", directionalLights[i].SpecularStrength);
-		}
+	// Set Directional Light Uniforms From Light Manager
+	std::vector<DirectionalLight>& directionalLights = LightManager::GetInstance().GetDirectionalLights();
+	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "NumberOfDirectionalLights", (int)directionalLights.size());
+	for (unsigned i = 0; i < directionalLights.size(); i++)
+	{
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "DirectionalLights[" + std::to_string(i) + "].Direction", directionalLights[i].Direction);
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "DirectionalLights[" + std::to_string(i) + "].Color", directionalLights[i].Color);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "DirectionalLights[" + std::to_string(i) + "].SpecularStrength", directionalLights[i].SpecularStrength);
+	}
 
-		// Set Spotlight Uniforms From Light Manager
-		std::vector<SpotLight>& spotLights = m_LightManager->GetSpotLights();
-		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "NumberOfSpotLights", (int)spotLights.size());
-		for (unsigned i = 0; i < spotLights.size(); i++)
+	// Set Spotlight Uniforms From Light Manager
+	std::vector<SpotLight>& spotLights = LightManager::GetInstance().GetSpotLights();
+	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "NumberOfSpotLights", (int)spotLights.size());
+	for (unsigned i = 0; i < spotLights.size(); i++)
+	{
+		// If the spotlight is attached to the camera, Set Uniforms Accordingly
+		if (spotLights[i].IsAttachedToCamera)
 		{
-			// If the spotlight is attached to the camera, Set Uniforms Accordingly
-			if (spotLights[i].IsAttachedToCamera)
-			{
-				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Position", m_ActiveCamera->GetPosition());
-				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Direction", m_ActiveCamera->GetFront());
-			}
-			// Else Apply Assigned Starting Positon And Direction
-			else
-			{
-				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Position", spotLights[i].Position);
-				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Direction", spotLights[i].Direction);
-			}
-			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Color", spotLights[i].Color);
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].SpecularStrength", spotLights[i].SpecularStrength);
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].AttenuationLinear", spotLights[i].AttenuationLinear);
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].AttenuationExponent", spotLights[i].AttenuationExponent);
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Cutoff", glm::cos(glm::radians(spotLights[i].Cutoff)));
-			ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].OuterCutoff", glm::cos(glm::radians(spotLights[i].OuterCutoff)));
+			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Position", Statics::SceneCamera.GetPosition());
+			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Direction", Statics::SceneCamera.GetFront());
 		}
+		// Else Apply Assigned Starting Positon And Direction
+		else
+		{
+			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Position", spotLights[i].Position);
+			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Direction", spotLights[i].Direction);
+		}
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Color", spotLights[i].Color);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].SpecularStrength", spotLights[i].SpecularStrength);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].AttenuationLinear", spotLights[i].AttenuationLinear);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].AttenuationExponent", spotLights[i].AttenuationExponent);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Cutoff", glm::cos(glm::radians(spotLights[i].Cutoff)));
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].OuterCutoff", glm::cos(glm::radians(spotLights[i].OuterCutoff)));
 	}
 }

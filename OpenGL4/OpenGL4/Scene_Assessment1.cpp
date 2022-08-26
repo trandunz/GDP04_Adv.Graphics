@@ -1,4 +1,7 @@
 #include "Scene_Assessment1.h"
+#include "TextureLoader.h"
+#include "StaticMesh.h"
+#include "Noise.h"
 
 Scene_Assessment1::Scene_Assessment1()
 {
@@ -7,39 +10,17 @@ Scene_Assessment1::Scene_Assessment1()
 
 Scene_Assessment1::~Scene_Assessment1()
 {
-	skyboxRef = nullptr;
+	if (m_Terrain)
+		delete m_Terrain;
+	m_Terrain = nullptr;
 
-	if (lightManager)
-		delete lightManager;
-	lightManager = nullptr;
+	if (m_ModelMesh)
+		delete m_ModelMesh;
+	m_ModelMesh = nullptr;
 
-	if (TerrainMesh)
-		delete TerrainMesh;
-	TerrainMesh = nullptr;
-
-	if (ModelMesh)
-		delete ModelMesh;
-	ModelMesh = nullptr;
-
-	if (CubeMesh)
-		delete CubeMesh;
-	CubeMesh = nullptr;
-
-	if (SphereMesh)
-		delete SphereMesh;
-	SphereMesh = nullptr;
-
-	if (HemiSphereMesh)
-		delete HemiSphereMesh;
-	HemiSphereMesh = nullptr;
-
-	if (SceneCamera)
-		delete SceneCamera;
-	SceneCamera = nullptr;
-
-	if (ModelObject)
-		delete ModelObject;
-	ModelObject = nullptr;
+	if (m_ModelObject)
+		delete m_ModelObject;
+	m_ModelObject = nullptr;
 }
 
 void Scene_Assessment1::Start()
@@ -47,42 +28,13 @@ void Scene_Assessment1::Start()
 	TextureLoader::Init({
 	"World.jpg",
 	"Grass.jpg"
-		});
+	});
 
-	//ModelMesh = new Mesh("LowPoly/Cross.obj");
-	SphereMesh = new Mesh(SHAPE::SPHERE, GL_CCW);
-	HemiSphereMesh = new Mesh(SHAPE::HEMISPHERE, GL_CW);
-	CubeMesh = new Mesh(SHAPE::CUBE, GL_CCW);
+	Noise::CreateNoiseJPG("RandomNoise", 513, 513);
 
-	SceneCamera = new Camera({ 0,0,5 });
-	ModelObject = new GameObject(*SceneCamera, { 0,0,0 });
+	LightManager::GetInstance().CreateDirectionalLight({ { -1,-1,0 } });
 
-	lightManager = new LightManager(*SceneCamera);
-	DirectionalLight sun{};
-	sun.Direction = { -1,-1,0 };
-	lightManager->CreateDirectionalLight(sun);
-
-	Noise::CreateNoisePNG("RandomNoise", 513, 513);
-
-	TerrainMesh = new Terrain(*SceneCamera, "RandomNoise", ".RAW");
-	TerrainMesh->SetLightManager(*lightManager);
-	TerrainMesh->SetActiveTextures(
-		{
-			TextureLoader::LoadTexture("Sand.jpg"),
-			TextureLoader::LoadTexture("Dirt.jpg"),
-			TextureLoader::LoadTexture("Grass.jpg"),
-			TextureLoader::LoadTexture("Snow.jpg")
-		});
-	TerrainMesh->SetScale({ 0.05f,0.05f,0.05f });
-	TerrainMesh->SetTranslation({ 0.0f,-20.0f,0.0f });
-
-	ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
-	ModelObject->SetMesh(CubeMesh);
-	ModelObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
-	ModelObject->SetLightManager(*lightManager);
-	//ModelObject->SetScale({ 0.01f,0.01f,0.01f });
-
-	skyboxRef = &Skybox::GetInstance(SceneCamera, TextureLoader::LoadCubemap(
+	Skybox::GetInstance().SetTexture(TextureLoader::LoadCubemap(
 		{
 			"MountainOutpost/Right.jpg",
 			"MountainOutpost/Left.jpg",
@@ -91,21 +43,35 @@ void Scene_Assessment1::Start()
 			"MountainOutpost/Back.jpg",
 			"MountainOutpost/Front.jpg",
 		}
-	), true);
+	));
+	Skybox::GetInstance().SetCloudActive(true);
+
+	m_Terrain = new Terrain("RandomNoise", ".RAW");
+	m_Terrain->SetActiveTextures(
+		{
+			TextureLoader::LoadTexture("Sand.jpg"),
+			TextureLoader::LoadTexture("Dirt.jpg"),
+			TextureLoader::LoadTexture("Grass.jpg"),
+			TextureLoader::LoadTexture("Snow.jpg")
+		});
+	m_Terrain->SetScale({ 0.05f,0.05f,0.05f });
+	m_Terrain->SetTranslation({ 0.0f,-20.0f,0.0f });
+
+	m_ModelMesh = new Mesh("LowPoly/Cross.obj");
+	m_ModelObject = new GameObject();
+	m_ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
+	m_ModelObject->SetMesh(m_ModelMesh);
+	m_ModelObject->SetShader("SingleTexture.vert", "SingleTexture.frag");
+	m_ModelObject->SetScale({ 0.01f,0.01f,0.01f });
 }
 
 void Scene_Assessment1::Update()
 {
-	if (SceneCamera)
-	{
-		SceneCamera->Movement_Capture();
-		SceneCamera->Movement();
-	}
+	Statics::SceneCamera.Movement_Capture();
+	Statics::SceneCamera.Movement();
 
-	if (ModelObject)
-	{
-		ModelObject->Rotate({ 0,1,0 }, 1000 * glm::radians(Statics::DeltaTime));
-	}
+	if (m_ModelObject)
+		m_ModelObject->Rotate({ 0,1,0 }, 1000 * glm::radians(Statics::DeltaTime));
 }
 
 void Scene_Assessment1::KeyEvents()
@@ -117,7 +83,7 @@ void Scene_Assessment1::KeyEvents()
 			if (key.first == GLFW_KEY_Z)
 			{
 				key.second = false;
-				BlackBars = !BlackBars;
+				Statics::BlackBars = !Statics::BlackBars;
 			}
 			if (key.first == GLFW_KEY_X)
 			{
@@ -135,30 +101,16 @@ void Scene_Assessment1::KeyEvents()
 
 void Scene_Assessment1::MouseEvents(double& xpos, double& ypos)
 {
-	if (SceneCamera)
-	{
-		SceneCamera->MouseLook({ xpos, ypos });
-	}
+	Statics::SceneCamera.MouseLook({ xpos, ypos });
 }
 
 void Scene_Assessment1::Draw()
 {
-	if (BlackBars)
-	{
-		glEnable(GL_SCISSOR_TEST);
-		glScissor(0, 50, Statics::WindowSize.x, Statics::WindowSize.y - 100);
-	}
+	Skybox::GetInstance().Draw();
 
-	skyboxRef->Draw();
+	if (m_ModelObject)
+		m_ModelObject->Draw();
 
-	if (ModelObject)
-		ModelObject->Draw();
-
-	if (TerrainMesh)
-		TerrainMesh->Draw();
-
-	if (BlackBars)
-	{
-		glDisable(GL_SCISSOR_TEST);
-	}
+	if (m_Terrain)
+		m_Terrain->Draw();
 }

@@ -9,8 +9,9 @@
 // Mail : william.inman@mds.ac.nz
 
 #pragma once
-#include "LightManager.h"
+
 #include "Statics.h"
+#include "StaticMesh.h"
 
 class GameObject
 {
@@ -21,7 +22,7 @@ public:
 	/// <param name="_camera"></param>
 	/// <param name="_deltaTime"></param>
 	/// <param name="_position"></param>
-	GameObject(Camera& _camera, glm::vec3 _position);
+	GameObject(glm::vec3 _position = {0,0,0});
 	
 	/// <summary>
 	/// GameObject Destructor
@@ -109,17 +110,6 @@ public:
 	void RotateAround(glm::vec3&& _position, glm::vec3&& _axis, float&& _degrees);
 
 	/// <summary>
-	/// Sets the active camera of the gameObject
-	/// </summary>
-	/// <param name="_newCamera"></param>
-	void SetActiveCamera(Camera& _newCamera);
-	/// <summary>
-	/// Returns the current active camera of the gameObject
-	/// </summary>
-	/// <returns></returns>
-	Camera* GetActiveCamera();
-
-	/// <summary>
 	/// Sets the active textures to specified textures.
 	/// </summary>
 	/// <param name="_textures"></param>
@@ -155,23 +145,10 @@ public:
 	void ClearInputVector();
 
 	/// <summary>
-	/// Sets The Light Manager Used Lighting
-	/// </summary>
-	/// <param name="_lightManager"></param>
-	void SetLightManager(LightManager& _lightManager);
-
-	/// <summary>
-	/// Sets the texture of the skybox
-	/// </summary>
-	/// <param name="_skyboxTexture"></param>
-	void SetSkyboxTexture(Texture _skyboxTexture);
-
-	/// <summary>
 	/// Toggle Rim Lighting If Blinn-Phong Shader Enabled
 	/// </summary>
 	/// <param name="_rimLighting"></param>
 	void SetRimLighting(bool _rimLighting);
-
 
 private:
 
@@ -218,9 +195,6 @@ private:
 	glm::vec4 m_Input{};
 	float m_MovementSpeed = 10.0f;
 	Mesh* m_Mesh = nullptr;
-	Camera* m_ActiveCamera = nullptr;
-	LightManager* m_LightManager{ nullptr };
 	Transform m_Transform{};
-	Texture m_SkyboxTexture;
 };
 

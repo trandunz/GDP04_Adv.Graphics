@@ -10,7 +10,15 @@
 
 #pragma once
 #include "Helper.h"
-#include "ShaderLoader.h"
+
+enum class SHAPE
+{
+	UNASSIGNED,
+	CUBE,
+	PYRAMID,
+	SPHERE,
+	HEMISPHERE
+};
 
 class Mesh
 {

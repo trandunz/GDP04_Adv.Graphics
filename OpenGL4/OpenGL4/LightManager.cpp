@@ -9,20 +9,20 @@
 // Mail : william.inman@mds.ac.nz
 
 #include "LightManager.h"
+#include "ShaderLoader.h"
+#include "StaticMesh.h"
+#include "Statics.h"
 
-LightManager::LightManager(Camera& _activeCamera, int _maxPointLights, int _maxDirectionalLights, int _maxSpotLights)
+LightManager::LightManager(int _maxPointLights, int _maxDirectionalLights, int _maxSpotLights)
 {
 	m_MaxPointLights = _maxPointLights;
 	m_MaxDirectionalLights = _maxDirectionalLights;
 	m_MaxSpotLights = _maxSpotLights;
-	m_ActiveCamera = &_activeCamera;
 	m_UnlitMeshShaderID = ShaderLoader::CreateShader("SingleTexture.vert","UnlitColor.frag");
 }
 
 LightManager::~LightManager()
 {
-	m_LightMesh = nullptr;
-	m_ActiveCamera = nullptr;
 	m_PointLights.clear();
 	m_DirectionalLights.clear();
 	m_SpotLights.clear();
@@ -30,24 +30,14 @@ LightManager::~LightManager()
 
 void LightManager::Draw()
 {
-	// If a Mesh Has Been Assigned
-	if (m_LightMesh)
+	glUseProgram(m_UnlitMeshShaderID);
+	for (auto& light : m_PointLights)
 	{
-		// For Each PointLight, Draw An Unlit Mesh With The Same Color
-		glUseProgram(m_UnlitMeshShaderID);
-		for (auto& light : m_PointLights)
-		{
-			ShaderLoader::SetUniformMatrix4fv(std::move(m_UnlitMeshShaderID), "PVMMatrix", m_ActiveCamera->GetPVMatrix() * glm::translate(glm::mat4(1), light.Position));
-			ShaderLoader::SetUniform3fv(std::move(m_UnlitMeshShaderID), "Color", light.Color);
-			m_LightMesh->Draw();
-		}
-		glUseProgram(0);
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_UnlitMeshShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * glm::translate(glm::mat4(1), light.Position));
+		ShaderLoader::SetUniform3fv(std::move(m_UnlitMeshShaderID), "Color", light.Color);
+		StaticMesh::Sphere->Draw();
 	}
-}
-
-void LightManager::SetLightMesh(Mesh* _mesh)
-{
-	m_LightMesh = _mesh;
+	glUseProgram(0);
 }
 
 void LightManager::CreatePointLight(PointLight _newLight)

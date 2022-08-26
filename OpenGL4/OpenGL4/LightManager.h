@@ -10,8 +10,6 @@
 
 #pragma once
 #include "Helper.h"
-#include "Mesh.h"
-#include "Camera.h"
 
 /// <summary>
 /// Struct For A Point Light.
@@ -75,31 +73,15 @@ struct SpotLight
 class LightManager
 {
 public:
-
-    /// <summary>
-    /// Light Manager Contructor
-    /// </summary>
-    /// <param name="_activeCamera"></param>
-    /// <param name="_maxPointLights"></param>
-    /// <param name="_maxDirectionalLights"></param>
-    /// <param name="_maxSpotLights"></param>
-    LightManager(Camera& _activeCamera, int _maxPointLights = 1, int _maxDirectionalLights = 1, int _maxSpotLights = 1);
-    
-    /// <summary>
-    /// Light Manager Destructor
-    /// </summary>
-    ~LightManager();
+    static LightManager& GetInstance() {
+        static LightManager instance;
+        return instance;
+    }
 
     /// <summary>
     /// Draws The Unlit PointLights
     /// </summary>
     void Draw();
-
-    /// <summary>
-    /// Set the mesh of the Unlit Pointlights
-    /// </summary>
-    /// <param name="_mesh"></param>
-    void SetLightMesh(Mesh* _mesh);
 
     /// <summary>
     /// Create a point Light if current amount is less than max
@@ -159,9 +141,12 @@ public:
     void SetMaxSpotLights(int _maxAmount = 1);
 private:
 
-    Camera* m_ActiveCamera{ nullptr };
+    LightManager(int _maxPointLights = 1, int _maxDirectionalLights = 1, int _maxSpotLights = 1);
+    ~LightManager();
+    LightManager(const LightManager&) = delete;
+    void operator=(LightManager const&) = delete;
+
     GLuint m_UnlitMeshShaderID{ 0 };
-    Mesh* m_LightMesh{nullptr};
     int m_MaxPointLights{1};
     int m_MaxDirectionalLights{ 1 };
     int m_MaxSpotLights{ 1 };
