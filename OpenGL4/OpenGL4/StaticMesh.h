@@ -7,6 +7,7 @@ public:
 	static void Init();
 	static void Cleanup();
 
+	static Mesh* Quad;
 	static Mesh* Cube;
 	static Mesh* InvertedCube;
 	static Mesh* Sphere;

@@ -7,8 +7,9 @@ Camera Statics::SceneCamera{};
 float Statics::DeltaTime{};
 float Statics::LastTime{};
 bool Statics::StencilTest{ true };
-bool Statics::Foggy{ true };
+bool Statics::Foggy{ false };
 bool Statics::BlackBars{ true };
+bool Statics::ActiveCursor{ false };
 
 void Statics::CalculateDeltaTime()
 {

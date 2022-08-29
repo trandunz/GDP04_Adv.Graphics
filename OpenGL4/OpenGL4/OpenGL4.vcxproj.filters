@@ -202,5 +202,8 @@
     <None Include="Resources\Shaders\Fog_Skybox.vert">
       <Filter>Resource Files\Vert Shader</Filter>
     </None>
+    <None Include="Resources\Shaders\UnlitColor_Fog.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

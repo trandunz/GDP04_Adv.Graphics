@@ -17,7 +17,7 @@ GameObject::GameObject(glm::vec3 _position)
 {
     // Set starting position
     SetTranslation(_position);
-    m_StencilShaderID = ShaderLoader::CreateShader("Outline.vert", "UnlitColor.frag");
+    m_StencilShaderID = ShaderLoader::CreateShader("Outline.vert", "UnlitColor_Fog.frag");
 }
 
 GameObject::~GameObject()
@@ -157,6 +157,10 @@ void GameObject::Draw()
         // Draw the mesh
         m_Mesh->Draw();
         
+        // Unbind
+        glUseProgram(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
         if (Statics::StencilTest)
         { 
@@ -167,7 +171,20 @@ void GameObject::Draw()
             
             glUseProgram(m_StencilShaderID);
             
-            SetNormals3DVertUniforms();
+            // Projection * View * Model Matrix
+            ShaderLoader::SetUniformMatrix4fv(std::move(m_StencilShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+
+            // Set Model Matrix
+            ShaderLoader::SetUniformMatrix4fv(std::move(m_StencilShaderID), "ModelMatrix", m_Transform.transform);
+
+            ShaderLoader::SetUniform1i(std::move(m_StencilShaderID), "Foggy", Statics::Foggy);
+            if (Statics::Foggy)
+            {
+                ShaderLoader::SetUniform1f(std::move(m_StencilShaderID), "FogStart", 5.0f);
+                ShaderLoader::SetUniform1f(std::move(m_StencilShaderID), "FogDepth", 10.0f);
+                ShaderLoader::SetUniform3fv(std::move(m_StencilShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+                ShaderLoader::SetUniform4fv(std::move(m_StencilShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
+            }
             
             m_Mesh->Draw();
             
@@ -237,6 +254,11 @@ void GameObject::Scale(glm::vec3 _scaleFactor)
 {
     m_Transform.scale *= _scaleFactor;
     UpdateModelValueOfTransform(m_Transform);
+}
+
+void GameObject::SetModel(glm::mat4 _newModel)
+{
+    m_Transform.transform = _newModel;
 }
 
 void GameObject::RotateAround(glm::vec3&& _position, glm::vec3&& _axis, float&& _degrees)
@@ -443,10 +465,14 @@ void GameObject::SetFogUniforms()
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
 
-    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
-    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
-    ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
-    ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", {0.5f, 0.5f, 0.5f, 1.0f});
+    ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Foggy", Statics::Foggy);
+    if (Statics::Foggy)
+    {
+        ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
+        ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
+        ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+        ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
+    }
 }
 
 

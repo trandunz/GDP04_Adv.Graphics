@@ -17,8 +17,11 @@ public:
 	virtual void Draw() override;
 
 private:
+	GameObject* m_LeftQuad = nullptr;
+	GameObject* m_RightQuad = nullptr;
 	GameObject* m_ModelObject = nullptr;
 	Mesh* m_ModelMesh = nullptr;
-	Terrain* m_Terrain = nullptr;
+	Terrain* m_LitTerrain = nullptr;
+	Terrain* m_NoiseTerrain = nullptr;
 };
 

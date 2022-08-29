@@ -59,6 +59,15 @@ void Terrain::Draw()
 
 	SetBlinnFong3DUniforms();
 
+	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Foggy", Statics::Foggy);
+	if (Statics::Foggy)
+	{
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+		ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
+	}
+
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture0Height", 0.0f);
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture1Height", 8.0f);
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture2Height", 30.0f);
@@ -171,7 +180,7 @@ void Terrain::GenerateVertices()
 			float x = -halfWidth + j;
 
 			float y = m_HeightMap[i * 513 + j];
-			m_Vertices[i * 513 + j].position = { x, y, z };
+			m_Vertices[i * 513 + j].position = { x, y, -z };
 			m_Vertices[i * 513 + j].normals = { 0.0f, 1.0f, 0.0f };
 
 			// Stretch texture over grid.

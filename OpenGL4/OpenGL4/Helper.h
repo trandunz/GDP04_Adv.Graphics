@@ -25,6 +25,10 @@
 
 using KEYMAP = std::map<int, bool>;
 
+#define Forward glm::vec3{0.0f,0.0f,-1.0f}
+#define Right glm::vec3{1.0f,0.0f,0.0f}
+#define Up glm::vec3{0.0f,1.0f,0.0f}
+
 /// <summary>
 /// ShaderProgramLocation struct that encapuslates the file paths of a programs shaders.
 /// </summary>

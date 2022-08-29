@@ -101,6 +101,8 @@ public:
 	/// <param name="_scaleFactor"></param>
 	void Scale(glm::vec3 _scaleFactor);
 
+	void SetModel(glm::mat4 _newModel);
+
 	/// <summary>
 	/// Rotates the gameObject around the position on the given axis by specified degrees.
 	/// </summary>

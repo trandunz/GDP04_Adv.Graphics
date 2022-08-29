@@ -51,6 +51,16 @@ glm::vec3 Camera::GetFront()
     return m_Front;
 }
 
+glm::vec3 Camera::GetRight()
+{
+    return m_Right;
+}
+
+glm::vec3 Camera::GetUp()
+{
+    return m_Up;
+}
+
 void Camera::UpdateRotationVectors()
 {
     // Set thee new front vector

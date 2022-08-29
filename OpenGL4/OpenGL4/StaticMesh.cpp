@@ -1,5 +1,6 @@
 #include "StaticMesh.h"
 
+Mesh* StaticMesh::Quad{ nullptr };
 Mesh* StaticMesh::Cube{ nullptr };
 Mesh* StaticMesh::InvertedCube{ nullptr };
 Mesh* StaticMesh::Sphere{ nullptr };
@@ -9,6 +10,7 @@ Mesh* StaticMesh::Pyramid{ nullptr };
 void StaticMesh::Init()
 {
 	Cleanup();
+	Quad = new Mesh(4);
 	InvertedCube = new Mesh(SHAPE::CUBE, GL_CW);
 	Cube = new Mesh(SHAPE::CUBE);
 	Sphere = new Mesh(SHAPE::SPHERE);
@@ -18,6 +20,11 @@ void StaticMesh::Init()
 
 void StaticMesh::Cleanup()
 {
+	if (Quad != nullptr)
+	{
+		delete Quad;
+		Quad = nullptr;
+	}
 	if (Cube != nullptr)
 	{
 		delete Cube;

@@ -83,6 +83,11 @@ uniform bool bRimLighting;
 uniform float RimExponent;
 uniform vec3 RimColor;
 
+uniform bool Foggy;
+uniform float FogStart;
+uniform float FogDepth;
+uniform vec4 FogColor;
+
 // Available Helper function Forward Declerations
 vec4 ColourFromTextureORWhite(vec2 _texCoords);
 vec3 CalculateAmbientLight();
@@ -116,30 +121,66 @@ void main()
         combinedLighting += CalculateRimLight();
     }
 
-    if (Height >= Texture3Height && TextureCount >= 4)
+    if (Foggy == true)
     {
-        FragColor = vec4(combinedLighting,1.0f) * texture(Texture3,TexCoords);
-    }
-    else if (Height >= Texture2Height && TextureCount >= 3)
-    {
-        FragColor = vec4(combinedLighting,1.0f) * texture(Texture2,TexCoords);
-    }
-    else if (Height >= Texture1Height && TextureCount >= 4)
-    {
-        FragColor = vec4(combinedLighting,1.0f) * texture(Texture1,TexCoords);
-    }
-    else if (Height >= Texture0Height && TextureCount >= 1)
-    {
-        FragColor = vec4(combinedLighting,1.0f) * texture(Texture0,TexCoords);
-    }
-    else if (TextureCount >= 1)
-    {
-        FragColor = vec4(combinedLighting,1.0f) * texture(Texture0,TexCoords);
+        float d = distance(Position, CameraPos);
+        float contribution = (d - FogStart) / FogDepth;
+        contribution = clamp(contribution, 0.0f, 1.0f);
+
+        if (Height >= Texture3Height && TextureCount >= 4)
+        {
+            FragColor =  mix(vec4(combinedLighting,1.0f) * texture(Texture3,TexCoords), FogColor, contribution);
+        }
+        else if (Height >= Texture2Height && TextureCount >= 3)
+        {
+            FragColor =  mix(vec4(combinedLighting,1.0f) * texture(Texture2,TexCoords), FogColor, contribution);
+        }
+        else if (Height >= Texture1Height && TextureCount >= 4)
+        {
+            FragColor =  mix(vec4(combinedLighting,1.0f) * texture(Texture1,TexCoords), FogColor, contribution);
+        }
+        else if (Height >= Texture0Height && TextureCount >= 1)
+        {
+            FragColor =  mix(vec4(combinedLighting,1.0f) * texture(Texture0,TexCoords), FogColor, contribution);
+        }
+        else if (TextureCount >= 1)
+        {
+            FragColor =  mix(vec4(combinedLighting,1.0f) * texture(Texture0,TexCoords), FogColor, contribution);
+        }
+        else
+        {   
+            FragColor = mix(vec4(1.0f,1.0f,1.0f,1.0f), FogColor, contribution);
+        }
     }
     else
-    {   
-        FragColor = vec4(1.0f,1.0f,1.0f,1.0f);
+    {
+        if (Height >= Texture3Height && TextureCount >= 4)
+        {
+            FragColor = vec4(combinedLighting,1.0f) * texture(Texture3,TexCoords);
+        }
+        else if (Height >= Texture2Height && TextureCount >= 3)
+        {
+            FragColor = vec4(combinedLighting,1.0f) * texture(Texture2,TexCoords);
+        }
+        else if (Height >= Texture1Height && TextureCount >= 4)
+        {
+            FragColor = vec4(combinedLighting,1.0f) * texture(Texture1,TexCoords);
+        }
+        else if (Height >= Texture0Height && TextureCount >= 1)
+        {
+            FragColor = vec4(combinedLighting,1.0f) * texture(Texture0,TexCoords);
+        }
+        else if (TextureCount >= 1)
+        {
+            FragColor = vec4(combinedLighting,1.0f) * texture(Texture0,TexCoords);
+        }
+        else
+        {   
+            FragColor = vec4(1.0f,1.0f,1.0f,1.0f);
+        }
     }
+
+    
 }
 
 // Calculates Ambient Lighting

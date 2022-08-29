@@ -104,6 +104,18 @@ public:
     /// </summary>
     /// <returns></returns>
     glm::vec3 GetFront();
+
+    /// <summary>
+    /// Returns the right vector of the camera
+    /// </summary>
+    /// <returns></returns>
+    glm::vec3 GetRight();
+
+    /// <summary>
+   /// Returns the up vector of the camera
+   /// </summary>
+   /// <returns></returns>
+    glm::vec3 GetUp();
 private:
 
     /// <summary>

@@ -14,8 +14,23 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
 	for (auto& key : Statics::Keymap)
 	{
-		if (key.first == GLFW_KEY_ESCAPE)
-			glfwSetWindowShouldClose(Statics::RenderWindow, true);
+		if (key.second == true)
+		{
+			if (key.first == GLFW_KEY_ESCAPE)
+			{
+				glfwSetWindowShouldClose(Statics::RenderWindow, true);
+			}
+			if (key.first == GLFW_KEY_TAB)
+			{
+				key.second = false;
+				Statics::ActiveCursor = !Statics::ActiveCursor;
+
+				if (Statics::ActiveCursor)
+					glfwSetInputMode(Statics::RenderWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				else
+					glfwSetInputMode(Statics::RenderWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			}
+		}
 	}
 
 	SceneManager::KeyEvents();
@@ -76,7 +91,8 @@ void InitGLFW()
 	glfwSetKeyCallback(Statics::RenderWindow, KeyCallback);
 	glfwSetCursorPosCallback(Statics::RenderWindow, CursorCallback);
 
-	glfwSetInputMode(Statics::RenderWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	if (!Statics::ActiveCursor)
+		glfwSetInputMode(Statics::RenderWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Start()

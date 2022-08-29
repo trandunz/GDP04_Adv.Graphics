@@ -16,6 +16,7 @@ public:
 	static bool StencilTest;
 	static bool Foggy;
 	static bool BlackBars;
+	static bool ActiveCursor;
 	static Camera SceneCamera;
 	static KEYMAP Keymap;
 
