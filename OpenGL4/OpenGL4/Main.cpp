@@ -38,7 +38,12 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
 static void CursorCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	SceneManager::MouseEvents(xpos, ypos);
+	SceneManager::CursorMoveEvent(xpos, ypos);
+}
+
+static void CursorClickCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	SceneManager::CursorClickEvent(button, action, mods);
 }
 
 void InitGL();
@@ -90,6 +95,7 @@ void InitGLFW()
 
 	glfwSetKeyCallback(Statics::RenderWindow, KeyCallback);
 	glfwSetCursorPosCallback(Statics::RenderWindow, CursorCallback);
+	glfwSetMouseButtonCallback(Statics::RenderWindow, CursorClickCallback);
 
 	if (!Statics::ActiveCursor)
 		glfwSetInputMode(Statics::RenderWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

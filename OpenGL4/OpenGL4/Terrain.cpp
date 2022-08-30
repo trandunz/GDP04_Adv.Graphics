@@ -130,6 +130,15 @@ void Terrain::SetActiveTextures(std::vector<Texture> _textures)
 	m_ActiveTextures = _textures;
 }
 
+float Terrain::GetHeightAtPoint(glm::vec3 _point)
+{
+	_point /= m_Transform.scale;
+	_point += glm::vec3{ 256.0f,0,256.0f };
+	Print(_point);
+
+	return m_HeightMap[(int)_point.x * 513 + (int)_point.z];
+}
+
 void Terrain::CreateAndInitializeBuffers()
 {
 	// Vertex Array

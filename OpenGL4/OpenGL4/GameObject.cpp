@@ -12,6 +12,7 @@
 #include "ShaderLoader.h"
 #include "LightManager.h"
 #include "Skybox.h"
+#include "Physics.h"
 
 GameObject::GameObject(glm::vec3 _position)
 {
@@ -75,10 +76,41 @@ void GameObject::Movement_WASDEQ()
     glm::normalize(m_Input);
 }
 
+void GameObject::Movement_YGHJ()
+{
+    // Grab keyboard input for moving Object With YGHJ
+    m_Input = {};
+
+    for (auto& key : Statics::Keymap)
+    {
+        if (key.second)
+        {
+            if (key.first == GLFW_KEY_Y)
+            {
+                m_Input.z -= 1.0f;
+            }
+            if (key.first == GLFW_KEY_G)
+            {
+                m_Input.x -= 1.0f;
+            }
+            if (key.first == GLFW_KEY_H)
+            {
+                m_Input.z += 1.0f;
+            }
+            if (key.first == GLFW_KEY_J)
+            {
+                m_Input.x += 1.0f;
+            }
+        }
+    }
+    // Normalize the input vecor.
+    glm::normalize(m_Input);
+}
+
 void GameObject::Update()
 {
     // If player provides input, Translate the gameobject accordingly.
-    if (Magnitude((glm::vec3)m_Input) > 0)
+    if (glm::length((glm::vec3)m_Input) > 0)
         Translate(m_Input * m_MovementSpeed * Statics::DeltaTime);
     // If player provides Rotational input, rotate accordingly
     if (m_Input.w != 0)
@@ -146,7 +178,7 @@ void GameObject::Draw()
             }
         }
         
-        if (Statics::StencilTest)
+        if (Statics::StencilTest && m_StencilOutline)
         {
             glEnable(GL_STENCIL_TEST);
             glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -162,7 +194,7 @@ void GameObject::Draw()
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-        if (Statics::StencilTest)
+        if (Statics::StencilTest && m_StencilOutline)
         { 
             ////
             //// Draw Stencil Outline
@@ -308,6 +340,83 @@ void GameObject::ClearInputVector()
 void GameObject::SetRimLighting(bool _rimLighting)
 {
     m_RimLighting = _rimLighting;
+}
+
+bool GameObject::RayIntersection(Ray _ray)
+{
+    bool intersection = false;
+    if (m_Mesh)
+    {
+        std::vector<Vertex>* vertices = &m_Mesh->GetVertices();
+        std::vector<unsigned>* indices = &m_Mesh->GetIndices();
+        int index{ 0 };
+        unsigned element{ 0 };
+        for (int i = 0; i < indices->size() / 3; i++)
+        {
+            element = (*indices)[index];
+            glm::vec4 point1{ (*vertices)[element].position, 1.0f };
+            point1 = m_Transform.transform * point1;
+
+            element = (*indices)[index + 1];
+            glm::vec4 point2{ (*vertices)[element].position, 1.0f };
+            point2 = m_Transform.transform * point2;
+
+            element = (*indices)[index + 2];
+            glm::vec4 point3{ (*vertices)[element].position, 1.0f };
+            point3 = m_Transform.transform * point3;
+
+            intersection = Physics::IntersectTriangle(_ray, point1, point2, point3);
+            if (intersection)
+                return true;
+
+            index += 3;
+        }
+        vertices = nullptr;
+        indices = nullptr;
+    }
+
+    return intersection;
+}
+
+bool GameObject::RayIntersection(Ray _ray, glm::vec3& _point)
+{
+    bool intersection = false;
+    if (m_Mesh)
+    {
+        std::vector<Vertex>* vertices = &m_Mesh->GetVertices();
+        std::vector<unsigned>* indices = &m_Mesh->GetIndices();
+        int index{ 0 };
+        unsigned element{ 0 };
+        for (int i = 0; i < indices->size() / 3; i++)
+        {
+            element = (*indices)[index];
+            glm::vec4 point1{ (*vertices)[element].position, 1.0f };
+            point1 = m_Transform.transform * point1;
+
+            element = (*indices)[index + 1];
+            glm::vec4 point2{ (*vertices)[element].position, 1.0f };
+            point2 = m_Transform.transform * point2;
+
+            element = (*indices)[index + 2];
+            glm::vec4 point3{ (*vertices)[element].position, 1.0f };
+            point3 = m_Transform.transform * point3;
+
+            intersection = Physics::IntersectTriangle(_ray, point1, point2, point3, _point);
+            if (intersection)
+                return true;
+
+            index += 3;
+        }
+        vertices = nullptr;
+        indices = nullptr;
+    }
+
+    return intersection;
+}
+
+void GameObject::SetStencilOutlineActive(bool _outline)
+{
+    m_StencilOutline = _outline;
 }
 
 void GameObject::SetBlinnFong3DUniforms()
@@ -474,5 +583,3 @@ void GameObject::SetFogUniforms()
         ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
     }
 }
-
-

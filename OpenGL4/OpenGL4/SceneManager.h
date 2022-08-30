@@ -13,7 +13,8 @@ class SceneManager
 public:
 	static void Update();
 	static void KeyEvents();
-	static void MouseEvents(double& xpos, double& ypos);
+	static void CursorMoveEvent(double& xpos, double& ypos);
+	static void CursorClickEvent(int button, int action, int mods);
 	static void Draw();
 	
 	static void CleanupScene();

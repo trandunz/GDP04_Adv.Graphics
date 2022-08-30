@@ -44,6 +44,9 @@ public:
 	/// </summary>
 	void Draw();
 
+	std::vector<Vertex>& GetVertices();
+	std::vector<unsigned>& GetIndices();
+
 private:
 	/// <summary>
 	/// Populates the vertices vector with values required for the specified shape.

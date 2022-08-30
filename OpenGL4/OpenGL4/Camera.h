@@ -45,6 +45,8 @@ public:
     /// <param name="_mousePos"></param>
     void MouseLook(glm::vec2 _mousePos);
 
+    glm::vec3 GetRayCursorRayDirection(glm::vec2 _mousePos);
+
     /// <summary>
     /// Returns The Camera's Position
     /// </summary>
@@ -112,10 +114,22 @@ public:
     glm::vec3 GetRight();
 
     /// <summary>
-   /// Returns the up vector of the camera
-   /// </summary>
-   /// <returns></returns>
+    /// Returns the up vector of the camera
+    /// </summary>
+    /// <returns></returns>
     glm::vec3 GetUp();
+
+    /// <summary>
+    /// Moves the camera forward
+    /// </summary>
+    /// <returns></returns>
+    void MoveForward();
+
+    /// <summary>
+    /// Moves the camera backward
+    /// </summary>
+    /// <returns></returns>
+    void MoveBackward();
 private:
 
     /// <summary>

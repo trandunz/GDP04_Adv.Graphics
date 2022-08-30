@@ -29,6 +29,12 @@ using KEYMAP = std::map<int, bool>;
 #define Right glm::vec3{1.0f,0.0f,0.0f}
 #define Up glm::vec3{0.0f,1.0f,0.0f}
 
+struct Ray
+{
+	glm::vec3 origin;
+	glm::vec3 direction;
+};
+
 /// <summary>
 /// ShaderProgramLocation struct that encapuslates the file paths of a programs shaders.
 /// </summary>
@@ -149,43 +155,53 @@ inline float Magnitude(glm::vec3 _vector)
 /// Prints the given string withought a heap allocation to the console output stream.
 /// </summary>
 /// <param name="_string"></param>
-inline void Print(std::string_view _string)
+inline void Print(std::string_view _string, bool _newLine = true)
 {
-	std::cout << _string << std::endl;
+	std::cout << _string;
+	if (_newLine)
+		std::cout << std::endl;
 }
 
 /// <summary>
 /// Prints the Given Vector with format Vector X:~ | Y:~ | Z:~ 
 /// </summary>
 /// <param name="_vector"></param>
-inline void Print(glm::vec3& _vector)
+inline void Print(glm::vec3 _vector, bool _newLine = true)
 {
-	std::cout << "Vector x:" << std::to_string(_vector.x) << "| Y: " << std::to_string(_vector.y) << "| Z:" << std::to_string(_vector.z) << std::endl;
+	std::cout << "Vector x:" << std::to_string(_vector.x) << "| Y: " << std::to_string(_vector.y) << "| Z:" << std::to_string(_vector.z);
+	if (_newLine)
+		std::cout << std::endl;
 }
 
 /// <summary>
 /// Prints the Given Vector with format Vector X:~ | Y:~ | Z:~ | W:~
 /// </summary>
 /// <param name="_vector"></param>
-inline void Print(glm::vec4 _vector)
+inline void Print(glm::vec4 _vector, bool _newLine = true)
 {
-	std::cout << "Vector x:" << std::to_string(_vector.x) << "| Y: " << std::to_string(_vector.y) << "| Z:" << std::to_string(_vector.z) << "| W:" << std::to_string(_vector.w) << std::endl;
+	std::cout << "Vector x:" << std::to_string(_vector.x) << "| Y: " << std::to_string(_vector.y) << "| Z:" << std::to_string(_vector.z) << "| W:" << std::to_string(_vector.w);
+	if (_newLine)
+		std::cout << std::endl;
 }
 
 /// <summary>
 /// Prints the given integer to the console output stream.
 /// </summary>
 /// <param name="_int"></param>
-inline void Print(int&& _int)
+inline void Print(int&& _int, bool _newLine = true)
 {
-	std::cout << _int << std::endl;
+	std::cout << std::to_string(_int);
+	if (_newLine)
+		std::cout << std::endl;
 }
 
 /// <summary>
 /// Prints the given float to the console output Stream.
 /// </summary>
 /// <param name="_float"></param>
-inline void Print(float&& _float)
+inline void Print(float&& _float, bool _newLine = true)
 {
-	std::cout << _float << std::endl;
+	std::cout << std::to_string(_float);
+	if (_newLine)
+		std::cout << std::endl;
 }

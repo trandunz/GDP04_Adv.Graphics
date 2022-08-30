@@ -13,15 +13,25 @@ public:
 	virtual void Start() override;
 	virtual void Update() override;
 	virtual void KeyEvents() override;
-	virtual void MouseEvents(double& xpos, double& ypos) override;
+	virtual void CursorMoveEvent(double& xpos, double& ypos) override;
+	virtual void CursorClickEvent(int button, int action, int mods) override;
 	virtual void Draw() override;
 
 private:
+	void HandleMousePickingQuads();
+
 	GameObject* m_LeftQuad = nullptr;
 	GameObject* m_RightQuad = nullptr;
+	GameObject* m_FlatQuad = nullptr;
+	GameObject* m_MousePickSphere = nullptr;
+	GameObject* m_TerrainFollowingSphere = nullptr;
 	GameObject* m_ModelObject = nullptr;
+
 	Mesh* m_ModelMesh = nullptr;
+
 	Terrain* m_LitTerrain = nullptr;
 	Terrain* m_NoiseTerrain = nullptr;
+
+	glm::vec2 m_CursorPos{};
 };
 

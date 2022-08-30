@@ -38,8 +38,16 @@ public:
 	/// Q: Down
 	/// E: Up
 	/// </summary>
-	/// <param name="_keypresses"></param>
 	void Movement_WASDEQ();
+
+	/// <summary>
+	/// Handles moving the object with keyboard.
+	/// Y: Forward
+	/// G: Backward
+	/// H: Left
+	/// J: Right
+	/// </summary>
+	void Movement_YGHJ();
 
 	/// <summary>
 	/// Update function for GameObject.
@@ -152,6 +160,11 @@ public:
 	/// <param name="_rimLighting"></param>
 	void SetRimLighting(bool _rimLighting);
 
+	bool RayIntersection(Ray _ray);
+	bool RayIntersection(Ray _ray, glm::vec3& _point);
+
+	void SetStencilOutlineActive(bool _outline);
+
 private:
 
 	/// <summary>
@@ -189,7 +202,9 @@ private:
 
 	void SetFogUniforms();
 
+
 	bool m_RimLighting = false;
+	bool m_StencilOutline = Statics::StencilTest;
 	std::vector<Texture> m_ActiveTextures{};
 	GLuint m_ShaderID{0};
 	GLuint m_StencilShaderID{ 0 };

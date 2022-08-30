@@ -10,6 +10,10 @@ Scene_Assessment1::Scene_Assessment1()
 
 Scene_Assessment1::~Scene_Assessment1()
 {
+	if (m_FlatQuad)
+		delete m_FlatQuad;
+	m_FlatQuad = nullptr;
+
 	if (m_LeftQuad)
 		delete m_LeftQuad;
 	m_LeftQuad = nullptr;
@@ -17,6 +21,14 @@ Scene_Assessment1::~Scene_Assessment1()
 	if (m_RightQuad)
 		delete m_RightQuad;
 	m_RightQuad = nullptr;
+
+	if (m_MousePickSphere)
+		delete m_MousePickSphere;
+	m_MousePickSphere = nullptr;
+
+	if (m_TerrainFollowingSphere)
+		delete m_TerrainFollowingSphere;
+	m_TerrainFollowingSphere = nullptr;
 
 	if (m_LitTerrain)
 		delete m_LitTerrain;
@@ -37,6 +49,8 @@ Scene_Assessment1::~Scene_Assessment1()
 
 void Scene_Assessment1::Start()
 {
+	glfwSetInputMode(Statics::RenderWindow, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+
 	TextureLoader::Init({
 	"World.jpg",
 	"Grass.jpg"
@@ -69,7 +83,7 @@ void Scene_Assessment1::Start()
 			TextureLoader::LoadTexture("Snow.jpg")
 		});
 	m_LitTerrain->SetScale({ 0.05f,0.05f,0.05f });
-	m_LitTerrain->SetTranslation({ 12.8f,-20.0f,0.0f });
+	m_LitTerrain->SetTranslation({ 0.0f,-20.0f,0.0f });
 
 	m_NoiseTerrain = new Terrain("RandomNoise", ".RAW");
 	m_NoiseTerrain->SetActiveTextures(
@@ -80,7 +94,7 @@ void Scene_Assessment1::Start()
 			TextureLoader::LoadTexture("Snow.jpg")
 		});
 	m_NoiseTerrain->SetScale({ 0.05f,0.05f,0.05f });
-	m_NoiseTerrain->SetTranslation({ -12.8f,-20.0f,0.0f });
+	m_NoiseTerrain->SetTranslation({ -25.6,-20.0f,0.0f });
 
 	m_ModelObject = new GameObject;
 	m_ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
@@ -92,13 +106,31 @@ void Scene_Assessment1::Start()
 	m_LeftQuad->SetActiveTextures({ TextureLoader::LoadTexture("LeftQuad.PNG") });
 	m_LeftQuad->SetMesh(StaticMesh::Quad);
 	m_LeftQuad->SetShader("SingleTexture.vert", "SingleTexture.frag");
-	m_LeftQuad->Scale({ 0.5f ,0.5f,0.5f });
 
 	m_RightQuad = new GameObject;
 	m_RightQuad->SetActiveTextures({ TextureLoader::LoadTexture("RightQuad.PNG") });
 	m_RightQuad->SetMesh(StaticMesh::Quad);
 	m_RightQuad->SetShader("SingleTexture.vert", "SingleTexture.frag");
-	m_RightQuad->Scale({ 0.5f ,0.5f,0.5f });
+
+	m_FlatQuad = new GameObject;
+	m_FlatQuad->SetActiveTextures({ TextureLoader::LoadTexture("Dirt.JPG") });
+	m_FlatQuad->SetMesh(StaticMesh::Quad);
+	m_FlatQuad->SetShader("Fog.vert", "Fog.frag");
+	m_FlatQuad->SetRotation({ 1,0,0 }, 90.0f);
+	m_FlatQuad->SetScale({ 10.0f,10.0f,10.0f });
+
+	m_MousePickSphere = new GameObject;
+	m_MousePickSphere->SetMesh(StaticMesh::Sphere);
+	m_MousePickSphere->SetShader("Fog.vert", "Fog.frag");
+	m_MousePickSphere->SetScale({ 0.5f,0.5f,0.5f });
+	m_MousePickSphere->SetTranslation({ 0.0f,0.25f,0.0f });
+	m_MousePickSphere->SetStencilOutlineActive(false);
+
+	m_TerrainFollowingSphere = new GameObject;
+	m_TerrainFollowingSphere->SetMesh(StaticMesh::Sphere);
+	m_TerrainFollowingSphere->SetShader("Fog.vert", "Fog.frag");
+	m_TerrainFollowingSphere->SetScale({ 0.5f,0.5f,0.5f });
+	m_TerrainFollowingSphere->SetStencilOutlineActive(false);
 }
 
 void Scene_Assessment1::Update()
@@ -109,16 +141,35 @@ void Scene_Assessment1::Update()
 	if (m_ModelObject)
 		m_ModelObject->Rotate({ 0,1,0 }, 1000 * glm::radians(Statics::DeltaTime));
 
+	HandleMousePickingQuads();
+
 	if (m_LeftQuad)
 	{
-		glm::vec3 position = Statics::SceneCamera.GetPosition() + (Statics::SceneCamera.GetFront() * 4.0f) - Statics::SceneCamera.GetRight();
-		m_LeftQuad->SetModel(glm::inverse(glm::lookAt(position, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())));
+		glm::vec3 position = Statics::SceneCamera.GetPosition() + (Statics::SceneCamera.GetFront() * 3.0f) - Statics::SceneCamera.GetRight();
+		glm::vec3 scale{ 0.25f ,0.25f,0.25f };
+		m_LeftQuad->SetModel(glm::scale(glm::inverse(glm::lookAt(position, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())), scale));
 	}
-
 	if (m_RightQuad)
 	{
-		glm::vec3 position = Statics::SceneCamera.GetPosition() + (Statics::SceneCamera.GetFront() * 4.0f) + Statics::SceneCamera.GetRight();
-		m_RightQuad->SetModel(glm::inverse(glm::lookAt(position, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())));
+		glm::vec3 position = Statics::SceneCamera.GetPosition() + (Statics::SceneCamera.GetFront() * 3.0f) + Statics::SceneCamera.GetRight();
+		glm::vec3 scale{ 0.25f ,0.25f,0.25f };
+		m_RightQuad->SetModel(glm::scale(glm::inverse(glm::lookAt(position, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())), scale));
+	}
+
+	if (m_TerrainFollowingSphere)
+	{
+		glm::vec3 posOnTerrain = m_TerrainFollowingSphere->GetTransform().translation;
+		posOnTerrain.x = glm::clamp(posOnTerrain.x, 
+			m_LitTerrain->GetTransform().translation.x - 256.0f * m_LitTerrain->GetTransform().scale.x,
+			m_LitTerrain->GetTransform().translation.x + 256.0f * m_LitTerrain->GetTransform().scale.x);
+		posOnTerrain.z = glm::clamp(posOnTerrain.z, 
+			m_LitTerrain->GetTransform().translation.z - 256.0f * m_LitTerrain->GetTransform().scale.z,
+			m_LitTerrain->GetTransform().translation.z + 256.0f * m_LitTerrain->GetTransform().scale.z);
+
+		posOnTerrain.y = m_LitTerrain->GetTransform().translation.y + m_TerrainFollowingSphere->GetTransform().scale.y + (m_LitTerrain->GetHeightAtPoint(posOnTerrain) * m_LitTerrain->GetTransform().scale.y);
+		m_TerrainFollowingSphere->SetTranslation(posOnTerrain);
+		m_TerrainFollowingSphere->Movement_YGHJ();
+		m_TerrainFollowingSphere->Update();
 	}
 }
 
@@ -143,15 +194,20 @@ void Scene_Assessment1::KeyEvents()
 				key.second = false;
 				Statics::Foggy = !Statics::Foggy;
 			}
-
 		}
 	}
 }
 
-void Scene_Assessment1::MouseEvents(double& xpos, double& ypos)
+void Scene_Assessment1::CursorMoveEvent(double& xpos, double& ypos)
 {
+	m_CursorPos = { xpos , ypos };
+
 	if (!Statics::ActiveCursor)
 		Statics::SceneCamera.MouseLook({ xpos, ypos });
+}
+
+void Scene_Assessment1::CursorClickEvent(int button, int action, int mods)
+{
 }
 
 void Scene_Assessment1::Draw()
@@ -166,10 +222,66 @@ void Scene_Assessment1::Draw()
 
 	if (m_LeftQuad)
 		m_LeftQuad->Draw();
+	
+	if (m_FlatQuad)
+		m_FlatQuad->Draw();
+
+	if (m_MousePickSphere)
+		m_MousePickSphere->Draw();
+
+	if (m_TerrainFollowingSphere)
+		m_TerrainFollowingSphere->Draw();
 
 	if (m_LitTerrain)
 		m_LitTerrain->Draw();
 
 	if (m_NoiseTerrain)
 		m_NoiseTerrain->Draw();
+}
+
+void Scene_Assessment1::HandleMousePickingQuads()
+{
+	if (Statics::ActiveCursor)
+	{
+		int mouseLeftState = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
+
+		Ray cameraRay;
+		cameraRay.origin = Statics::SceneCamera.GetPosition();
+		cameraRay.direction = Statics::SceneCamera.GetRayCursorRayDirection(m_CursorPos);
+
+		if (mouseLeftState == GLFW_PRESS)
+		{
+			if (m_LeftQuad)
+			{
+				bool intersection = m_LeftQuad->RayIntersection(cameraRay);
+				if (intersection)
+				{
+					Statics::SceneCamera.MoveForward();
+				}
+			}
+			if (m_RightQuad)
+			{
+				bool intersection = m_RightQuad->RayIntersection(cameraRay);
+				if (intersection)
+				{
+					Statics::SceneCamera.MoveBackward();
+				}
+			}
+			if (m_FlatQuad)
+			{
+				glm::vec3 hitPos{};
+				bool intersection = m_FlatQuad->RayIntersection(cameraRay, hitPos);
+				if (intersection)
+				{
+					Print("Intersection Location: ", false);
+					Print(hitPos);
+
+					glm::vec3 newPos = hitPos;
+					newPos.y += m_MousePickSphere->GetTransform().scale.y / 2.0f;
+					m_MousePickSphere->SetTranslation(newPos);
+				}
+			}
+		}
+	}
+	
 }

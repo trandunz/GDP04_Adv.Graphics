@@ -61,6 +61,16 @@ glm::vec3 Camera::GetUp()
     return m_Up;
 }
 
+void Camera::MoveForward()
+{
+    m_Position += m_Front * m_MoveSpeed * Statics::DeltaTime;
+}
+
+void Camera::MoveBackward()
+{
+    m_Position +=  -m_Front * m_MoveSpeed * Statics::DeltaTime;
+}
+
 void Camera::UpdateRotationVectors()
 {
     // Set thee new front vector
@@ -121,6 +131,19 @@ void Camera::MouseLook(glm::vec2 _mousePos)
     m_LastMousePos = _mousePos;
 }
 
+glm::vec3 Camera::GetRayCursorRayDirection(glm::vec2 _mousePos)
+{
+    float x = (2.0f * _mousePos.x) / Statics::WindowSize.x - 1.0f;
+    float y = 1.0f - (2.0f * _mousePos.y) / Statics::WindowSize.y;
+    float z = 1.0f;
+    glm::vec3 nds { x, y, z };
+    glm::vec4 clip { nds.x, nds.y, -1.0f, 1.0 };
+    glm::vec4 eye = glm::inverse(GetProjectionMatrix()) * clip;
+    eye = { eye.x, eye.y, -1.0f, 0.0 };
+    glm::vec3 worldRay = glm::inverse(GetViewMatrix()) * eye;
+    return glm::normalize(worldRay);
+}
+
 void Camera::UpdatePosition()
 {
     float x;
@@ -150,7 +173,7 @@ void Camera::UpdatePosition()
     }
     if (y != 0)
     {
-        m_Position += glm::vec3{0,1,0} * y * Statics::DeltaTime;
+        m_Position += Up * y * Statics::DeltaTime;
     }
     if (z != 0)
     {

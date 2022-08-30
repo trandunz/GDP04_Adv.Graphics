@@ -31,6 +31,10 @@ public:
 	/// <param name="_textures"></param>
 	void SetActiveTextures(std::vector<Texture> _textures);
 
+	Transform& GetTransform() { return m_Transform; }
+
+	float GetHeightAtPoint(glm::vec3 _point);
+
 private:
 	void CreateAndInitializeBuffers();
 

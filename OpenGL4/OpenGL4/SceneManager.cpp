@@ -16,10 +16,16 @@ void SceneManager::KeyEvents()
 		CurrentScene->KeyEvents();
 }
 
-void SceneManager::MouseEvents(double& xpos, double& ypos)
+void SceneManager::CursorMoveEvent(double& xpos, double& ypos)
 {
 	if (CurrentScene != nullptr)
-		CurrentScene->MouseEvents(xpos, ypos);
+		CurrentScene->CursorMoveEvent(xpos, ypos);
+}
+
+void SceneManager::CursorClickEvent(int button, int action, int mods)
+{
+	if (CurrentScene != nullptr)
+		CurrentScene->CursorClickEvent(button, action, mods);
 }
 
 void SceneManager::Draw()

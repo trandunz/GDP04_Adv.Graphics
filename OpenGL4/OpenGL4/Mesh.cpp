@@ -112,6 +112,16 @@ void Mesh::Draw()
 	glBindVertexArray(0);
 }
 
+std::vector<Vertex>& Mesh::GetVertices()
+{
+	return m_Vertices;
+}
+
+std::vector<unsigned>& Mesh::GetIndices()
+{
+	return m_Indices;
+}
+
 void Mesh::CreateShapeVertices(SHAPE _shape)
 {
 	switch (_shape)
@@ -302,7 +312,6 @@ void Mesh::CreatePolygonIndices(unsigned int _numberOfSides)
 		m_Indices.emplace_back(0);	// Top Left
 		m_Indices.emplace_back(2);	// Bottom Right
 		m_Indices.emplace_back(3);	// Top Right
-		m_Indices.emplace_back(0);	// Top Left
 		return;
 	}
 
