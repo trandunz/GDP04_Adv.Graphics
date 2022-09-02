@@ -9,6 +9,7 @@
 // Mail : william.inman@mds.ac.nz
 
 #include "Mesh.h"
+#include "Statics.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <TinyOBJ/tiny_obj_loader.h>
@@ -19,7 +20,10 @@ Mesh::Mesh(SHAPE _shape, GLenum _windingOrder)
 
 	CreateShapeVertices(_shape);
 	CreateShapeIndices(_shape);
-	CreateAndInitializeBuffers();
+	if (Statics::DSA)
+		CreateAndInitializeBuffersDSA();
+	else
+		CreateAndInitializeBuffersNONDSA();
 }
 
 Mesh::Mesh(unsigned int _numberOfSides, GLenum _windingOrder)
@@ -28,7 +32,10 @@ Mesh::Mesh(unsigned int _numberOfSides, GLenum _windingOrder)
 
 	CreatePolygonVertices(_numberOfSides);
 	CreatePolygonIndices(_numberOfSides);
-	CreateAndInitializeBuffers();
+	if (Statics::DSA)
+		CreateAndInitializeBuffersDSA();
+	else
+		CreateAndInitializeBuffersNONDSA();
 }
 
 Mesh::Mesh(std::string _objModel)
@@ -78,7 +85,10 @@ Mesh::Mesh(std::string _objModel)
 		}
 	}
 
-	CreateAndInitializeBuffers(false);
+	if (Statics::DSA)
+		CreateAndInitializeBuffersDSA(false);
+	else
+		CreateAndInitializeBuffersNONDSA(false);
 }
 
 Mesh::~Mesh()
@@ -335,7 +345,7 @@ void Mesh::CreatePolygonIndices(unsigned int _numberOfSides)
 	}
 }
 
-void Mesh::CreateAndInitializeBuffers(bool _ebo)
+void Mesh::CreateAndInitializeBuffersNONDSA(bool _ebo)
 {
 	// Vertex Array
 	glGenVertexArrays(1, &m_VertexArrayID);
@@ -368,6 +378,35 @@ void Mesh::CreateAndInitializeBuffers(bool _ebo)
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void Mesh::CreateAndInitializeBuffersDSA(bool _ebo)
+{
+	glCreateVertexArrays(1, &m_VertexArrayID);
+
+	glCreateBuffers(1, &m_VertexBufferID);
+	glNamedBufferData(m_VertexBufferID, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
+
+	glEnableVertexArrayAttrib(m_VertexArrayID, 0);
+	glVertexArrayAttribBinding(m_VertexArrayID, 0, 0);
+	glVertexArrayAttribFormat(m_VertexArrayID, 0, 3, GL_FLOAT, GL_FALSE, 0);
+
+	glEnableVertexArrayAttrib(m_VertexArrayID, 1);
+	glVertexArrayAttribBinding(m_VertexArrayID, 1, 0);
+	glVertexArrayAttribFormat(m_VertexArrayID, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texCoords));
+
+	glEnableVertexArrayAttrib(m_VertexArrayID, 2);
+	glVertexArrayAttribBinding(m_VertexArrayID, 2, 0);
+	glVertexArrayAttribFormat(m_VertexArrayID, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normals));
+
+	glVertexArrayVertexBuffer(m_VertexArrayID, 0, m_VertexBufferID, 0, sizeof(Vertex));
+
+	if (_ebo)
+	{
+		glCreateBuffers(1, &m_IndexBufferID);
+		glNamedBufferData(m_IndexBufferID, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
+		glVertexArrayElementBuffer(m_VertexArrayID, m_IndexBufferID);
+	}
 }
 
 float Mesh::ToTexCoord(float& _position)

@@ -72,7 +72,8 @@ private:
 	/// Creates the vertexArray, vertex buffer and index buffer, 
 	/// populating them with the vertices and indices values.
 	/// </summary>
-	void CreateAndInitializeBuffers(bool _ebo = true);
+	void CreateAndInitializeBuffersNONDSA(bool _ebo = true);
+	void CreateAndInitializeBuffersDSA(bool _ebo = true);
 	/// <summary>
 	/// Converts the given positional value to texture coordinate space (0-1)
 	/// </summary>

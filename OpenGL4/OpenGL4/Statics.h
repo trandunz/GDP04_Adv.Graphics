@@ -17,6 +17,7 @@ public:
 	static bool Foggy;
 	static bool BlackBars;
 	static bool ActiveCursor;
+	static bool DSA;
 	static Camera SceneCamera;
 	static KEYMAP Keymap;
 

@@ -10,6 +10,7 @@ bool Statics::StencilTest{ true };
 bool Statics::Foggy{ false };
 bool Statics::BlackBars{ true };
 bool Statics::ActiveCursor{ false };
+bool Statics::DSA{ true };
 
 void Statics::CalculateDeltaTime()
 {

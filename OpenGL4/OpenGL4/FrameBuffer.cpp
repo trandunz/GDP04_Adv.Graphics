@@ -9,27 +9,43 @@ FrameBuffer::FrameBuffer()
 	UpdateModelValueOfTransform(m_Transform);
 
 	m_ShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer.frag");
-
-	glGenFramebuffers(1, &m_FrameBufferID);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
-
 	m_RenderTexture = TextureLoader::CreateRenderTexture();
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RenderTexture.ID, 0);
+	if (Statics::DSA)
+	{
+		glCreateFramebuffers(1, &m_FrameBufferID);
+		glCreateRenderbuffers(1, &m_RenderBufferID);
+		glNamedFramebufferTexture(m_FrameBufferID, GL_COLOR_ATTACHMENT0, m_RenderTexture.ID, 0);
+		glNamedRenderbufferStorage(m_RenderBufferID, GL_DEPTH24_STENCIL8, Statics::WindowSize.x, Statics::WindowSize.y);
+		glNamedFramebufferRenderbuffer(m_FrameBufferID, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
+	
+		auto status = glCheckNamedFramebufferStatus(m_FrameBufferID, GL_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+			Print("Framebuffer Error: " + std::to_string(status));
 
-	glGenRenderbuffers(1, &m_RenderBufferID);
-	glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Statics::WindowSize.x, Statics::WindowSize.y);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	else
+	{
+		glGenFramebuffers(1, &m_FrameBufferID);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
 
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
-	auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RenderTexture.ID, 0);
 
-	if (status != GL_FRAMEBUFFER_COMPLETE)
-		Print("Framebuffer Error: " + std::to_string(status)); // Its throwing the error here!!
+		glGenRenderbuffers(1, &m_RenderBufferID);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Statics::WindowSize.x, Statics::WindowSize.y);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
+		
+		auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+			Print("Framebuffer Error: " + std::to_string(status));
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
 
 FrameBuffer::~FrameBuffer()
@@ -38,11 +54,19 @@ FrameBuffer::~FrameBuffer()
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glUseProgram(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glDeleteFramebuffers(1, &m_FrameBufferID);
+	glDeleteRenderbuffers(1, &m_RenderBufferID);
 }
 
 void FrameBuffer::Bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
+	if (Statics::DSA)
+	{
+		GLfloat clearColor[] = { 0.0f,0.0f,0.0f, 1.0f };
+		glClearNamedFramebufferfv(m_FrameBufferID, GL_COLOR, 0, clearColor);
+	}
 	glEnable(GL_DEPTH_TEST);
 }
 
