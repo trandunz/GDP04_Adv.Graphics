@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FontLoader.cpp" />
+    <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -168,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FontLoader.h" />
+    <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Physics.h" />
@@ -193,6 +195,8 @@
     <None Include="Resources\Shaders\Fog.vert" />
     <None Include="Resources\Shaders\Fog_Skybox.frag" />
     <None Include="Resources\Shaders\Fog_Skybox.vert" />
+    <None Include="Resources\Shaders\Framebuffer.frag" />
+    <None Include="Resources\Shaders\Framebuffer.vert" />
     <None Include="Resources\Shaders\Lit_Fog.frag" />
     <None Include="Resources\Shaders\Normals3D.vert" />
     <None Include="Resources\Shaders\Outline.vert" />

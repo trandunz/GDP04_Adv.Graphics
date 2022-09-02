@@ -1,7 +1,7 @@
 #include "Scene_Assessment1.h"
 #include "TextureLoader.h"
-#include "StaticMesh.h"
 #include "Noise.h"
+#include "StaticMesh.h"
 
 Scene_Assessment1::Scene_Assessment1()
 {
@@ -72,7 +72,7 @@ void Scene_Assessment1::Start()
 	));
 	Skybox::GetInstance().SetCloudActive(true);
 
-	m_ModelMesh = new Mesh("LowPoly/Cross.obj");
+	//m_ModelMesh = new Mesh("LowPoly/Cross.obj");
 
 	m_LitTerrain = new Terrain("Basic", ".RAW");
 	m_LitTerrain->SetActiveTextures(
@@ -96,11 +96,11 @@ void Scene_Assessment1::Start()
 	m_NoiseTerrain->SetScale({ 0.05f,0.05f,0.05f });
 	m_NoiseTerrain->SetTranslation({ -25.6,-20.0f,0.0f });
 
-	m_ModelObject = new GameObject;
-	m_ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
-	m_ModelObject->SetMesh(m_ModelMesh);
-	m_ModelObject->SetShader("Fog.vert", "Fog.frag");
-	m_ModelObject->SetScale({ 0.01f,0.01f,0.01f });
+	//m_ModelObject = new GameObject;
+	//m_ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
+	//m_ModelObject->SetMesh(m_ModelMesh);
+	//m_ModelObject->SetShader("Fog.vert", "Fog.frag");
+	//m_ModelObject->SetScale({ 0.01f,0.01f,0.01f });
 
 	m_LeftQuad = new GameObject;
 	m_LeftQuad->SetActiveTextures({ TextureLoader::LoadTexture("LeftQuad.PNG") });

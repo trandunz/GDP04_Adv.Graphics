@@ -1,7 +1,8 @@
 #include "Helper.h"
 #include "Statics.h"
 #include "SceneManager.h"
-#include "StaticMesh.h"
+#include "FrameBuffer.h"
+
 
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -46,6 +47,8 @@ static void CursorClickCallback(GLFWwindow* window, int button, int action, int 
 	SceneManager::CursorClickEvent(button, action, mods);
 }
 
+FrameBuffer* m_FrameBuffer = nullptr;
+
 void InitGL();
 void InitGLFW();
 
@@ -71,7 +74,7 @@ void InitGL()
 	if (glewInit() != GLEW_OK)
 		exit(0);
 
-	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 	//glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
@@ -103,8 +106,10 @@ void InitGLFW()
 
 void Start()
 {
+	Statics::UpdateWindowSize();
 	StaticMesh::Init();
 	SceneManager::LoadScene(SCENES::ASSESSMENT1);
+	m_FrameBuffer = new FrameBuffer;
 }
 
 void Update()
@@ -125,6 +130,9 @@ void Update()
 
 void Render()
 {
+	if (m_FrameBuffer)
+		m_FrameBuffer->Bind();
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	if (Statics::BlackBars)
 	{
@@ -137,6 +145,9 @@ void Render()
 	if (Statics::BlackBars)
 		glDisable(GL_SCISSOR_TEST);
 
+	if (m_FrameBuffer)
+		m_FrameBuffer->Unbind();
+
 	glfwSwapBuffers(Statics::RenderWindow);
 }
 
@@ -145,6 +156,10 @@ int Cleanup()
 	SceneManager::CleanupScene();
 	StaticMesh::Cleanup();
 	Statics::Cleanup();
+
+	if (m_FrameBuffer)
+		delete m_FrameBuffer;
+	m_FrameBuffer = nullptr;
 
 	return 0;
 }

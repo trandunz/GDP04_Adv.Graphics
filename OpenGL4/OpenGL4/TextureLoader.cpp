@@ -9,6 +9,7 @@
 // Mail : william.inman@mds.ac.nz
 
 #include "TextureLoader.h"
+#include "Statics.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "STBI/stb_image.h"
@@ -79,6 +80,24 @@ Texture TextureLoader::LoadTexture(std::string&& _fileName)
 
     // Return Newly Created Texture
     return m_Textures.back();
+}
+
+Texture TextureLoader::CreateRenderTexture()
+{
+    GLuint id;
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Statics::WindowSize.x, Statics::WindowSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+
+    return Texture{ id , Statics::WindowSize};
 }
 
 Texture TextureLoader::LoadCubemap(std::vector<std::string> _fileNames)
