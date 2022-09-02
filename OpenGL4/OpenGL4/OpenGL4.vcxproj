@@ -191,6 +191,7 @@
     <None Include="PointToTriangle.geo" />
     <None Include="Resources\Shaders\BlinnFong3D.frag" />
     <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag" />
+    <None Include="Resources\Shaders\Cloud.frag" />
     <None Include="Resources\Shaders\Fog.frag" />
     <None Include="Resources\Shaders\Fog.vert" />
     <None Include="Resources\Shaders\Fog_Skybox.frag" />

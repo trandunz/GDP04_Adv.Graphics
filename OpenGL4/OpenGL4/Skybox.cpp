@@ -114,7 +114,7 @@ void Skybox::Scale(glm::vec3 _scaleFactor)
 
 void Skybox::InitCloud()
 {
-	m_CloudShaderID = ShaderLoader::CreateShader("Fog.vert", "Fog.frag");
+	m_CloudShaderID = ShaderLoader::CreateShader("Fog.vert", "Cloud.frag");
 	m_CloudTexture = TextureLoader::LoadTexture("Heightmaps/RandomNoise.jpg");
 }
 

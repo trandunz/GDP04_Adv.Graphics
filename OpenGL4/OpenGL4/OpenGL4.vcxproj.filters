@@ -223,5 +223,8 @@
     <None Include="Resources\Shaders\Framebuffer.frag">
       <Filter>Resource Files\Frag Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\Cloud.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
