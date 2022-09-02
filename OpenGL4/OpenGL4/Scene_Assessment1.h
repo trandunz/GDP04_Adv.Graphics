@@ -18,7 +18,8 @@ public:
 	virtual void Draw() override;
 
 private:
-	void HandleMousePickingQuads();
+	void HandleMousePickingInteractions();
+	void BillboardObjectToCamera(GameObject& _object, glm::vec3 _relativePos, glm::vec3 _scale);
 
 	GameObject* m_LeftQuad = nullptr;
 	GameObject* m_RightQuad = nullptr;

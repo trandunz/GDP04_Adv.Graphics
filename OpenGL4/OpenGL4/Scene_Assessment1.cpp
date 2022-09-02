@@ -72,7 +72,7 @@ void Scene_Assessment1::Start()
 	));
 	Skybox::GetInstance().SetCloudActive(true);
 
-	//m_ModelMesh = new Mesh("LowPoly/Cross.obj");
+	m_ModelMesh = new Mesh("LowPoly/Cross.obj");
 
 	m_LitTerrain = new Terrain("Basic", ".RAW");
 	m_LitTerrain->SetActiveTextures(
@@ -96,11 +96,11 @@ void Scene_Assessment1::Start()
 	m_NoiseTerrain->SetScale({ 0.05f,0.05f,0.05f });
 	m_NoiseTerrain->SetTranslation({ -25.6,-20.0f,0.0f });
 
-	//m_ModelObject = new GameObject;
-	//m_ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
-	//m_ModelObject->SetMesh(m_ModelMesh);
-	//m_ModelObject->SetShader("Fog.vert", "Fog.frag");
-	//m_ModelObject->SetScale({ 0.01f,0.01f,0.01f });
+	m_ModelObject = new GameObject;
+	m_ModelObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
+	m_ModelObject->SetMesh(m_ModelMesh);
+	m_ModelObject->SetShader("Fog.vert", "Fog.frag");
+	m_ModelObject->SetScale({ 0.01f,0.01f,0.01f });
 
 	m_LeftQuad = new GameObject;
 	m_LeftQuad->SetActiveTextures({ TextureLoader::LoadTexture("LeftQuad.PNG") });
@@ -125,12 +125,6 @@ void Scene_Assessment1::Start()
 	m_MousePickSphere->SetScale({ 0.5f,0.5f,0.5f });
 	m_MousePickSphere->SetTranslation({ 0.0f,0.25f,0.0f });
 	m_MousePickSphere->SetStencilOutlineActive(false);
-
-	m_TerrainFollowingSphere = new GameObject;
-	m_TerrainFollowingSphere->SetMesh(StaticMesh::Sphere);
-	m_TerrainFollowingSphere->SetShader("Fog.vert", "Fog.frag");
-	m_TerrainFollowingSphere->SetScale({ 0.5f,0.5f,0.5f });
-	m_TerrainFollowingSphere->SetStencilOutlineActive(false);
 }
 
 void Scene_Assessment1::Update()
@@ -141,35 +135,25 @@ void Scene_Assessment1::Update()
 	if (m_ModelObject)
 		m_ModelObject->Rotate({ 0,1,0 }, 1000 * glm::radians(Statics::DeltaTime));
 
-	HandleMousePickingQuads();
+	HandleMousePickingInteractions();
 
 	if (m_LeftQuad)
 	{
-		glm::vec3 position = Statics::SceneCamera.GetPosition() + (Statics::SceneCamera.GetFront() * 3.0f) - Statics::SceneCamera.GetRight();
-		glm::vec3 scale{ 0.25f ,0.25f,0.25f };
-		m_LeftQuad->SetModel(glm::scale(glm::inverse(glm::lookAt(position, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())), scale));
+		BillboardObjectToCamera
+		(
+			*m_LeftQuad,
+			(Statics::SceneCamera.GetFront() * 3.0f) - Statics::SceneCamera.GetRight(),
+			{ 0.25f ,0.25f,0.25f }
+		);
 	}
 	if (m_RightQuad)
 	{
-		glm::vec3 position = Statics::SceneCamera.GetPosition() + (Statics::SceneCamera.GetFront() * 3.0f) + Statics::SceneCamera.GetRight();
-		glm::vec3 scale{ 0.25f ,0.25f,0.25f };
-		m_RightQuad->SetModel(glm::scale(glm::inverse(glm::lookAt(position, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())), scale));
-	}
-
-	if (m_TerrainFollowingSphere)
-	{
-		glm::vec3 posOnTerrain = m_TerrainFollowingSphere->GetTransform().translation;
-		posOnTerrain.x = glm::clamp(posOnTerrain.x, 
-			m_LitTerrain->GetTransform().translation.x - 256.0f * m_LitTerrain->GetTransform().scale.x,
-			m_LitTerrain->GetTransform().translation.x + 256.0f * m_LitTerrain->GetTransform().scale.x);
-		posOnTerrain.z = glm::clamp(posOnTerrain.z, 
-			m_LitTerrain->GetTransform().translation.z - 256.0f * m_LitTerrain->GetTransform().scale.z,
-			m_LitTerrain->GetTransform().translation.z + 256.0f * m_LitTerrain->GetTransform().scale.z);
-
-		posOnTerrain.y = m_LitTerrain->GetTransform().translation.y + m_TerrainFollowingSphere->GetTransform().scale.y + (m_LitTerrain->GetHeightAtPoint(posOnTerrain) * m_LitTerrain->GetTransform().scale.y);
-		m_TerrainFollowingSphere->SetTranslation(posOnTerrain);
-		m_TerrainFollowingSphere->Movement_YGHJ();
-		m_TerrainFollowingSphere->Update();
+		BillboardObjectToCamera
+		(
+			*m_RightQuad,
+			(Statics::SceneCamera.GetFront() * 3.0f) + Statics::SceneCamera.GetRight(),
+			{ 0.25f ,0.25f,0.25f }
+		);
 	}
 }
 
@@ -229,9 +213,6 @@ void Scene_Assessment1::Draw()
 	if (m_MousePickSphere)
 		m_MousePickSphere->Draw();
 
-	if (m_TerrainFollowingSphere)
-		m_TerrainFollowingSphere->Draw();
-
 	if (m_LitTerrain)
 		m_LitTerrain->Draw();
 
@@ -239,7 +220,7 @@ void Scene_Assessment1::Draw()
 		m_NoiseTerrain->Draw();
 }
 
-void Scene_Assessment1::HandleMousePickingQuads()
+void Scene_Assessment1::HandleMousePickingInteractions()
 {
 	if (Statics::ActiveCursor)
 	{
@@ -284,4 +265,9 @@ void Scene_Assessment1::HandleMousePickingQuads()
 		}
 	}
 	
+}
+
+void Scene_Assessment1::BillboardObjectToCamera(GameObject& _object, glm::vec3 _relativePos, glm::vec3 _scale)
+{
+	_object.SetModel(glm::scale(glm::inverse(glm::lookAt(Statics::SceneCamera.GetPosition() + _relativePos, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())), _scale));
 }

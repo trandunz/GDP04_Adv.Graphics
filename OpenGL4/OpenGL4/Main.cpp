@@ -74,7 +74,7 @@ void InitGL()
 	if (glewInit() != GLEW_OK)
 		exit(0);
 
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 	//glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);

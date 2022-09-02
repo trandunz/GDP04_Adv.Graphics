@@ -1,0 +1,47 @@
+	----------------------------------
+		CREATED BY WILLIAM INMAN
+	----------------------------------
+Controls:
+	- Toggle CURSOR 			: 	 	TAB
+	- Toggle STENCIL outline 	: 		X
+	- Toggle SCISSOR test		:		Z
+	- Move Camera Forward		: 		W
+	- Move Camera Left			: 		A
+	- Move Camera Backward		: 		S
+	- Move Camera Right			: 		D
+
+Features:
+	----------------------------------
+	Scissor, Stencil and Model Loading
+	----------------------------------
+	- Black bars on top and bottom using Scissor test (toggle with 'Z')
+	
+	- Red stencil outline around a rotating 3D model with a consistent width (toggle with 'X')
+	
+	----------------------------------
+			Terrain Rendering
+	----------------------------------
+	- Terrain generated using a RAW file height map of 512 * 512 with grass texture
+	
+	- A Directional light is added too the terrain using the Blinn-Phong model
+	
+	- Texture mandated vegetation is added too the terrain. (4 textures used depending on the height)
+	
+	----------------------------------
+				Perlin Noise
+	----------------------------------
+	- A cloud pattern is created by generating random noise each time program is run and saving it as a JPG. It is then applied as a texture to a hemisphere.
+	
+	- Generated random noise each time program is run. The generated noise is saved to disk as a JPG and a RAW.
+	
+	- Applied the noise heightmap to another terrain and gave it textures and lighting.
+	
+	----------------------------------
+	Fog, 3D Texture and Mouse Picking
+	----------------------------------
+	- Linear fog is applied to all objects in the scene (including cubemap, hemisphere and stencil outline) The camera may also move around the scene using the mouse and WASD
+	
+	- Two quads are added in world space. Pressing the right one moves the camera backward. Pressing the left one moves the camera forward. The quads are attached too the camera, moving and rotating with it. 
+	
+	- A quad and a sphere are added too the scene. The sphere follows the intersection point between the mouse and the quad. The sphere stays on the surface of the quad. The intersection point is printed out to console.
+		(NOTE: Mouse picking is only enabled if the cursor is enabled. Toggle the cursor with TAB)
