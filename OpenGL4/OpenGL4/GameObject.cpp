@@ -13,6 +13,7 @@
 #include "LightManager.h"
 #include "Skybox.h"
 #include "Physics.h"
+#include "SceneManager.h"
 
 GameObject::GameObject(glm::vec3 _position)
 {
@@ -175,6 +176,10 @@ void GameObject::Draw()
             {
                 SetBlinnFong3DUniforms();
                 SetRimLighingUniforms();
+            }
+            else if (m_ShaderLocation.fragShader == "Perlin_Moss.frag")
+            {
+                SetMossUniforms();
             }
         }
         
@@ -582,4 +587,22 @@ void GameObject::SetFogUniforms()
         ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
         ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
     }
+}
+
+void GameObject::SetMossUniforms()
+{
+    // Apply Texture
+    if (m_ActiveTextures.size() > 2)
+    {
+        ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 3);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, m_ActiveTextures[1].ID);
+        ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureMoss", 1);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, m_ActiveTextures[2].ID);
+        ShaderLoader::SetUniform1i(std::move(m_ShaderID), "NoiseTexture", 2);
+    }
+    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "ElapsedTime", SceneManager::GetTimeSinceLoad());
+    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "GrowTime", 15.0f);
 }

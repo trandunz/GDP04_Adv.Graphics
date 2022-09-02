@@ -8,5 +8,10 @@ public:
 	virtual void CursorMoveEvent(double& xpos, double& ypos) {};
 	virtual void CursorClickEvent(int button, int action, int mods) {};
 	virtual void Draw() = 0;
+
+	float GetElapsedTime() { return m_ElapsedTime; };
+
+protected:
+	float m_ElapsedTime{ 0.0f };
 };
 

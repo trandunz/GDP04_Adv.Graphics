@@ -41,7 +41,8 @@ Features:
 	----------------------------------
 	- Linear fog is applied to all objects in the scene (including cubemap, hemisphere and stencil outline) The camera may also move around the scene using the mouse and WASD
 	
-	- Two quads are added in world space. Pressing the right one moves the camera backward. Pressing the left one moves the camera forward. The quads are attached too the camera, moving and rotating with it. 
+	- Two quads are added in world space. Pressing the right quad moves the camera backward. Pressing the left quad moves the camera forward. The quads are attached too the camera, moving and rotating with it. 
+		(NOTE: Mouse picking is only enabled if the cursor is enabled. Toggle the cursor with TAB)
 	
 	- A quad and a sphere are added too the scene. The sphere follows the intersection point between the mouse and the quad. The sphere stays on the surface of the quad. The intersection point is printed out to console.
 		(NOTE: Mouse picking is only enabled if the cursor is enabled. Toggle the cursor with TAB)

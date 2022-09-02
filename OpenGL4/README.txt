@@ -36,6 +36,8 @@ Features:
 	
 	- Applied the noise heightmap to another terrain and gave it textures and lighting.
 	
+	- Another quad has beeen added to the scene. It has an animated texture that usess perlin noise, making it look as if moss is growing over a period of time.
+	
 	----------------------------------
 	Fog, 3D Texture and Mouse Picking
 	----------------------------------

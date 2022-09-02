@@ -21,6 +21,7 @@ public:
 	static void LoadScene(SCENES _newLevel);
 	static void ChangeToPendingScene();
 
+	static float GetTimeSinceLoad();
 private:
 	SceneManager() {};
 	~SceneManager() { CleanupScene(); };

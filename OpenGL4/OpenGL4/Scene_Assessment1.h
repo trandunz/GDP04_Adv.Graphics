@@ -27,6 +27,7 @@ private:
 	GameObject* m_MousePickSphere = nullptr;
 	GameObject* m_TerrainFollowingSphere = nullptr;
 	GameObject* m_ModelObject = nullptr;
+	GameObject* m_MossQuad = nullptr;
 
 	Mesh* m_ModelMesh = nullptr;
 

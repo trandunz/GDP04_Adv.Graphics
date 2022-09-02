@@ -45,6 +45,10 @@ Scene_Assessment1::~Scene_Assessment1()
 	if (m_ModelObject)
 		delete m_ModelObject;
 	m_ModelObject = nullptr;
+
+	if (m_MossQuad)
+		delete m_MossQuad;
+	m_MossQuad = nullptr;
 }
 
 void Scene_Assessment1::Start()
@@ -57,6 +61,7 @@ void Scene_Assessment1::Start()
 	});
 
 	Noise::CreateNoiseRAW("RandomNoise", 513, 513);
+	Noise::CreateNoiseJPG("MossNoise", 513, 513);
 
 	LightManager::GetInstance().CreateDirectionalLight({ { -1,-1,0 } });
 
@@ -119,6 +124,18 @@ void Scene_Assessment1::Start()
 	m_FlatQuad->SetRotation({ 1,0,0 }, 90.0f);
 	m_FlatQuad->SetScale({ 10.0f,10.0f,10.0f });
 
+	m_MossQuad = new GameObject;
+	m_MossQuad->SetActiveTextures(
+		{
+			TextureLoader::LoadTexture("Dirt.JPG"),
+			TextureLoader::LoadTexture("Moss.JPG"),
+			TextureLoader::LoadTexture("Heightmaps/MossNoise.JPG")
+		});
+	m_MossQuad->SetMesh(StaticMesh::Quad);
+	m_MossQuad->SetShader("Fog.vert", "Perlin_Moss.frag");
+	m_MossQuad->SetScale({ 10.0f,10.0f,10.0f });
+	m_MossQuad->SetTranslation({ 0, 0.0f, -10.0f });
+
 	m_MousePickSphere = new GameObject;
 	m_MousePickSphere->SetMesh(StaticMesh::Sphere);
 	m_MousePickSphere->SetShader("Fog.vert", "Fog.frag");
@@ -129,6 +146,7 @@ void Scene_Assessment1::Start()
 
 void Scene_Assessment1::Update()
 {
+	m_ElapsedTime += Statics::DeltaTime;
 	Statics::SceneCamera.Movement_Capture();
 	Statics::SceneCamera.Movement();
 
@@ -218,6 +236,9 @@ void Scene_Assessment1::Draw()
 
 	if (m_NoiseTerrain)
 		m_NoiseTerrain->Draw();
+
+	if (m_MossQuad)
+		m_MossQuad->Draw();
 }
 
 void Scene_Assessment1::HandleMousePickingInteractions()

@@ -156,6 +156,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Noise.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Scene_Assessment1.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
@@ -201,6 +202,7 @@
     <None Include="Resources\Shaders\Lit_Fog.frag" />
     <None Include="Resources\Shaders\Normals3D.vert" />
     <None Include="Resources\Shaders\Outline.vert" />
+    <None Include="Resources\Shaders\Perlin_Moss.frag" />
     <None Include="Resources\Shaders\Reflection.frag" />
     <None Include="Resources\Shaders\ReflectionMap.frag" />
     <None Include="Resources\Shaders\SingleTexture.frag" />

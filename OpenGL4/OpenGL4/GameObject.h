@@ -202,6 +202,8 @@ private:
 
 	void SetFogUniforms();
 
+	void SetMossUniforms();
+
 
 	bool m_RimLighting = false;
 	bool m_StencilOutline = Statics::StencilTest;

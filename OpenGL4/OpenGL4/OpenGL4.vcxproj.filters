@@ -90,6 +90,9 @@
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneManager.h">
@@ -224,6 +227,9 @@
       <Filter>Resource Files\Frag Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\Cloud.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Perlin_Moss.frag">
       <Filter>Resource Files\Frag Shaders</Filter>
     </None>
   </ItemGroup>

@@ -68,3 +68,11 @@ void SceneManager::ChangeToPendingScene()
 		SceneToLoad = SCENES::UNASSIGNED;
 	}
 }
+
+float SceneManager::GetTimeSinceLoad()
+{
+	if (CurrentScene != nullptr)
+	{
+		return CurrentScene->GetElapsedTime();
+	}
+}
