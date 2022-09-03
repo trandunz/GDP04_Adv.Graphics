@@ -20,6 +20,7 @@ Mesh::Mesh(SHAPE _shape, GLenum _windingOrder)
 
 	CreateShapeVertices(_shape);
 	CreateShapeIndices(_shape);
+
 	if (Statics::DSA)
 		CreateAndInitializeBuffersDSA();
 	else
@@ -32,6 +33,7 @@ Mesh::Mesh(unsigned int _numberOfSides, GLenum _windingOrder)
 
 	CreatePolygonVertices(_numberOfSides);
 	CreatePolygonIndices(_numberOfSides);
+
 	if (Statics::DSA)
 		CreateAndInitializeBuffersDSA();
 	else
@@ -382,29 +384,37 @@ void Mesh::CreateAndInitializeBuffersNONDSA(bool _ebo)
 
 void Mesh::CreateAndInitializeBuffersDSA(bool _ebo)
 {
+	// Vertex Array
 	glCreateVertexArrays(1, &m_VertexArrayID);
 
+	// Vertex Buffer
 	glCreateBuffers(1, &m_VertexBufferID);
 	glNamedBufferData(m_VertexBufferID, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
 
+	// Layouts
+	// Position
 	glEnableVertexArrayAttrib(m_VertexArrayID, 0);
 	glVertexArrayAttribBinding(m_VertexArrayID, 0, 0);
 	glVertexArrayAttribFormat(m_VertexArrayID, 0, 3, GL_FLOAT, GL_FALSE, 0);
-
+	// TexCoords
 	glEnableVertexArrayAttrib(m_VertexArrayID, 1);
 	glVertexArrayAttribBinding(m_VertexArrayID, 1, 0);
 	glVertexArrayAttribFormat(m_VertexArrayID, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texCoords));
-
+	// Normals
 	glEnableVertexArrayAttrib(m_VertexArrayID, 2);
 	glVertexArrayAttribBinding(m_VertexArrayID, 2, 0);
 	glVertexArrayAttribFormat(m_VertexArrayID, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normals));
 
+	// Attach Vertex Buffer To vertex array
 	glVertexArrayVertexBuffer(m_VertexArrayID, 0, m_VertexBufferID, 0, sizeof(Vertex));
 
+	// Index Buffer
 	if (_ebo)
 	{
 		glCreateBuffers(1, &m_IndexBufferID);
 		glNamedBufferData(m_IndexBufferID, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
+
+		// Attach index buffer to vertex array
 		glVertexArrayElementBuffer(m_VertexArrayID, m_IndexBufferID);
 	}
 }

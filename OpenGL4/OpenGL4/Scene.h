@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Scene.h 
+// Description : Scene Interface Header File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #pragma once
 class Scene
 {

@@ -4,7 +4,6 @@
 // New Zealand 
 // (c) Media Design School
 // File Name : BlinnFong3D.frag
-// Description : Generic fragment shader for handling BlinnFong Lighting On Meshes
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

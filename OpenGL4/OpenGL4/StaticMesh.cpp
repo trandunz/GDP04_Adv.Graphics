@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : StaticMesh.cpp 
+// Description : StaticMesh Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "StaticMesh.h"
 
 Mesh* StaticMesh::Quad{ nullptr };

@@ -4,7 +4,6 @@
 // New Zealand 
 // (c) Media Design School
 // File Name : TextLabel.vert
-// Description : Generic vertex shader for handling TextLabels And Scrolling TextLabels
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

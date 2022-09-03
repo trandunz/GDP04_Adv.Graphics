@@ -4,7 +4,6 @@
 // New Zealand 
 // (c) Media Design School
 // File Name : Reflection.frag
-// Description : Generic fragment shader for handling Reflection
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

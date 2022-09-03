@@ -4,7 +4,6 @@
 // New Zealand 
 // (c) Media Design School
 // File Name : Skybox.vert
-// Description : Generic vertex shader for handling skybox
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

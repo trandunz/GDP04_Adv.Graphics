@@ -133,14 +133,22 @@ void Camera::MouseLook(glm::vec2 _mousePos)
 
 glm::vec3 Camera::GetRayCursorRayDirection(glm::vec2 _mousePos)
 {
-    float x = (2.0f * _mousePos.x) / Statics::WindowSize.x - 1.0f;
-    float y = 1.0f - (2.0f * _mousePos.y) / Statics::WindowSize.y;
-    float z = 1.0f;
-    glm::vec3 nds { x, y, z };
-    glm::vec4 clip { nds.x, nds.y, -1.0f, 1.0 };
+    // Convert mouse pos to normalize device coordinates
+    glm::vec3 ndc
+    {
+        (2.0f * _mousePos.x) / Statics::WindowSize.x - 1.0f,
+        1.0f - (2.0f * _mousePos.y) / Statics::WindowSize.y,
+        1.0f
+    };
+    // Convert NDC to Clip Coordinates
+    glm::vec4 clip { ndc.x, ndc.y, -1.0f, 1.0 };
+    // Convert Clip Coords to camera / eye coordinates by undoing projection transformation
     glm::vec4 eye = glm::inverse(GetProjectionMatrix()) * clip;
+    // Force eye coordinate to be a forward direction instead of a point
     eye = { eye.x, eye.y, -1.0f, 0.0 };
-    glm::vec3 worldRay = glm::inverse(GetViewMatrix()) * eye;
+    // Convert eye coordinates to world coordinates by undoing view transformation
+    glm::vec3 worldRay = glm::vec3(glm::inverse(GetViewMatrix()) * eye);
+    // Normalize it so its only a direction
     return glm::normalize(worldRay);
 }
 

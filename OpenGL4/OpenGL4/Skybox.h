@@ -86,7 +86,13 @@ private:
 	Skybox(Skybox const&) = delete;
 	void operator=(Skybox const&) = delete;
 
+	/// <summary>
+	/// Sets up stuff for working cloud such as shader e.t.c
+	/// </summary>
 	void InitCloud();
+	/// <summary>
+	/// Draws the cloud
+	/// </summary>
 	void DrawCloud();
 
 	bool m_Cloud{false};

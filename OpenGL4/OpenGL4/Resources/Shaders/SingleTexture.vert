@@ -4,7 +4,6 @@
 // New Zealand 
 // (c) Media Design School
 // File Name : SingleTexture.vert
-// Description : Generic vertex shader for handling position and texture coordinate layouts
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

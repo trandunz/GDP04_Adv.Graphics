@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Statics.cpp 
+// Description : Statics Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Statics.h"
 
 glm::ivec2 Statics::WindowSize{};

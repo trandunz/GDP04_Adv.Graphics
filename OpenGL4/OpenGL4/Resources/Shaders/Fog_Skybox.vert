@@ -3,8 +3,7 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : Skybox.vert
-// Description : Generic vertex shader for handling skybox
+// File Name : Fog_Skybox.vert
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

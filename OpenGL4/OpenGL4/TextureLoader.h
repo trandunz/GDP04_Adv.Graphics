@@ -30,6 +30,10 @@ public:
 	/// <returns></returns>
 	static Texture LoadTexture(std::string&& _fileName);
 
+	/// <summary>
+	/// Creates a texture the size of the glfw window. For use with a frame buffer.
+	/// </summary>
+	/// <returns></returns>
 	static Texture CreateRenderTexture();
 
 	/// <summary>
@@ -39,6 +43,11 @@ public:
 	/// <returns></returns>
 	static Texture LoadCubemap(std::vector<std::string> _fileNames);
 
+	/// <summary>
+	/// Loads a heightmap from an image and returns a vector of its data.
+	/// </summary>
+	/// <param name="_fileName"></param>
+	/// <returns></returns>
 	static std::vector<unsigned char> LoadHeightMap(std::string&& _fileName);
 private:
 	inline static std::vector<Texture> m_Textures;

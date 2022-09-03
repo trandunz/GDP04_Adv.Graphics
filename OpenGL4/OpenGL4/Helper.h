@@ -29,6 +29,9 @@ using KEYMAP = std::map<int, bool>;
 #define Right glm::vec3{1.0f,0.0f,0.0f}
 #define Up glm::vec3{0.0f,1.0f,0.0f}
 
+/// <summary>
+/// Ray struct for physics raycasting
+/// </summary>
 struct Ray
 {
 	glm::vec3 origin;

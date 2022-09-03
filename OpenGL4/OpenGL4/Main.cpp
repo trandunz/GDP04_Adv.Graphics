@@ -1,8 +1,16 @@
-#include "Helper.h"
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Main.cpp 
+// Description : Main Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Statics.h"
 #include "SceneManager.h"
 #include "FrameBuffer.h"
-
 
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -17,15 +25,22 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 	{
 		if (key.second == true)
 		{
+			// Escape is pressed
 			if (key.first == GLFW_KEY_ESCAPE)
 			{
 				glfwSetWindowShouldClose(Statics::RenderWindow, true);
+
+				// Only on press once please
+				key.second = false;
 			}
+			// Tab is pressed
 			if (key.first == GLFW_KEY_TAB)
 			{
+				// Only on press once please
 				key.second = false;
-				Statics::ActiveCursor = !Statics::ActiveCursor;
 
+				// Toggle mouse cursor
+				Statics::ActiveCursor = !Statics::ActiveCursor;
 				if (Statics::ActiveCursor)
 					glfwSetInputMode(Statics::RenderWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				else
@@ -134,6 +149,7 @@ void Render()
 		m_FrameBuffer->Bind();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
 	if (Statics::BlackBars)
 	{
 		glEnable(GL_SCISSOR_TEST);
@@ -154,12 +170,11 @@ void Render()
 int Cleanup()
 {
 	SceneManager::CleanupScene();
-	StaticMesh::Cleanup();
-	Statics::Cleanup();
-
 	if (m_FrameBuffer)
 		delete m_FrameBuffer;
 	m_FrameBuffer = nullptr;
+	StaticMesh::Cleanup();
+	Statics::Cleanup();
 
 	return 0;
 }

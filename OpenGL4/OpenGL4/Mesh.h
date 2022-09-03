@@ -44,7 +44,16 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// Returns a refrence too the vertices
+	/// </summary>
+	/// <returns></returns>
 	std::vector<Vertex>& GetVertices();
+
+	/// <summary>
+	/// Returns a refrence too the indices
+	/// </summary>
+	/// <returns></returns>
 	std::vector<unsigned>& GetIndices();
 
 private:
@@ -70,9 +79,15 @@ private:
 	void CreatePolygonIndices(unsigned int _numberOfSides);
 	/// <summary>
 	/// Creates the vertexArray, vertex buffer and index buffer, 
-	/// populating them with the vertices and indices values.
+	/// populating them with the vertices and indices.
+	/// Indices can be disabled by setting _ebo to false
 	/// </summary>
 	void CreateAndInitializeBuffersNONDSA(bool _ebo = true);
+	/// <summary>
+	/// Creates the vertexArray, vertex buffer and index buffer, 
+	/// populating them with the vertices and indices values.
+	/// Indices can be disabled by setting _ebo to false
+	/// </summary>
 	void CreateAndInitializeBuffersDSA(bool _ebo = true);
 	/// <summary>
 	/// Converts the given positional value to texture coordinate space (0-1)
@@ -85,13 +100,15 @@ private:
 	/// </summary>
 	/// <param name="_fidelity"></param>
 	void GenerateSphereVertices(int _fidelity);
-
 	/// <summary>
 	/// Populates Indices Array With Information For A Sphere Of Specified Fidelity
 	/// </summary>
 	/// <param name="_fidelity"></param>
 	void GenerateSphereIndices(int _fidelity);
-
+	/// <summary>
+	/// Populates Vertices Array With Information For A HemiSphere Of Specified Fidelity
+	/// </summary>
+	/// <param name="_fidelity"></param>
 	void GenerateHemiSphereVertices(int _fidelity);
 
 	std::vector<unsigned int> m_Indices{};

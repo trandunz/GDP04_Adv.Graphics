@@ -19,8 +19,6 @@ public:
 	/// <summary>
 	/// GameObject contructor
 	/// </summary>
-	/// <param name="_camera"></param>
-	/// <param name="_deltaTime"></param>
 	/// <param name="_position"></param>
 	GameObject(glm::vec3 _position = {0,0,0});
 	
@@ -65,12 +63,17 @@ public:
 	/// </summary>
 	/// <param name="_mesh"></param>
 	void SetMesh(Mesh* _mesh);
+
 	/// <summary>
 	/// Returns the attached mesh.
 	/// </summary>
 	/// <returns></returns>
 	Mesh* GetMesh();
 
+	/// <summary>
+	/// Returns a copy of the transform
+	/// </summary>
+	/// <returns></returns>
 	Transform GetTransform() const;
 
 	/// <summary>
@@ -109,6 +112,10 @@ public:
 	/// <param name="_scaleFactor"></param>
 	void Scale(glm::vec3 _scaleFactor);
 
+	/// <summary>
+	/// Force sets the transform / model matrix
+	/// </summary>
+	/// <param name="_newModel"></param>
 	void SetModel(glm::mat4 _newModel);
 
 	/// <summary>
@@ -160,9 +167,26 @@ public:
 	/// <param name="_rimLighting"></param>
 	void SetRimLighting(bool _rimLighting);
 
+	/// <summary>
+	/// Checks raycast intersection with current mesh and returns bool
+	/// </summary>
+	/// <param name="_ray"></param>
+	/// <returns></returns>
 	bool RayIntersection(Ray _ray);
+
+	/// <summary>
+	/// Checks raycast intersection with current mesh and returns bool 
+	/// along with the point of intersection
+	/// </summary>
+	/// <param name="_ray"></param>
+	/// <param name="_point"></param>
+	/// <returns></returns>
 	bool RayIntersection(Ray _ray, glm::vec3& _point);
 
+	/// <summary>
+	/// Toggles a stencil outline around the object
+	/// </summary>
+	/// <param name="_outline"></param>
 	void SetStencilOutlineActive(bool _outline);
 
 private:
@@ -200,8 +224,14 @@ private:
 	/// </summary>
 	void SetSingleTextureUniforms();
 
+	/// <summary>
+	/// Set uniforms for a fog vertex and fragment shaders
+	/// </summary>
 	void SetFogUniforms();
 
+	/// <summary>
+	/// Set uniforms for growing moss frag shader
+	/// </summary>
 	void SetMossUniforms();
 
 

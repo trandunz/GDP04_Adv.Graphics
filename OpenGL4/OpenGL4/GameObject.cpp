@@ -164,19 +164,23 @@ void GameObject::Draw()
                 SetRimLighingUniforms();
                 SetReflectionMapUniforms();
             }
+            // Else if Frag shader is Single Texture
             else if (m_ShaderLocation.fragShader == "SingleTexture.frag")
             {
                 SetSingleTextureUniforms();
             }
-        } 
+        }
+        // Else if vertex shader is fog
         else if (m_ShaderLocation.vertShader == "Fog.vert")
         {
             SetFogUniforms();
+            // If frag shader is Lit Fog
             if (m_ShaderLocation.fragShader == "Lit_Fog.frag")
             {
                 SetBlinnFong3DUniforms();
                 SetRimLighingUniforms();
             }
+            // Else if frag shader is perlin moss
             else if (m_ShaderLocation.fragShader == "Perlin_Moss.frag")
             {
                 SetMossUniforms();
@@ -185,9 +189,13 @@ void GameObject::Draw()
         
         if (Statics::StencilTest && m_StencilOutline)
         {
+            // Enable stencil test if active
             glEnable(GL_STENCIL_TEST);
+            // Set front and back stencil test actions
             glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+            // Set front and back function and reference value for stencil testing
             glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            // Enable writing too stencil mask
             glStencilMask(0xFF);
         }
 
@@ -201,9 +209,9 @@ void GameObject::Draw()
 
         if (Statics::StencilTest && m_StencilOutline)
         { 
-            ////
-            //// Draw Stencil Outline
+            // Set front and back function and reference value for stencil testing
             glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+            // Disable writing to stencil mask 
             glStencilMask(0x00);
             
             glUseProgram(m_StencilShaderID);
@@ -214,6 +222,7 @@ void GameObject::Draw()
             // Set Model Matrix
             ShaderLoader::SetUniformMatrix4fv(std::move(m_StencilShaderID), "ModelMatrix", m_Transform.transform);
 
+            // Set is Foggy
             ShaderLoader::SetUniform1i(std::move(m_StencilShaderID), "Foggy", Statics::Foggy);
             if (Statics::Foggy)
             {
@@ -223,11 +232,12 @@ void GameObject::Draw()
                 ShaderLoader::SetUniform4fv(std::move(m_StencilShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
             }
             
+            // Draw Stencil Mesh
             m_Mesh->Draw();
             
-            glStencilMask(0x00); //disable writing to stencil mask 
+            glStencilMask(0x00); // Disable writing to stencil mask 
             glDisable(GL_STENCIL_TEST); // Disable stencil test
-            glStencilMask(0xFF); // Enable writing again for next time
+            glStencilMask(0xFF); // Enable writing to stencil mask 
             
             // Unbind
             glUseProgram(0);
@@ -350,13 +360,17 @@ void GameObject::SetRimLighting(bool _rimLighting)
 bool GameObject::RayIntersection(Ray _ray)
 {
     bool intersection = false;
+    // If a mesh is assigned
     if (m_Mesh)
     {
+        // Get refrence too indices and vertices
         std::vector<Vertex>* vertices = &m_Mesh->GetVertices();
         std::vector<unsigned>* indices = &m_Mesh->GetIndices();
+
         int index{ 0 };
         unsigned element{ 0 };
-        for (int i = 0; i < indices->size() / 3; i++)
+        // Loop over all indices and get points for each triangle in vertices
+        for (unsigned i = 0; i < indices->size() / 3; i++)
         {
             element = (*indices)[index];
             glm::vec4 point1{ (*vertices)[element].position, 1.0f };
@@ -370,6 +384,7 @@ bool GameObject::RayIntersection(Ray _ray)
             glm::vec4 point3{ (*vertices)[element].position, 1.0f };
             point3 = m_Transform.transform * point3;
 
+            // test for intersection with triangle
             intersection = Physics::IntersectTriangle(_ray, point1, point2, point3);
             if (intersection)
                 return true;
@@ -386,13 +401,17 @@ bool GameObject::RayIntersection(Ray _ray)
 bool GameObject::RayIntersection(Ray _ray, glm::vec3& _point)
 {
     bool intersection = false;
+    // If a mesh is assigned
     if (m_Mesh)
     {
+        // Get refrence too indices and vertices
         std::vector<Vertex>* vertices = &m_Mesh->GetVertices();
         std::vector<unsigned>* indices = &m_Mesh->GetIndices();
+
         int index{ 0 };
         unsigned element{ 0 };
-        for (int i = 0; i < indices->size() / 3; i++)
+        // Loop over all indices and get points for each triangle in vertices
+        for (unsigned i = 0; i < indices->size() / 3; i++)
         {
             element = (*indices)[index];
             glm::vec4 point1{ (*vertices)[element].position, 1.0f };
@@ -406,6 +425,7 @@ bool GameObject::RayIntersection(Ray _ray, glm::vec3& _point)
             glm::vec4 point3{ (*vertices)[element].position, 1.0f };
             point3 = m_Transform.transform * point3;
 
+            // test for intersection with triangle
             intersection = Physics::IntersectTriangle(_ray, point1, point2, point3, _point);
             if (intersection)
                 return true;

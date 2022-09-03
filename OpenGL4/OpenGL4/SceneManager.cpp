@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : SceneManager.cpp 
+// Description : SceneManager Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "SceneManager.h"
 #include "Scene_Assessment1.h"
 
@@ -74,5 +84,9 @@ float SceneManager::GetTimeSinceLoad()
 	if (CurrentScene != nullptr)
 	{
 		return CurrentScene->GetElapsedTime();
+	}
+	else
+	{
+		return {};
 	}
 }

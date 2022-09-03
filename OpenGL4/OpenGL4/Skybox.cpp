@@ -121,22 +121,27 @@ void Skybox::InitCloud()
 void Skybox::DrawCloud()
 {
 	glUseProgram(m_CloudShaderID);
+
+	// Scale it down so its slightly smaller than the skybox and rotate it
 	Transform hemiSphereTransform = m_Transform;
 	hemiSphereTransform.scale *= 0.8f;
-	//hemiSphereTransform.scale = { 1,1,1 };
 	hemiSphereTransform.translation.y = -hemiSphereTransform.scale.y / 4.0f;
 	hemiSphereTransform.rotation_axis = { 1,0,0 };
 	hemiSphereTransform.rotation_value = glm::radians(-90.0f);
 	UpdateModelValueOfTransform(hemiSphereTransform);
 
+	// PVM Uniforms
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "Model", hemiSphereTransform.transform);
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * hemiSphereTransform.transform);
+	
+	// Texture uniform
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_CloudTexture.ID);
 	ShaderLoader::SetUniform1i(std::move(m_CloudShaderID), "TextureCount", 1);
 	ShaderLoader::SetUniform1i(std::move(m_CloudShaderID), "Texture0", 0);
 
+	// Fog uniforms
 	ShaderLoader::SetUniform1i(std::move(m_CloudShaderID), "Foggy", Statics::Foggy);
 	if (Statics::Foggy)
 	{
@@ -146,8 +151,10 @@ void Skybox::DrawCloud()
 		ShaderLoader::SetUniform4fv(std::move(m_CloudShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
 	}
 	
+	// Draw it
 	StaticMesh::Hemisphere->Draw();
 
+	// Unbind
 	glUseProgram(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

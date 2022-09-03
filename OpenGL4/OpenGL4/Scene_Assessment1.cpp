@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Scene_Assessment1.cpp 
+// Description : Scene_Assessment1 Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Scene_Assessment1.h"
 #include "TextureLoader.h"
 #include "Noise.h"
@@ -55,9 +65,12 @@ void Scene_Assessment1::Start()
 {
 	glfwSetInputMode(Statics::RenderWindow, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 
+	// Preload textures to use
 	TextureLoader::Init({
-	"World.jpg",
-	"Grass.jpg"
+	"Grass.jpg",
+	"Sand.jpg",
+	"Dirt.jpg",
+	"Snow.jpg"
 	});
 
 	Noise::CreateNoiseRAW("RandomNoise", 513, 513);
@@ -65,7 +78,8 @@ void Scene_Assessment1::Start()
 
 	LightManager::GetInstance().CreateDirectionalLight({ { -1,-1,0 } });
 
-	Skybox::GetInstance().SetTexture(TextureLoader::LoadCubemap(
+	Skybox::GetInstance().SetTexture(
+		TextureLoader::LoadCubemap(
 		{
 			"MountainOutpost/Right.jpg",
 			"MountainOutpost/Left.jpg",
@@ -245,14 +259,16 @@ void Scene_Assessment1::HandleMousePickingInteractions()
 {
 	if (Statics::ActiveCursor)
 	{
+		// If mouse is pressed / held
 		int mouseLeftState = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
-
-		Ray cameraRay;
-		cameraRay.origin = Statics::SceneCamera.GetPosition();
-		cameraRay.direction = Statics::SceneCamera.GetRayCursorRayDirection(m_CursorPos);
-
 		if (mouseLeftState == GLFW_PRESS)
 		{
+			// Create a ray
+			Ray cameraRay{};
+			cameraRay.origin = Statics::SceneCamera.GetPosition();
+			cameraRay.direction = Statics::SceneCamera.GetRayCursorRayDirection(m_CursorPos);
+
+			// Check for intersection with left quad
 			if (m_LeftQuad)
 			{
 				bool intersection = m_LeftQuad->RayIntersection(cameraRay);
@@ -261,6 +277,7 @@ void Scene_Assessment1::HandleMousePickingInteractions()
 					Statics::SceneCamera.MoveForward();
 				}
 			}
+			// Check for intersection with right quad
 			if (m_RightQuad)
 			{
 				bool intersection = m_RightQuad->RayIntersection(cameraRay);
@@ -269,18 +286,21 @@ void Scene_Assessment1::HandleMousePickingInteractions()
 					Statics::SceneCamera.MoveBackward();
 				}
 			}
+			// Check for intersection with flat quad
 			if (m_FlatQuad)
 			{
+				// Get the hit pos out of ray intersecttion function
 				glm::vec3 hitPos{};
 				bool intersection = m_FlatQuad->RayIntersection(cameraRay, hitPos);
 				if (intersection)
 				{
+					// Print it to console
 					Print("Intersection Location: ", false);
 					Print(hitPos);
 
-					glm::vec3 newPos = hitPos;
-					newPos.y += m_MousePickSphere->GetTransform().scale.y / 2.0f;
-					m_MousePickSphere->SetTranslation(newPos);
+					// Set the mouse pick sphere position to inttersection point
+					hitPos.y += m_MousePickSphere->GetTransform().scale.y / 2.0f;
+					m_MousePickSphere->SetTranslation(hitPos);
 				}
 			}
 		}

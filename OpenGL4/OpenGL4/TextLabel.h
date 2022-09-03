@@ -93,9 +93,24 @@ public:
 	/// <param name="_newPosition"></param>
 	void SetPosition(glm::vec2&& _newPosition);
 
+	/// <summary>
+	/// Sets the scroll speed
+	/// </summary>
+	/// <param name="_newSpeed"></param>
 	void SetScrollSpeed(float&& _newSpeed);
+
+	/// <summary>
+	/// Sets weather the text scrolls right or left
+	/// </summary>
+	/// <param name="_isScrollingRight"></param>
 	void SetScrollingRight(bool&& _isScrollingRight);
+
+	/// <summary>
+	/// Sets wether the text scrolls
+	/// </summary>
+	/// <param name="_isScrolling"></param>
 	void SetScrolling(bool&& _isScrolling);
+
 	/// <summary>
 	/// Sets the clipping planes of the text (with respect to window size)
 	/// </summary>s

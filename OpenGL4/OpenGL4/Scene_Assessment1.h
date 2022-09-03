@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Scene_Assessment1.h 
+// Description : Scene_Assessment1 Header File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #pragma once
 #include "Scene.h"
 #include "GameObject.h"
@@ -18,7 +28,17 @@ public:
 	virtual void Draw() override;
 
 private:
+	/// <summary>
+	/// Handles all the interactions to do with mouse picking
+	/// </summary>
 	void HandleMousePickingInteractions();
+	
+	/// <summary>
+	/// Billboards any object too the camera
+	/// </summary>
+	/// <param name="_object"></param>
+	/// <param name="_relativePos"></param>
+	/// <param name="_scale"></param>
 	void BillboardObjectToCamera(GameObject& _object, glm::vec3 _relativePos, glm::vec3 _scale);
 
 	GameObject* m_LeftQuad = nullptr;

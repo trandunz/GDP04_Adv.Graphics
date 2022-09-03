@@ -3,8 +3,7 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : Normals3D.vert
-// Description : Generic vertex shader for handling position, texture coordinate and Normal layouts
+// File Name : Terrain.vert
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

@@ -4,7 +4,6 @@
 // New Zealand 
 // (c) Media Design School
 // File Name : SingleTexture.frag
-// Description : Generic fragment shader for handling single textured Meshes
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

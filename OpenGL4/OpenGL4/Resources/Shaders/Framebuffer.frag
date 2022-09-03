@@ -3,8 +3,7 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : 
-// Description :
+// File Name : Framebuffer.frag
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

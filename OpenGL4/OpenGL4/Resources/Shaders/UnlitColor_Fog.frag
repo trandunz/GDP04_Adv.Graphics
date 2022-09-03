@@ -3,8 +3,7 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : UnlitColor.frag
-// Description : Generic fragment shader for handling unlit coloured Meshes
+// File Name : UnlitColor_Fog.frag
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Terrain.cpp 
+// Description : Terrain Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Terrain.h"
 #include "Noise.h"
 #include "Statics.h"
@@ -6,15 +16,15 @@ Terrain::Terrain(std::string _heightMap, std::string _fileExtension)
 {
 	m_ShaderID = ShaderLoader::CreateShader("Terrain.vert","TerrainTextures.frag");
 
-	if (_fileExtension == ".jpg")
-		LoadHeightmap(_heightMap + _fileExtension);
-	else if (_fileExtension == ".RAW")
+	if (_fileExtension == ".RAW")
 		LoadRAWHeightmap(_heightMap + _fileExtension);
+	else
+		LoadImageHeightmap(_heightMap + _fileExtension);
 
 	Smooth();
 	GenerateVertices();
 	GenerateIndices();
-	CreateAndInitializeBuffers();
+	CreateAndInitializeBuffers(Statics::DSA);
 }
 
 Terrain::Terrain()
@@ -25,7 +35,7 @@ Terrain::Terrain()
 	Smooth();
 	GenerateVertices();
 	GenerateIndices();
-	CreateAndInitializeBuffers();
+	CreateAndInitializeBuffers(Statics::DSA);
 }
 
 Terrain::~Terrain()
@@ -59,6 +69,7 @@ void Terrain::Draw()
 
 	SetBlinnFong3DUniforms();
 
+	// Set fog uniforms
 	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Foggy", Statics::Foggy);
 	if (Statics::Foggy)
 	{
@@ -68,6 +79,9 @@ void Terrain::Draw()
 		ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
 	}
 
+	// Set different levels that textures are used
+	// texture0 = 0.0f -> 8.0f
+	// e.t.c
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture0Height", 0.0f);
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture1Height", 8.0f);
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Texture2Height", 30.0f);
@@ -130,57 +144,85 @@ void Terrain::SetActiveTextures(std::vector<Texture> _textures)
 	m_ActiveTextures = _textures;
 }
 
-float Terrain::GetHeightAtPoint(glm::vec3 _point)
+void Terrain::CreateAndInitializeBuffers(bool _dsa)
 {
-	_point /= m_Transform.scale;
-	_point += glm::vec3{ 256.0f,0,256.0f };
-	Print(_point);
+	if (_dsa)
+	{
+		// Vertex Array
+		glCreateVertexArrays(1, &m_VertexArrayID);
 
-	return m_HeightMap[(int)_point.x * 513 + (int)_point.z];
-}
+		// Vertex Buffer
+		glCreateBuffers(1, &m_VertexBufferID);
+		glNamedBufferData(m_VertexBufferID, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
 
-void Terrain::CreateAndInitializeBuffers()
-{
-	// Vertex Array
-	glGenVertexArrays(1, &m_VertexArrayID);
-	glBindVertexArray(m_VertexArrayID);
+		// Index Buffer
+		glCreateBuffers(1, &m_IndexBufferID);
+		glNamedBufferData(m_IndexBufferID, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
 
-	// Vertex Buffer
-	glGenBuffers(1, &m_VertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
+		// Layouts
+		// Position
+		glEnableVertexArrayAttrib(m_VertexArrayID, 0);
+		glVertexArrayAttribBinding(m_VertexArrayID, 0, 0);
+		glVertexArrayAttribFormat(m_VertexArrayID, 0, 3, GL_FLOAT, GL_FALSE, 0);
+		// TexCoords
+		glEnableVertexArrayAttrib(m_VertexArrayID, 1);
+		glVertexArrayAttribBinding(m_VertexArrayID, 1, 0);
+		glVertexArrayAttribFormat(m_VertexArrayID, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texCoords));
+		// Normals
+		glEnableVertexArrayAttrib(m_VertexArrayID, 2);
+		glVertexArrayAttribBinding(m_VertexArrayID, 2, 0);
+		glVertexArrayAttribFormat(m_VertexArrayID, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normals));
 
-	// Index Buffer
-	glGenBuffers(1, &m_IndexBufferID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
+		// Attach Vertex Buffer To vertex array
+		glVertexArrayVertexBuffer(m_VertexArrayID, 0, m_VertexBufferID, 0, sizeof(Vertex));
+		// Attach Index buffer to vertex array
+		glVertexArrayElementBuffer(m_VertexArrayID, m_IndexBufferID);
+	}
+	else
+	{
+		// Vertex Array
+		glGenVertexArrays(1, &m_VertexArrayID);
+		glBindVertexArray(m_VertexArrayID);
 
-	// Layouts
-	// Position
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	// TexCoords
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, texCoords)));
-	// Normals
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, normals)));
-	// Unbind
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		// Vertex Buffer
+		glGenBuffers(1, &m_VertexBufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
+		glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
+
+		// Index Buffer
+		glGenBuffers(1, &m_IndexBufferID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
+
+		// Layouts
+		// Position
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		// TexCoords
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, texCoords)));
+		// Normals
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, normals)));
+		// Unbind
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
 }
 
 void Terrain::GenerateVertices()
 {
+	// Clear the vertices and reserve 513 * 513 spaces
 	m_Vertices.clear();
 	m_Vertices.resize(513 * 513);
 
-	float halfWidth = (513 - 1) * 0.5f;
-	float halfDepth = (513 - 1) * 0.5f;
+	float halfWidth = (512) * 0.5f;
+	float halfDepth = (512) * 0.5f;
 
-	float du = 1.0f / (513 - 1);
-	float dv = 1.0f / (513 - 1);
+	// Get Vertex step for tex coords
+	float du = 1.0f / 512;
+	float dv = 1.0f / 512;
 	for (unsigned i = 0; i < 513; ++i)
 	{
 		float z = halfDepth - i;
@@ -190,6 +232,7 @@ void Terrain::GenerateVertices()
 
 			float y = m_HeightMap[i * 513 + j];
 			m_Vertices[i * 513 + j].position = { x, y, -z };
+			// Normal is up too start
 			m_Vertices[i * 513 + j].normals = { 0.0f, 1.0f, 0.0f };
 
 			// Stretch texture over grid.
@@ -199,11 +242,11 @@ void Terrain::GenerateVertices()
 	}
 
 	// Estimate normals for interior nodes using central difference.
-	float invTwoDX = 1.0f / (2.0f);
-	float invTwoDZ = 1.0f / (2.0f);
-	for (unsigned i = 2; i < 513 - 1; ++i)
+	float invTwoDX = 1.0f / 2.0f;
+	float invTwoDZ = 1.0f / 2.0f;
+	for (unsigned i = 2; i < 512; ++i)
 	{
-		for (unsigned j = 2; j < 513 - 1; ++j)
+		for (unsigned j = 2; j < 512; ++j)
 		{
 			float t = m_HeightMap[(i - 1) * 513 + j];
 			float b = m_HeightMap[(i + 1) * 513 + j];
@@ -223,18 +266,21 @@ void Terrain::GenerateVertices()
 
 void Terrain::GenerateIndices()
 {
+	// Clear the indices and reserve 512 * 512 spaces
 	m_Indices.clear();
-	m_Indices.resize((513 - 1) * (513 - 1) * 2 * 3);
-	// Iterate over each quad and compute indices.
+	m_Indices.resize((512) * (512) * 2 * 3);
+	// Iterate over each quad and make indices.
 	int k = 0;
-	for (unsigned i = 0; i < 513 - 1; ++i)
+	for (unsigned i = 0; i < 512; ++i)
 	{
-		for (unsigned j = 0; j < 513 - 1; ++j)
+		for (unsigned j = 0; j < 512; ++j)
 		{
+			// First triangle
 			m_Indices[k] = i * 513 + j;
 			m_Indices[k + 1] = i * 513 + j + 1;
 			m_Indices[k + 2] = (i + 1) * 513 + j;
 
+			// Second triangle
 			m_Indices[k + 3] = (i + 1) * 513 + j;
 			m_Indices[k + 4] = i * 513 + j + 1;
 			m_Indices[k + 5] = (i + 1) * 513 + j + 1;
@@ -262,7 +308,7 @@ void Terrain::LoadRAWHeightmap(std::string _fileName)
 		inFile.close();
 	}
 
-	// Copy the array data into a float array, and scale and offset the heights.
+	// Copy the array data into heightmap vector
 	m_HeightMap.resize(513 * 513, 0);
 	for (unsigned i = 0; i < 513 * 513; ++i)
 	{
@@ -270,8 +316,9 @@ void Terrain::LoadRAWHeightmap(std::string _fileName)
 	}
 }
 
-void Terrain::LoadHeightmap(std::string _fileName)
+void Terrain::LoadImageHeightmap(std::string _fileName)
 {
+	// Get the array of ppixel data
 	std::vector<unsigned char> in = TextureLoader::LoadHeightMap(std::move(_fileName));
 	m_HeightMap.resize(in.size(), 0);
 	for (unsigned i = 0; i < in.size(); ++i)
@@ -282,6 +329,7 @@ void Terrain::LoadHeightmap(std::string _fileName)
 
 void Terrain::GenerateRandomHeightmap()
 {
+	// Populate the heightmap array with noise
 	int index = 0;
 	m_HeightMap.resize(513 * 513, 0);
 	for (int i = 0; i < 513; i++)
@@ -305,7 +353,7 @@ void Terrain::Smooth()
 		}
 	}
 
-	// Replace the old heightmap with the filtered one.
+	// Replace the old heightmap with the smoothed one
 	m_HeightMap = dest;
 }
 
