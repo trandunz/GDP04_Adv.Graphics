@@ -43,8 +43,7 @@ void main()
         float contribution = (d - FogStart) / FogDepth;
         contribution = clamp(contribution, 0.0f, 1.0f);
 
-        vec4 outColor = mix(ColourFromTextureORWhite(TexCoords), FogColor, contribution);
-        FragColor = mix(outColor, texture(TextureMoss,TexCoords), clamp(texture(NoiseTexture,TexCoords).r * ElapsedTime / GrowTime, 0.0f, 1.0f));
+        FragColor = mix(mix(ColourFromTextureORWhite(TexCoords), texture(TextureMoss,TexCoords), clamp(texture(NoiseTexture,TexCoords).r * ElapsedTime / GrowTime, 0.0f, 1.0f)), FogColor, contribution);
     }
     else
     {
