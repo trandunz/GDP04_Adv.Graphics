@@ -15,14 +15,13 @@ class Camera
 {
 public:
     /// <summary>
-    /// Camera Constructor Initalizes Paramter Values
+    /// Camera Constructor. Initalizes Position
     /// </summary>
-    /// <param name="_keyMap"></param>
     /// <param name="_position"></param>
     Camera(glm::vec3 _position = glm::vec3(0.0f, 0.0f, 0.0f));
     
     /// <summary>
-    /// Cleans Up Any Pointers Or Objects (e.g KeyPresses*, WidnowSize*)
+    /// Cleans Up Any Pointers Or Objects
     /// </summary>
     ~Camera();
 
@@ -32,7 +31,7 @@ public:
     void Movement_Capture();
 
     /// <summary>
-    /// Handles Camera Movement Based On Input. Does Not Run If No Input.
+    /// Handles Camera Movement Based On Input. Doe Not Run If No Input.
     /// </summary>
     /// <param name="_dt"></param>
     void Movement();
