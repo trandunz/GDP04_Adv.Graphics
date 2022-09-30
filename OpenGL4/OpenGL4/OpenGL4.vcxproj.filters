@@ -52,6 +52,12 @@
     <Filter Include="Header Files\Singletons">
       <UniqueIdentifier>{83e7d539-feb2-4f32-9fd6-36cb503e7267}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ParticleSystem">
+      <UniqueIdentifier>{d9451a58-ad53-4570-8ab9-100c529c5e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ParticleSystem">
+      <UniqueIdentifier>{f0ff93af-24ef-46a0-98c5-1ba5720c7859}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -107,6 +113,15 @@
     </ClCompile>
     <ClCompile Include="LightManager.cpp">
       <Filter>Source Files\Singletons</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Assessment2.cpp">
+      <Filter>Source Files\SceneManagement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +181,15 @@
     </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>Header Files\Singletons</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Assessment2.h">
+      <Filter>Header Files\SceneManagement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +267,18 @@
     </None>
     <None Include="Resources\Shaders\Perlin_Moss.frag">
       <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\PositionOnly.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\PointToStar.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\SingleTexture_Geo.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShowNormals.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -16,9 +16,9 @@ KEYMAP Statics::Keymap{};
 Camera Statics::SceneCamera{};
 float Statics::DeltaTime{};
 float Statics::LastTime{};
-bool Statics::StencilTest{ true };
+bool Statics::StencilTest{ false };
 bool Statics::Foggy{ false };
-bool Statics::BlackBars{ true };
+bool Statics::BlackBars{ false };
 bool Statics::ActiveCursor{ false };
 bool Statics::DSA{ true };
 

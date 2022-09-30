@@ -15,7 +15,8 @@ enum class SCENES
 {
 	UNASSIGNED = 0,
 
-	ASSESSMENT1
+	ASSESSMENT1,
+	ASSESSMENT2
 };
 
 class SceneManager

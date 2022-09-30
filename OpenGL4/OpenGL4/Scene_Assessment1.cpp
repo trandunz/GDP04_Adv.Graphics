@@ -171,21 +171,15 @@ void Scene_Assessment1::Update()
 
 	if (m_LeftQuad)
 	{
-		BillboardObjectToCamera
-		(
-			*m_LeftQuad,
+		m_LeftQuad->BillboardObjectToCamera(
 			(Statics::SceneCamera.GetFront() * 3.0f) - Statics::SceneCamera.GetRight(),
-			{ 0.25f ,0.25f,0.25f }
-		);
+			{ 0.25f ,0.25f,0.25f });
 	}
 	if (m_RightQuad)
 	{
-		BillboardObjectToCamera
-		(
-			*m_RightQuad,
+		m_RightQuad->BillboardObjectToCamera(
 			(Statics::SceneCamera.GetFront() * 3.0f) + Statics::SceneCamera.GetRight(),
-			{ 0.25f ,0.25f,0.25f }
-		);
+			{ 0.25f ,0.25f,0.25f });
 	}
 }
 
@@ -306,9 +300,4 @@ void Scene_Assessment1::HandleMousePickingInteractions()
 		}
 	}
 	
-}
-
-void Scene_Assessment1::BillboardObjectToCamera(GameObject& _object, glm::vec3 _relativePos, glm::vec3 _scale)
-{
-	_object.SetModel(glm::scale(glm::inverse(glm::lookAt(Statics::SceneCamera.GetPosition() + _relativePos, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())), _scale));
 }

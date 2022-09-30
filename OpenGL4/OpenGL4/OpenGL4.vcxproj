@@ -155,9 +155,12 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Noise.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Scene_Assessment1.cpp" />
+    <ClCompile Include="Scene_Assessment2.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
@@ -172,6 +175,8 @@
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="LightManager.h" />
@@ -179,6 +184,7 @@
     <ClInclude Include="Noise.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Scene_Assessment1.h" />
+    <ClInclude Include="Scene_Assessment2.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="StaticMesh.h" />
@@ -201,10 +207,14 @@
     <None Include="Resources\Shaders\Normals3D.vert" />
     <None Include="Resources\Shaders\Outline.vert" />
     <None Include="Resources\Shaders\Perlin_Moss.frag" />
+    <None Include="Resources\Shaders\PointToStar.geo" />
+    <None Include="Resources\Shaders\PositionOnly.vert" />
     <None Include="Resources\Shaders\Reflection.frag" />
     <None Include="Resources\Shaders\ReflectionMap.frag" />
+    <None Include="Resources\Shaders\ShowNormals.geo" />
     <None Include="Resources\Shaders\SingleTexture.frag" />
     <None Include="Resources\Shaders\SingleTexture.vert" />
+    <None Include="Resources\Shaders\SingleTexture_Geo.frag" />
     <None Include="Resources\Shaders\Skybox.frag" />
     <None Include="Resources\Shaders\Skybox.vert" />
     <None Include="Resources\Shaders\Terrain.vert" />

@@ -20,6 +20,7 @@ GameObject::GameObject(glm::vec3 _position)
     // Set starting position
     SetTranslation(_position);
     m_StencilShaderID = ShaderLoader::CreateShader("Outline.vert", "UnlitColor_Fog.frag");
+    m_NormalsShaderID = ShaderLoader::CreateShader("Normals3D.vert", "ShowNormals.geo", "UnlitColor.frag");
 }
 
 GameObject::~GameObject()
@@ -122,6 +123,21 @@ void GameObject::Draw()
 {
     if (m_Mesh)
     {
+        if (m_ShowNormals)
+        {
+            // Bind shader
+            glUseProgram(m_NormalsShaderID);
+
+            SetSingleColorUniforms(m_NormalsShaderID, {1,1,0});
+            SetNormals3DVertUniforms(m_NormalsShaderID);
+
+            // Draw the mesh
+            m_Mesh->Draw();
+
+            // Unbind shader
+            glUseProgram(0);
+        }
+
         // Bind shader
         glUseProgram(m_ShaderID);
 
@@ -139,7 +155,7 @@ void GameObject::Draw()
         // Else if Vertex shader is 3D with Normals
         else if (m_ShaderLocation.vertShader == "Normals3D.vert")   
         {
-            SetNormals3DVertUniforms();
+            SetNormals3DVertUniforms(m_ShaderID);
         
             // If Frag Shader is Blinn_Phong Lighting
             if (m_ShaderLocation.fragShader == "BlinnFong3D.frag")
@@ -184,6 +200,15 @@ void GameObject::Draw()
             else if (m_ShaderLocation.fragShader == "Perlin_Moss.frag")
             {
                 SetMossUniforms();
+            }
+        }
+        else if (m_ShaderLocation.vertShader == "PositionOnly.vert")
+        {
+            SetPositionOnlyUniforms();
+
+            if (m_ShaderLocation.fragShader == "SingleTexture.frag")
+            {
+                SetSingleTextureUniforms();
             }
         }
         
@@ -339,7 +364,7 @@ void GameObject::SetShader(std::string _vertexSource, std::string _fragmentSourc
 void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, std::string _fragmentSource)
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource,_fragmentSource);
-    m_ShaderLocation = { _vertexSource , _geoSource,_fragmentSource };
+    m_ShaderLocation = { _vertexSource , _geoSource, _fragmentSource };
 }
 
 GLuint GameObject::GetShader()
@@ -560,13 +585,23 @@ void GameObject::SetReflectionMapUniforms()
     ShaderLoader::SetUniform1i(std::move(m_ShaderID), "SkyboxTexture", 2);
 }
 
-void GameObject::SetNormals3DVertUniforms()
+void GameObject::BillboardObjectToCamera(glm::vec3 _relativePos, glm::vec3 _scale)
+{
+    SetModel(glm::scale(glm::inverse(glm::lookAt(Statics::SceneCamera.GetPosition() + _relativePos, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())), _scale));
+}
+
+void GameObject::SetShowNormals(bool _showNormals)
+{
+    m_ShowNormals = _showNormals;
+}
+
+void GameObject::SetNormals3DVertUniforms(GLuint _shaderID)
 {
     // Projection * View * Model Matrix
-    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
 
     // Set Model Matrix
-    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "ModelMatrix", m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "ModelMatrix", m_Transform.transform);
 }
 
 void GameObject::SetSingleTextureUniforms()
@@ -625,4 +660,15 @@ void GameObject::SetMossUniforms()
     }
     ShaderLoader::SetUniform1f(std::move(m_ShaderID), "ElapsedTime", SceneManager::GetTimeSinceLoad());
     ShaderLoader::SetUniform1f(std::move(m_ShaderID), "GrowTime", 15.0f);
+}
+
+void GameObject::SetPositionOnlyUniforms()
+{
+    // Projection * View * Model Matrix
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+}
+
+void GameObject::SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color)
+{
+    ShaderLoader::SetUniform3fv(std::move(_shaderID), "Color", _color);
 }

@@ -32,14 +32,6 @@ private:
 	/// Handles all the interactions to do with mouse picking
 	/// </summary>
 	void HandleMousePickingInteractions();
-	
-	/// <summary>
-	/// Billboards any object too the camera
-	/// </summary>
-	/// <param name="_object"></param>
-	/// <param name="_relativePos"></param>
-	/// <param name="_scale"></param>
-	void BillboardObjectToCamera(GameObject& _object, glm::vec3 _relativePos, glm::vec3 _scale);
 
 	GameObject* m_LeftQuad = nullptr;
 	GameObject* m_RightQuad = nullptr;

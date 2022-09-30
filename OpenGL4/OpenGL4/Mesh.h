@@ -14,6 +14,7 @@
 enum class SHAPE
 {
 	UNASSIGNED,
+	POINT,
 	CUBE,
 	PYRAMID,
 	SPHERE,
@@ -113,6 +114,8 @@ private:
 
 	std::vector<unsigned int> m_Indices{};
 	std::vector<Vertex> m_Vertices{};
+
+	SHAPE m_Shape{ SHAPE::UNASSIGNED };
 
 	GLuint m_VertexArrayID{ 0 };
 	GLuint m_VertexBufferID{ 0 };

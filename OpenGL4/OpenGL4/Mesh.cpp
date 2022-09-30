@@ -17,6 +17,7 @@
 Mesh::Mesh(SHAPE _shape, GLenum _windingOrder)
 {
 	m_WindingOrder = _windingOrder;
+	m_Shape = _shape;
 
 	CreateShapeVertices(_shape);
 	CreateShapeIndices(_shape);
@@ -116,10 +117,20 @@ void Mesh::Draw()
 {
 	glBindVertexArray(m_VertexArrayID);
 
-	if (m_Indices.size() > 0)
-		glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+	if (m_Shape == SHAPE::POINT)
+	{
+		if (m_Indices.size() > 0)
+			glDrawElements(GL_POINTS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+		else
+			glDrawArrays(GL_POINTS, 0, m_Vertices.size());
+	}
 	else
-		glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
+	{
+		if (m_Indices.size() > 0)
+			glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+		else
+			glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
+	}
 
 	glBindVertexArray(0);
 }
@@ -203,6 +214,11 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 		GenerateHemiSphereVertices(36);
 		break;
 	}
+	case SHAPE::POINT:
+	{
+		m_Vertices.emplace_back(Vertex{});
+		break;
+	}
 	default:
 	{
 		break;
@@ -276,6 +292,11 @@ void Mesh::CreateShapeIndices(SHAPE _shape)
 	case SHAPE::HEMISPHERE:
 	{
 		GenerateSphereIndices(36);
+		break;
+	}
+	case SHAPE::POINT:
+	{
+		m_Indices.emplace_back(0);
 		break;
 	}
 	default:

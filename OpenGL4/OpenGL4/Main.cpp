@@ -123,7 +123,7 @@ void Start()
 {
 	Statics::UpdateWindowSize();
 	StaticMesh::Init();
-	SceneManager::LoadScene(SCENES::ASSESSMENT1);
+	SceneManager::LoadScene(SCENES::ASSESSMENT2);
 	m_FrameBuffer = new FrameBuffer;
 }
 

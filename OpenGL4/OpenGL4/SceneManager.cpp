@@ -10,6 +10,7 @@
 
 #include "SceneManager.h"
 #include "Scene_Assessment1.h"
+#include "Scene_Assessment2.h"
 
 Scene* SceneManager::CurrentScene = nullptr;
 SCENES SceneManager::SceneToLoad = SCENES::UNASSIGNED;
@@ -69,6 +70,11 @@ void SceneManager::ChangeToPendingScene()
 		case SCENES::ASSESSMENT1:
 		{
 			CurrentScene = new Scene_Assessment1();
+			break;
+		}
+		case SCENES::ASSESSMENT2:
+		{
+			CurrentScene = new Scene_Assessment2();
 			break;
 		}
 		default:

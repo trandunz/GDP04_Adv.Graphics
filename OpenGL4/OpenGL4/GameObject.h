@@ -189,12 +189,22 @@ public:
 	/// <param name="_outline"></param>
 	void SetStencilOutlineActive(bool _outline);
 
+	/// <summary>
+	/// Billboards any object too the camera
+	/// </summary>
+	/// <param name="_object"></param>
+	/// <param name="_relativePos"></param>
+	/// <param name="_scale"></param>
+	void BillboardObjectToCamera(glm::vec3 _relativePos, glm::vec3 _scale);
+
+	void SetShowNormals(bool _showNormals);
+
 private:
 
 	/// <summary>
 	/// Sets Uniforms for Use With Normals3D.vert
 	/// </summary>
-	void SetNormals3DVertUniforms();
+	void SetNormals3DVertUniforms(GLuint _shaderID);
 
 	/// <summary>
 	/// Handles Setting Blinn-Phong Shader Uniforms.
@@ -234,12 +244,17 @@ private:
 	/// </summary>
 	void SetMossUniforms();
 
+	void SetPositionOnlyUniforms();
 
+	void SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color = {1,1,1});
+
+	bool m_ShowNormals = false;
 	bool m_RimLighting = false;
 	bool m_StencilOutline = Statics::StencilTest;
 	std::vector<Texture> m_ActiveTextures{};
 	GLuint m_ShaderID{0};
 	GLuint m_StencilShaderID{ 0 };
+	GLuint m_NormalsShaderID{ 0 };
 	ShaderProgramLocation m_ShaderLocation{};
 	glm::vec4 m_Input{};
 	float m_MovementSpeed = 10.0f;

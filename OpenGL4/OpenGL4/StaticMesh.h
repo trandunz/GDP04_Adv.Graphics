@@ -23,6 +23,7 @@ public:
 	/// </summary>
 	static void Cleanup();
 
+	static Mesh* Point;
 	static Mesh* Quad;
 	static Mesh* Cube;
 	static Mesh* InvertedCube;
