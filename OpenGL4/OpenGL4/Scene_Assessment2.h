@@ -21,6 +21,7 @@ private:
 	
 	Mesh* m_AsymmetricModel{ nullptr };
 
+	GameObject* m_TesselationTriangle{ nullptr };
 	GameObject* m_GeoStar{ nullptr };
 	GameObject* m_NormalsSphere{ nullptr };
 	GameObject* m_ExplodingObject{ nullptr };

@@ -151,6 +151,18 @@ public:
 	void SetShader(std::string _vertexSource, std::string _geoSource, std::string _fragmentSource);
 
 	/// <summary>
+	/// Sets the shader program to use for rendering
+	/// </summary>
+	/// <param name="_newShader"></param>
+	void SetShader(std::string _vertexSource, std::string _geoSource, std::string _tcSource, std::string _fragmentSource);
+
+	/// <summary>
+	/// Sets the shader program to use for rendering
+	/// </summary>
+	/// <param name="_newShader"></param>
+	void SetShader(std::string _vertexSource, std::string _geoSource, std::string _tcSource, std::string _teSource, std::string _fragmentSource);
+
+	/// <summary>
 	/// Returns the current shader program used for rendering
 	/// </summary>
 	/// <returns></returns>
@@ -249,6 +261,8 @@ private:
 	void SetExplodeUniforms(GLuint _shaderID);
 
 	void SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color = {1,1,1});
+
+	void SetTrianglePatchLODUniforms(GLuint _shaderID);
 
 	bool m_ShowNormals = false;
 	bool m_RimLighting = false;

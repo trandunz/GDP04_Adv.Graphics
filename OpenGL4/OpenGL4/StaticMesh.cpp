@@ -17,10 +17,14 @@ Mesh* StaticMesh::InvertedCube{ nullptr };
 Mesh* StaticMesh::Sphere{ nullptr };
 Mesh* StaticMesh::Hemisphere{ nullptr };
 Mesh* StaticMesh::Pyramid{ nullptr };
+Mesh* StaticMesh::Patch_Triangle{ nullptr };
+Mesh* StaticMesh::Patch_Quad{ nullptr };
 
 void StaticMesh::Init()
 {
 	Cleanup();
+	Patch_Quad = new Mesh(SHAPE::PATCH_QUAD);
+	Patch_Triangle = new Mesh(SHAPE::PATCH_TRIANGLE);
 	Point = new Mesh(SHAPE::POINT);
 	Quad = new Mesh(4);
 	InvertedCube = new Mesh(SHAPE::CUBE, GL_CW);
@@ -66,5 +70,15 @@ void StaticMesh::Cleanup()
 	{
 		delete Point;
 		Point = nullptr;
+	}
+	if (Patch_Triangle != nullptr)
+	{
+		delete Patch_Triangle;
+		Patch_Triangle = nullptr;
+	}
+	if (Patch_Quad != nullptr)
+	{
+		delete Patch_Quad;
+		Patch_Quad = nullptr;
 	}
 }

@@ -38,6 +38,10 @@ public:
     /// <returns></returns>
     static GLuint CreateShader(std::string _vertexShader, std::string _geoShader,std::string _fragmentShader);
 
+    static GLuint CreateShader(std::string _vertexShader, std::string _geoShader, std::string _tcShader, std::string _fragmentShader);
+
+    static GLuint CreateShader(std::string _vertexShader, std::string _geoShader, std::string _tcShader, std::string _teShader, std::string _fragmentShader);
+
     /// <summary>
     /// Sets Uniform 1i At Location
     /// </summary>

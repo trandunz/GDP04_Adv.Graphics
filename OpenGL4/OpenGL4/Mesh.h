@@ -18,7 +18,9 @@ enum class SHAPE
 	CUBE,
 	PYRAMID,
 	SPHERE,
-	HEMISPHERE
+	HEMISPHERE,
+	PATCH_TRIANGLE,
+	PATCH_QUAD
 };
 
 class Mesh
@@ -115,7 +117,7 @@ private:
 	std::vector<unsigned int> m_Indices{};
 	std::vector<Vertex> m_Vertices{};
 
-	SHAPE m_Shape{ SHAPE::UNASSIGNED };
+	SHAPE m_Shape{ 0 };
 
 	GLuint m_VertexArrayID{ 0 };
 	GLuint m_VertexBufferID{ 0 };

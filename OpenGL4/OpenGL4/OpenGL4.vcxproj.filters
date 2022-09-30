@@ -58,6 +58,9 @@
     <Filter Include="Source Files\ParticleSystem">
       <UniqueIdentifier>{f0ff93af-24ef-46a0-98c5-1ba5720c7859}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Tesselation Shaders">
+      <UniqueIdentifier>{c8a4c77c-bdbc-48d2-b1b3-a52cdba192db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -291,6 +294,18 @@
     </None>
     <None Include="Resources\Shaders\Framebuffer_CRT.frag">
       <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\TrianglePatch.tc">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\TrianglePatch.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\PositionPassthrough.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\TrianglePatch_LOD.tc">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

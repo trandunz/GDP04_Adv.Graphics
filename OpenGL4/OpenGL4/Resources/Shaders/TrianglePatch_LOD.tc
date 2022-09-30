@@ -1,0 +1,96 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : 
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
+#version 460 core
+
+// specify number of control points per patch output
+// this value controls the size of the input and output arrays
+layout (vertices=3) out;
+
+// varying input from vertex shader
+in vec3 Position[];
+in vec2 TexCoords[];
+// varying output to evaluation shader
+out vec2 TextureCoords[];
+
+uniform mat4 PVMMatrix;
+uniform vec3 CameraPos;
+
+float GetTessLevel(float Distance0, float Distance1);
+
+void main()
+{
+    // ----------------------------------------------------------------------
+    // pass attributes through
+    TextureCoords[gl_InvocationID] = TexCoords[gl_InvocationID];
+
+    // ----------------------------------------------------------------------
+    // invocation zero controls tessellation levels for the entire patch
+    if (gl_InvocationID == 0)
+    {
+        float EyeToVertexDistance0 = distance(CameraPos, Position[0]);
+        float EyeToVertexDistance1 = distance(CameraPos, Position[1]);
+        float EyeToVertexDistance2 = distance(CameraPos, Position[2]);
+
+        gl_TessLevelOuter[0] = GetTessLevel(EyeToVertexDistance1, EyeToVertexDistance2);
+        gl_TessLevelOuter[1] = GetTessLevel(EyeToVertexDistance2, EyeToVertexDistance0);
+        gl_TessLevelOuter[2] = GetTessLevel(EyeToVertexDistance0, EyeToVertexDistance1);
+
+        gl_TessLevelInner[0] = gl_TessLevelOuter[2];
+    }
+
+    gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
+}
+
+float GetTessLevel(float Distance0, float Distance1)
+{
+    float AvgDistance = (Distance0 + Distance1) / 2.0f;
+
+    if (AvgDistance <= 1.0f) 
+    {
+        return 10.0f;
+    }
+    else if (AvgDistance <= 2.0f) 
+    {
+        return 9.0f;
+    }
+    else if (AvgDistance <= 3.0f) 
+    {
+        return 8.0f;
+    }
+    else if (AvgDistance <= 4.0f) 
+    {
+        return 7.0f;
+    }
+     else if (AvgDistance <= 5.0f) 
+    {
+        return 6.0f;
+    }
+     else if (AvgDistance <= 6.0f) 
+    {
+        return 5.0f;
+    }
+     else if (AvgDistance <= 7.0f) 
+    {
+        return 4.0f;
+    }
+    else if (AvgDistance <= 8.0f) 
+    {
+        return 3.0f;
+    }
+    else if (AvgDistance <= 9.0f) 
+    {
+        return 2.0f;
+    }
+    else 
+    {
+        return 1.0f;
+    }
+}
+	

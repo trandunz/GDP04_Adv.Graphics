@@ -45,6 +45,8 @@ struct ShaderProgramLocation
 {
     std::string vertShader = "";
 	std::string geoShader = "";
+	std::string tcShader = "";
+	std::string teShader = "";
 	std::string fragShader = "";
 };
 

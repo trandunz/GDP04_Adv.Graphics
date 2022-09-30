@@ -70,7 +70,7 @@ GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _fragme
     }
 
     // Push The New Shader Program To Vector
-    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ _vertexShader, "",_fragmentShader}, program));
+    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ _vertexShader, "", "","",_fragmentShader}, program));
 
     // Return Program ID
     return program;
@@ -122,7 +122,120 @@ GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoSha
     }
 
     // Push The New Shader Program To Vector
-    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ _vertexShader, _geoShader, _fragmentShader }, program));
+    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ _vertexShader, _geoShader, "","",_fragmentShader}, program));
+
+    // Return Program ID
+    return program;
+}
+
+GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoShader, std::string _tcShader, std::string _fragmentShader)
+{
+    // Create A Default Program
+    GLuint program = glCreateProgram();
+
+    // Create Shaders And Store There ID's Locally
+    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader));
+    GLuint geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader));
+    GLuint tcShader = CompileShader(GL_TESS_CONTROL_SHADER, PassFileToString(_tcShader));
+    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader));
+
+    // Attach Shaders To Program
+    if (IsDebug)
+    {
+        Print("Attaching Shaders");
+    }
+    glAttachShader(program, vertShader);
+    glAttachShader(program, geoShader);
+    glAttachShader(program, tcShader);
+    glAttachShader(program, fragShader);
+
+    // Link And Validate
+    if (IsDebug)
+    {
+        Print("Linking program");
+    }
+    glLinkProgram(program);
+    glValidateProgram(program);
+
+    // Debug Output With Error Specific Message
+    int result = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, &result);
+    if (result == GL_FALSE)
+    {
+        int length = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+        char* message = (char*)_malloca(length * sizeof(char));
+        glGetProgramInfoLog(program, length, &length, message);
+        std::string debugOutput = "Failed to Compile Shader Program ";
+        if (message != 0)
+            debugOutput += message;
+        Print(debugOutput);
+        glDeleteProgram(program);
+        _freea(message);
+        return result;
+    }
+
+    // Push The New Shader Program To Vector
+    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ _vertexShader, _geoShader, _tcShader,"",_fragmentShader }, program));
+
+    // Return Program ID
+    return program;
+}
+
+GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoShader, std::string _tcShader, std::string _teShader, std::string _fragmentShader)
+{
+    // Create A Default Program
+    GLuint program = glCreateProgram();
+
+    // Create Shaders And Store There ID's Locally
+    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader));
+    GLuint geoShader;
+    if (_geoShader != "")
+        geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader));
+    GLuint tcShader = CompileShader(GL_TESS_CONTROL_SHADER, PassFileToString(_tcShader));
+    GLuint teShader = CompileShader(GL_TESS_EVALUATION_SHADER, PassFileToString(_teShader));
+    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader));
+
+    // Attach Shaders To Program
+    if (IsDebug)
+    {
+        Print("Attaching Shaders");
+    }
+    glAttachShader(program, vertShader);
+    if (_geoShader != "")
+        glAttachShader(program, geoShader);
+    glAttachShader(program, tcShader);
+    glAttachShader(program, teShader);
+    glAttachShader(program, fragShader);
+
+    // Link And Validate
+    if (IsDebug)
+    {
+        Print("Linking program");
+    }
+    glLinkProgram(program);
+    glValidateProgram(program);
+
+    // Debug Output With Error Specific Message
+    int result = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, &result);
+    if (result == GL_FALSE)
+    {
+        int length = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+        char* message = (char*)_malloca(length * sizeof(char));
+        glGetProgramInfoLog(program, length, &length, message);
+        std::string debugOutput = "Failed to Compile Shader Program ";
+        if (message != 0)
+            debugOutput += message;
+        Print(debugOutput);
+        glDeleteProgram(program);
+        _freea(message);
+        return result;
+    }
+
+    // Push The New Shader Program To Vector
+    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ _vertexShader, _geoShader, _tcShader,_teShader,_fragmentShader }, program));
 
     // Return Program ID
     return program;

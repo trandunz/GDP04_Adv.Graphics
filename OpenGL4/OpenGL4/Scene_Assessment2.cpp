@@ -28,6 +28,11 @@ Scene_Assessment2::~Scene_Assessment2()
 		delete m_ExplodingObject;
 		m_ExplodingObject = nullptr;
 	}
+	if (m_TesselationTriangle)
+	{
+		delete m_TesselationTriangle;
+		m_TesselationTriangle = nullptr;
+	}
 }
 
 void Scene_Assessment2::Start()
@@ -53,6 +58,13 @@ void Scene_Assessment2::Start()
 	m_ExplodingObject->SetTranslation({ 3,0,-2.0f });
 	m_ExplodingObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
 	m_ExplodingObject->SetScale({ 0.01f, 0.01f, 0.01f });
+
+	m_TesselationTriangle = new GameObject();
+	m_TesselationTriangle->SetMesh(StaticMesh::Patch_Quad);
+	m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "TrianglePatch.te", "SingleTexture.frag");
+	m_TesselationTriangle->SetTranslation({-3,0,-2.0f});
+	m_TesselationTriangle->SetRotation({1,0,0}, 90);
+	m_TesselationTriangle->SetActiveTextures({ TextureLoader::LoadTexture("Snow.jpg") });
 }
 
 void Scene_Assessment2::Update()
@@ -94,4 +106,11 @@ void Scene_Assessment2::Draw()
 
 	if (m_ExplodingObject)
 		m_ExplodingObject->Draw();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	if (m_TesselationTriangle)
+		m_TesselationTriangle->Draw();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

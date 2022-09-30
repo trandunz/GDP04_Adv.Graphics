@@ -215,6 +215,28 @@ void GameObject::Draw()
             {
                 SetSingleTextureUniforms();
             }
+            else if (m_ShaderLocation.fragShader == "UnlitColor.frag")
+            {
+                SetSingleColorUniforms(m_ShaderID, {1,0,1});
+            }
+        }
+        else if (m_ShaderLocation.vertShader == "PositionPassthrough.vert")
+        {
+            SetPositionOnlyUniforms();
+
+            if (m_ShaderLocation.tcShader == "TrianglePatch_LOD.tc")
+            {
+                SetTrianglePatchLODUniforms(m_ShaderID);
+            }
+
+            if (m_ShaderLocation.fragShader == "SingleTexture.frag")
+            {
+                SetSingleTextureUniforms();
+            }
+            else if (m_ShaderLocation.fragShader == "UnlitColor.frag")
+            {
+                SetSingleColorUniforms(m_ShaderID, { 1,0,1 });
+            }
         }
         
         if (Statics::StencilTest && m_StencilOutline)
@@ -363,13 +385,25 @@ std::vector<Texture> GameObject::GetActiveTextures()
 void GameObject::SetShader(std::string _vertexSource, std::string _fragmentSource)
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _fragmentSource);
-    m_ShaderLocation = { _vertexSource , "",_fragmentSource};
+    m_ShaderLocation = { _vertexSource , "", "", "",_fragmentSource};
 }
 
 void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, std::string _fragmentSource)
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource,_fragmentSource);
-    m_ShaderLocation = { _vertexSource , _geoSource, _fragmentSource };
+    m_ShaderLocation = { _vertexSource , _geoSource, "", "", _fragmentSource };
+}
+
+void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, std::string _tcSource, std::string _fragmentSource)
+{
+    m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource, _tcSource, _fragmentSource);
+    m_ShaderLocation = { _vertexSource , _geoSource, _tcSource, "", _fragmentSource };
+}
+
+void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, std::string _tcSource, std::string _teSource, std::string _fragmentSource)
+{
+    m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource, _tcSource,_teSource, _fragmentSource);
+    m_ShaderLocation = { _vertexSource , _geoSource, _tcSource, _teSource, _fragmentSource };
 }
 
 GLuint GameObject::GetShader()
@@ -682,4 +716,9 @@ void GameObject::SetExplodeUniforms(GLuint _shaderID)
 void GameObject::SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color)
 {
     ShaderLoader::SetUniform3fv(std::move(_shaderID), "Color", _color);
+}
+
+void GameObject::SetTrianglePatchLODUniforms(GLuint _shaderID)
+{
+    ShaderLoader::SetUniform3fv(std::move(_shaderID), "CameraPos", Statics::SceneCamera.GetPosition());
 }
