@@ -156,6 +156,11 @@ void GameObject::Draw()
         else if (m_ShaderLocation.vertShader == "Normals3D.vert")   
         {
             SetNormals3DVertUniforms(m_ShaderID);
+
+            if (m_ShaderLocation.geoShader == "Explode.geo")
+            {
+                SetExplodeUniforms(m_ShaderID);
+            }
         
             // If Frag Shader is Blinn_Phong Lighting
             if (m_ShaderLocation.fragShader == "BlinnFong3D.frag")
@@ -666,6 +671,12 @@ void GameObject::SetPositionOnlyUniforms()
 {
     // Projection * View * Model Matrix
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+}
+
+void GameObject::SetExplodeUniforms(GLuint _shaderID)
+{
+    ShaderLoader::SetUniform1f(std::move(_shaderID), "ElapsedTime", glfwGetTime());
+    ShaderLoader::SetUniform1f(std::move(_shaderID), "Magnitude", 1.0f);
 }
 
 void GameObject::SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color)

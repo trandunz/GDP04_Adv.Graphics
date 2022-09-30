@@ -197,12 +197,16 @@
     <None Include="Resources\Shaders\BlinnFong3D.frag" />
     <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag" />
     <None Include="Resources\Shaders\Cloud.frag" />
+    <None Include="Resources\Shaders\Explode.geo" />
     <None Include="Resources\Shaders\Fog.frag" />
     <None Include="Resources\Shaders\Fog.vert" />
     <None Include="Resources\Shaders\Fog_Skybox.frag" />
     <None Include="Resources\Shaders\Fog_Skybox.vert" />
     <None Include="Resources\Shaders\Framebuffer.frag" />
     <None Include="Resources\Shaders\Framebuffer.vert" />
+    <None Include="Resources\Shaders\Framebuffer_CA.frag" />
+    <None Include="Resources\Shaders\Framebuffer_CRT.frag" />
+    <None Include="Resources\Shaders\Framebuffer_Rain.frag" />
     <None Include="Resources\Shaders\Lit_Fog.frag" />
     <None Include="Resources\Shaders\Normals3D.vert" />
     <None Include="Resources\Shaders\Outline.vert" />

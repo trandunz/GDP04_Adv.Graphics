@@ -19,7 +19,10 @@ public:
 private:
 	glm::vec2 m_CursorPos{};
 	
+	Mesh* m_AsymmetricModel{ nullptr };
+
 	GameObject* m_GeoStar{ nullptr };
 	GameObject* m_NormalsSphere{ nullptr };
+	GameObject* m_ExplodingObject{ nullptr };
 };
 

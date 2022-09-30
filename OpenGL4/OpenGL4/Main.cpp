@@ -12,6 +12,8 @@
 #include "SceneManager.h"
 #include "FrameBuffer.h"
 
+FrameBuffer* m_FrameBuffer = nullptr;
+
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS)
@@ -29,6 +31,47 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 			if (key.first == GLFW_KEY_ESCAPE)
 			{
 				glfwSetWindowShouldClose(Statics::RenderWindow, true);
+
+				// Only on press once please
+				key.second = false;
+			}
+			if (key.first == GLFW_KEY_1)
+			{
+				if (m_FrameBuffer)
+					m_FrameBuffer->DisableAllEffects();
+
+				// Only on press once please
+				key.second = false;
+			}
+			if (key.first == GLFW_KEY_2)
+			{
+				if (m_FrameBuffer)
+				{
+					m_FrameBuffer->DisableAllEffects();
+					m_FrameBuffer->EnableRain();
+				}
+
+				// Only on press once please
+				key.second = false;
+			}
+			if (key.first == GLFW_KEY_3)
+			{
+				if (m_FrameBuffer)
+				{
+					m_FrameBuffer->DisableAllEffects();
+					m_FrameBuffer->EnableCA();
+				}
+
+				// Only on press once please
+				key.second = false;
+			}
+			if (key.first == GLFW_KEY_4)
+			{
+				if (m_FrameBuffer)
+				{
+					m_FrameBuffer->DisableAllEffects();
+					m_FrameBuffer->EnableCRT();
+				}
 
 				// Only on press once please
 				key.second = false;
@@ -62,8 +105,6 @@ static void CursorClickCallback(GLFWwindow* window, int button, int action, int 
 	SceneManager::CursorClickEvent(button, action, mods);
 }
 
-FrameBuffer* m_FrameBuffer = nullptr;
-
 void InitGL();
 void InitGLFW();
 
@@ -94,7 +135,7 @@ void InitGL()
 	//glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 

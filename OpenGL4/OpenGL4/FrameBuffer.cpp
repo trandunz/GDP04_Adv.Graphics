@@ -9,7 +9,11 @@ FrameBuffer::FrameBuffer()
 	UpdateModelValueOfTransform(m_Transform);
 
 	m_ShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer.frag");
+	m_RainShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer_Rain.frag");
+	m_CAShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer_CA.frag");
+	m_CRTShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer_CRT.frag");
 	m_RenderTexture = TextureLoader::CreateRenderTexture();
+	m_RainTexture = TextureLoader::LoadTexture("Rain.png");
 
 	if (Statics::DSA)
 	{
@@ -74,12 +78,57 @@ void FrameBuffer::Unbind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
-	glUseProgram(m_ShaderID);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_RenderTexture.ID);
-	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
+	if (m_EnableRain)
+	{
+		glUseProgram(m_RainShaderID);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, m_RainTexture.ID);
+		ShaderLoader::SetUniform1i(std::move(m_RainShaderID), "Texture1", 1);
+		ShaderLoader::SetUniform1f(std::move(m_RainShaderID), "ElapsedTime", (float)glfwGetTime());
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_RenderTexture.ID);
+		ShaderLoader::SetUniform1i(std::move(m_RainShaderID), "Texture0", 0);
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_RainShaderID), "Model", m_Transform.transform);
+
+	}
+	else if (m_EnableCA)
+	{
+		glUseProgram(m_CAShaderID);
+		glm::dvec2 cursorPos{};
+		glfwGetCursorPos(Statics::RenderWindow, &cursorPos.x, &cursorPos.y);
+		ShaderLoader::SetUniform2f(std::move(m_CAShaderID), "MousePos", cursorPos.x, cursorPos.y);
+		ShaderLoader::SetUniform2f(std::move(m_CAShaderID), "Resolution", Statics::WindowSize.x, Statics::WindowSize.y);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_RenderTexture.ID);
+		ShaderLoader::SetUniform1i(std::move(m_CAShaderID), "Texture0", 0);
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_CAShaderID), "Model", m_Transform.transform);
+	}
+	else if (m_EnableCRT)
+	{
+		glUseProgram(m_CRTShaderID);
+
+		ShaderLoader::SetUniform2f(std::move(m_CRTShaderID), "WindowSize", Statics::WindowSize.x, Statics::WindowSize.y);
+		ShaderLoader::SetUniform1f(std::move(m_RainShaderID), "ElapsedTime", (float)glfwGetTime());
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_RenderTexture.ID);
+		ShaderLoader::SetUniform1i(std::move(m_CRTShaderID), "Texture0", 0);
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_CRTShaderID), "Model", m_Transform.transform);
+	}
+	else
+	{
+		glUseProgram(m_ShaderID);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_RenderTexture.ID);
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
+	}
+
+
 
 	StaticMesh::Quad->Draw();
 
@@ -90,4 +139,26 @@ void FrameBuffer::Unbind()
 void FrameBuffer::SetShader(ShaderProgramLocation _location)
 {
 	m_ShaderID = ShaderLoader::CreateShader(_location.vertShader, _location.fragShader);
+}
+
+void FrameBuffer::EnableRain()
+{
+	m_EnableRain = true;
+}
+
+void FrameBuffer::EnableCA()
+{
+	m_EnableCA = true;
+}
+
+void FrameBuffer::EnableCRT()
+{
+	m_EnableCRT = true;
+}
+
+void FrameBuffer::DisableAllEffects()
+{
+	m_EnableCRT = false;
+	m_EnableCA = false;
+	m_EnableRain = false;
 }

@@ -18,10 +18,22 @@ Scene_Assessment2::~Scene_Assessment2()
 		delete m_NormalsSphere;
 		m_NormalsSphere = nullptr;
 	}
+	if (m_AsymmetricModel)
+	{
+		delete m_AsymmetricModel;
+		m_AsymmetricModel = nullptr;
+	}
+	if (m_ExplodingObject)
+	{
+		delete m_ExplodingObject;
+		m_ExplodingObject = nullptr;
+	}
 }
 
 void Scene_Assessment2::Start()
 {
+	m_AsymmetricModel = new Mesh("LowPoly/Cross.obj");
+
 	m_GeoStar = new GameObject();
 	m_GeoStar->SetMesh(StaticMesh::Point);
 	m_GeoStar->SetShader("PositionOnly.vert", "PointToStar.geo", "SingleTexture.frag");
@@ -34,6 +46,13 @@ void Scene_Assessment2::Start()
 	m_NormalsSphere->SetTranslation({ 0,0,-2.0f });
 	m_NormalsSphere->SetActiveTextures({ TextureLoader::LoadTexture("Dirt.jpg") });
 	m_NormalsSphere->SetShowNormals(true);
+
+	m_ExplodingObject = new GameObject();
+	m_ExplodingObject->SetMesh(m_AsymmetricModel);
+	m_ExplodingObject->SetShader("Normals3D.vert", "Explode.geo", "SingleTexture.frag");
+	m_ExplodingObject->SetTranslation({ 3,0,-2.0f });
+	m_ExplodingObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
+	m_ExplodingObject->SetScale({ 0.01f, 0.01f, 0.01f });
 }
 
 void Scene_Assessment2::Update()
@@ -72,4 +91,7 @@ void Scene_Assessment2::Draw()
 
 	if (m_NormalsSphere)
 		m_NormalsSphere->Draw();
+
+	if (m_ExplodingObject)
+		m_ExplodingObject->Draw();
 }

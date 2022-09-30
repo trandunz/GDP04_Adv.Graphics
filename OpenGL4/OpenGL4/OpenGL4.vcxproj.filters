@@ -280,5 +280,17 @@
     <None Include="Resources\Shaders\ShowNormals.geo">
       <Filter>Resource Files\Geo Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\Explode.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Framebuffer_Rain.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Framebuffer_CA.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Framebuffer_CRT.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

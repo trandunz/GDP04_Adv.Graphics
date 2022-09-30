@@ -246,6 +246,8 @@ private:
 
 	void SetPositionOnlyUniforms();
 
+	void SetExplodeUniforms(GLuint _shaderID);
+
 	void SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color = {1,1,1});
 
 	bool m_ShowNormals = false;
