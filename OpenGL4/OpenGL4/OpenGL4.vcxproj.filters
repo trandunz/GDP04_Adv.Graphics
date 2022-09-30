@@ -307,5 +307,8 @@
     <None Include="Resources\Shaders\TrianglePatch_LOD.tc">
       <Filter>Resource Files\Tesselation Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\HeightMap.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

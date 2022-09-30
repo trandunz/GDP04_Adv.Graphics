@@ -207,6 +207,7 @@
     <None Include="Resources\Shaders\Framebuffer_CA.frag" />
     <None Include="Resources\Shaders\Framebuffer_CRT.frag" />
     <None Include="Resources\Shaders\Framebuffer_Rain.frag" />
+    <None Include="Resources\Shaders\HeightMap.te" />
     <None Include="Resources\Shaders\Lit_Fog.frag" />
     <None Include="Resources\Shaders\Normals3D.vert" />
     <None Include="Resources\Shaders\Outline.vert" />

@@ -12,6 +12,7 @@
 #include "Noise.h"
 #include "Statics.h"
 
+
 Terrain::Terrain(std::string _heightMap, std::string _fileExtension)
 {
 	m_ShaderID = ShaderLoader::CreateShader("Terrain.vert","TerrainTextures.frag");

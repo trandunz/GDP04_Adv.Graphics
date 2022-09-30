@@ -229,6 +229,11 @@ void GameObject::Draw()
                 SetTrianglePatchLODUniforms(m_ShaderID);
             }
 
+            if (m_ShaderLocation.teShader == "HeightMap.te")
+            {
+                SetHeightMapUniforms(m_ShaderID);
+            }
+
             if (m_ShaderLocation.fragShader == "SingleTexture.frag")
             {
                 SetSingleTextureUniforms();
@@ -721,4 +726,11 @@ void GameObject::SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color)
 void GameObject::SetTrianglePatchLODUniforms(GLuint _shaderID)
 {
     ShaderLoader::SetUniform3fv(std::move(_shaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+}
+
+void GameObject::SetHeightMapUniforms(GLuint _shaderID)
+{
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_ActiveTextures[1].ID);
+    ShaderLoader::SetUniform1i(std::move(_shaderID), "HeightMap", 1);
 }

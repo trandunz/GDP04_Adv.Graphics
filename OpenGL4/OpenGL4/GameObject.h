@@ -264,6 +264,8 @@ private:
 
 	void SetTrianglePatchLODUniforms(GLuint _shaderID);
 
+	void SetHeightMapUniforms(GLuint _shaderID);
+
 	bool m_ShowNormals = false;
 	bool m_RimLighting = false;
 	bool m_StencilOutline = Statics::StencilTest;

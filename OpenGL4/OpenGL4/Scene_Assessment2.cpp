@@ -61,10 +61,15 @@ void Scene_Assessment2::Start()
 
 	m_TesselationTriangle = new GameObject();
 	m_TesselationTriangle->SetMesh(StaticMesh::Patch_Quad);
-	m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "TrianglePatch.te", "SingleTexture.frag");
-	m_TesselationTriangle->SetTranslation({-3,0,-2.0f});
+	m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "HeightMap.te", "SingleTexture.frag");
+	m_TesselationTriangle->SetTranslation({0,0,-10.0f});
 	m_TesselationTriangle->SetRotation({1,0,0}, 90);
-	m_TesselationTriangle->SetActiveTextures({ TextureLoader::LoadTexture("Snow.jpg") });
+	m_TesselationTriangle->SetActiveTextures(
+		{ 
+			TextureLoader::LoadTexture("Moss.jpg"),
+			TextureLoader::LoadTexture("Heightmaps/MossNoise.jpg")
+		});
+	m_TesselationTriangle->Scale({ 10.0f, 10.0f, 10.0f });
 }
 
 void Scene_Assessment2::Update()
@@ -107,10 +112,10 @@ void Scene_Assessment2::Draw()
 	if (m_ExplodingObject)
 		m_ExplodingObject->Draw();
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	if (m_TesselationTriangle)
 		m_TesselationTriangle->Draw();
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
