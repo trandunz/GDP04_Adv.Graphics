@@ -1,5 +1,8 @@
 #include "Scene_Assessment2.h"
 #include "TextureLoader.h"
+#include "FrameBuffer.h"
+#include "ShadowMap.h"
+#include "LightManager.h"
 
 Scene_Assessment2::Scene_Assessment2()
 {
@@ -33,10 +36,22 @@ Scene_Assessment2::~Scene_Assessment2()
 		delete m_TesselationTriangle;
 		m_TesselationTriangle = nullptr;
 	}
+	if (m_ShadowCube)
+	{
+		delete m_ShadowCube;
+		m_ShadowCube = nullptr;
+	}
+	if (m_ShadowPlane)
+	{
+		delete m_ShadowPlane;
+		m_ShadowPlane = nullptr;
+	}
 }
 
 void Scene_Assessment2::Start()
 {
+	LightManager::GetInstance().CreateDirectionalLight({ { 0,-1,0 } });
+
 	m_AsymmetricModel = new Mesh("LowPoly/Cross.obj");
 
 	m_GeoStar = new GameObject();
@@ -70,6 +85,19 @@ void Scene_Assessment2::Start()
 			TextureLoader::LoadTexture("Heightmaps/MossNoise.jpg")
 		});
 	m_TesselationTriangle->Scale({ 10.0f, 10.0f, 10.0f });
+
+	m_ShadowCube = new GameObject();
+	m_ShadowCube->SetMesh(StaticMesh::Cube);
+	m_ShadowCube->SetShader("Normals3D_Shadows.vert", "BlinnFong3D_Shadows.frag");
+	m_ShadowCube->SetTranslation({ 0.0f,0,10.0f });
+	m_ShadowCube->SetScale({ 0.2f, 0.2f, 0.2f });
+
+	m_ShadowPlane = new GameObject();
+	m_ShadowPlane->SetMesh(StaticMesh::Plane);
+	m_ShadowPlane->SetShader("Normals3D_Shadows.vert", "BlinnFong3D_Shadows.frag");
+	m_ShadowPlane->SetTranslation({ 0.0f,-2.0f,10.0f });
+	m_ShadowPlane->SetScale({ 5.0f, 1.0f, 5.0f });
+	m_ShadowPlane->SetActiveTextures({ TextureLoader::LoadTexture("Moss.jpg")});
 }
 
 void Scene_Assessment2::Update()
@@ -103,6 +131,12 @@ void Scene_Assessment2::CursorClickEvent(int button, int action, int mods)
 
 void Scene_Assessment2::Draw()
 {
+	//
+	// Shadow Map Pass
+	//
+
+	ShadowMap::GetInstance().Bind();
+
 	if (m_GeoStar)
 		m_GeoStar->Draw();
 
@@ -112,10 +146,42 @@ void Scene_Assessment2::Draw()
 	if (m_ExplodingObject)
 		m_ExplodingObject->Draw();
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (m_TesselationTriangle)
+		m_TesselationTriangle->Draw();
+
+	if (m_ShadowCube)
+		m_ShadowCube->Draw();
+
+	if (m_ShadowPlane)
+		m_ShadowPlane->Draw();
+
+	ShadowMap::GetInstance().Unbind();
+
+	//
+	// Color Pass
+	//
+
+	FrameBuffer::GetInstance().Bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	if (m_GeoStar)
+		m_GeoStar->Draw();
+
+	if (m_NormalsSphere)
+		m_NormalsSphere->Draw();
+
+	if (m_ExplodingObject)
+		m_ExplodingObject->Draw();
 
 	if (m_TesselationTriangle)
 		m_TesselationTriangle->Draw();
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (m_ShadowCube)
+		m_ShadowCube->Draw();
+
+	if (m_ShadowPlane)
+		m_ShadowPlane->Draw();
+
+	FrameBuffer::GetInstance().Unbind();
+	glfwSwapBuffers(Statics::RenderWindow);
 }

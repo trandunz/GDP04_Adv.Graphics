@@ -26,6 +26,7 @@ public:
 	static Mesh* Patch_Quad;
 	static Mesh* Patch_Triangle;
 	static Mesh* Point;
+	static Mesh* Plane;
 	static Mesh* Quad;
 	static Mesh* Cube;
 	static Mesh* InvertedCube;

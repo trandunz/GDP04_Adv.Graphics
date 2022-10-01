@@ -1,7 +1,7 @@
 #include "FrameBuffer.h"
 #include "TextureLoader.h"
 #include "ShaderLoader.h"
-#include "Statics.h"
+#include "StaticMesh.h"
 
 FrameBuffer::FrameBuffer()
 {

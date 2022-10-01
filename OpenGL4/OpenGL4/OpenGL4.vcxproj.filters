@@ -126,6 +126,9 @@
     <ClCompile Include="Scene_Assessment2.cpp">
       <Filter>Source Files\SceneManagement</Filter>
     </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneManager.h">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="Scene_Assessment2.h">
       <Filter>Header Files\SceneManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -309,6 +315,18 @@
     </None>
     <None Include="Resources\Shaders\HeightMap.te">
       <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowMap.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowMap.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\BlinnFong3D_Shadows.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Normals3D_Shadows.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
     </None>
   </ItemGroup>
 </Project>

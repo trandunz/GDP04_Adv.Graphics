@@ -266,6 +266,8 @@ private:
 
 	void SetHeightMapUniforms(GLuint _shaderID);
 
+	void SetBlinnFong3DShadowsUniform(GLuint _shaderID);
+	
 	bool m_ShowNormals = false;
 	bool m_RimLighting = false;
 	bool m_StencilOutline = Statics::StencilTest;

@@ -12,6 +12,7 @@
 #include "TextureLoader.h"
 #include "Noise.h"
 #include "StaticMesh.h"
+#include "FrameBuffer.h"
 
 Scene_Assessment1::Scene_Assessment1()
 {
@@ -222,6 +223,15 @@ void Scene_Assessment1::CursorClickEvent(int button, int action, int mods)
 
 void Scene_Assessment1::Draw()
 {
+	FrameBuffer::GetInstance().Bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	if (Statics::BlackBars)
+	{
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(0, 50, Statics::WindowSize.x, Statics::WindowSize.y - 100);
+	}
+
 	Skybox::GetInstance().Draw();
 
 	if (m_ModelObject)
@@ -247,6 +257,13 @@ void Scene_Assessment1::Draw()
 
 	if (m_MossQuad)
 		m_MossQuad->Draw();
+
+
+	if (Statics::BlackBars)
+		glDisable(GL_SCISSOR_TEST);
+
+	FrameBuffer::GetInstance().Unbind();
+	glfwSwapBuffers(Statics::RenderWindow);
 }
 
 void Scene_Assessment1::HandleMousePickingInteractions()

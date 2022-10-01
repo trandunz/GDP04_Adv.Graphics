@@ -242,6 +242,17 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
 		break;
 	}
+	case SHAPE::PLANE:
+	{
+		m_Vertices.emplace_back(Vertex{ { -0.5f,0.0f , 0.5f }, {0.0f,1.0f},{0,1,0} });
+		m_Vertices.emplace_back(Vertex{ { -0.5f, 0.0f, -0.5f }, {0.0f,0.0f},{0,1,0} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f, 0.0f, -0.5f }, {1.0f,0.0f},{0,1,0} });
+
+		m_Vertices.emplace_back(Vertex{ { 0.5f,0.0f , -0.5f }, {1.0f,0.0f},{0,1,0} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f, 0.0f, 0.5f }, {1.0f,1.0f},{0,1,0} });
+		m_Vertices.emplace_back(Vertex{ { -0.5f, 0.0f, 0.5f }, {0.0f,1.0f},{0,1,0} });
+		break;
+	}
 	default:
 	{
 		break;
@@ -330,6 +341,16 @@ void Mesh::CreateShapeIndices(SHAPE _shape)
 		break;
 	}
 	case SHAPE::PATCH_QUAD:
+	{
+		m_Indices.emplace_back(0);
+		m_Indices.emplace_back(1);
+		m_Indices.emplace_back(2);
+		m_Indices.emplace_back(2);
+		m_Indices.emplace_back(4);
+		m_Indices.emplace_back(0);
+		break;
+	}
+	case SHAPE::PLANE:
 	{
 		m_Indices.emplace_back(0);
 		m_Indices.emplace_back(1);

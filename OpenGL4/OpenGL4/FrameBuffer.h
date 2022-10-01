@@ -1,9 +1,14 @@
 #pragma once
-#include "StaticMesh.h"
-
+#include "Statics.h"
 class FrameBuffer
 {
 public:
+	static FrameBuffer& GetInstance()
+	{
+		static FrameBuffer frameBuffer{};
+		return frameBuffer;
+	}
+
 	FrameBuffer();
 	~FrameBuffer();
 

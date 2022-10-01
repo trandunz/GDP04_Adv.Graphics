@@ -19,6 +19,7 @@ Mesh* StaticMesh::Hemisphere{ nullptr };
 Mesh* StaticMesh::Pyramid{ nullptr };
 Mesh* StaticMesh::Patch_Triangle{ nullptr };
 Mesh* StaticMesh::Patch_Quad{ nullptr };
+Mesh* StaticMesh::Plane{ nullptr };
 
 void StaticMesh::Init()
 {
@@ -32,6 +33,7 @@ void StaticMesh::Init()
 	Sphere = new Mesh(SHAPE::SPHERE, GL_CCW);
 	Hemisphere = new Mesh(SHAPE::HEMISPHERE);
 	Pyramid = new Mesh(SHAPE::PYRAMID);
+	Plane = new Mesh(SHAPE::PLANE);
 }
 
 void StaticMesh::Cleanup()
@@ -80,5 +82,10 @@ void StaticMesh::Cleanup()
 	{
 		delete Patch_Quad;
 		Patch_Quad = nullptr;
+	}
+	if (Plane != nullptr)
+	{
+		delete Plane;
+		Plane = nullptr;
 	}
 }

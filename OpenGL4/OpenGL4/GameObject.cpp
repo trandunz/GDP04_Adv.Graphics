@@ -14,6 +14,7 @@
 #include "Skybox.h"
 #include "Physics.h"
 #include "SceneManager.h"
+#include "ShadowMap.h"
 
 GameObject::GameObject(glm::vec3 _position)
 {
@@ -189,6 +190,17 @@ void GameObject::Draw()
             else if (m_ShaderLocation.fragShader == "SingleTexture.frag")
             {
                 SetSingleTextureUniforms();
+            }
+        }
+        else if (m_ShaderLocation.vertShader == "Normals3D_Shadows.vert")
+        {
+            SetNormals3DVertUniforms(m_ShaderID);
+
+            if (m_ShaderLocation.fragShader == "BlinnFong3D_Shadows.frag")
+            {
+                SetBlinnFong3DUniforms();
+                SetRimLighingUniforms();
+                SetBlinnFong3DShadowsUniform(m_ShaderID);
             }
         }
         // Else if vertex shader is fog
@@ -733,4 +745,13 @@ void GameObject::SetHeightMapUniforms(GLuint _shaderID)
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_ActiveTextures[1].ID);
     ShaderLoader::SetUniform1i(std::move(_shaderID), "HeightMap", 1);
+}
+
+void GameObject::SetBlinnFong3DShadowsUniform(GLuint _shaderID)
+{
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, ShadowMap::GetInstance().GetShadowMapTexture().ID);
+    ShaderLoader::SetUniform1i(std::move(_shaderID), "ShadowMap", 1);
 }

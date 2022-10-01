@@ -11,8 +11,7 @@
 #include "Statics.h"
 #include "SceneManager.h"
 #include "FrameBuffer.h"
-
-FrameBuffer* m_FrameBuffer = nullptr;
+#include "StaticMesh.h"
 
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -37,41 +36,31 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 			}
 			if (key.first == GLFW_KEY_1)
 			{
-				if (m_FrameBuffer)
-					m_FrameBuffer->DisableAllEffects();
+				FrameBuffer::GetInstance().DisableAllEffects();
 
 				// Only on press once please
 				key.second = false;
 			}
 			if (key.first == GLFW_KEY_2)
 			{
-				if (m_FrameBuffer)
-				{
-					m_FrameBuffer->DisableAllEffects();
-					m_FrameBuffer->EnableRain();
-				}
+				FrameBuffer::GetInstance().DisableAllEffects();
+				FrameBuffer::GetInstance().EnableRain();
 
 				// Only on press once please
 				key.second = false;
 			}
 			if (key.first == GLFW_KEY_3)
 			{
-				if (m_FrameBuffer)
-				{
-					m_FrameBuffer->DisableAllEffects();
-					m_FrameBuffer->EnableCA();
-				}
+				FrameBuffer::GetInstance().DisableAllEffects();
+				FrameBuffer::GetInstance().EnableCA();
 
 				// Only on press once please
 				key.second = false;
 			}
 			if (key.first == GLFW_KEY_4)
 			{
-				if (m_FrameBuffer)
-				{
-					m_FrameBuffer->DisableAllEffects();
-					m_FrameBuffer->EnableCRT();
-				}
+				FrameBuffer::GetInstance().DisableAllEffects();
+				FrameBuffer::GetInstance().EnableCRT();
 
 				// Only on press once please
 				key.second = false;
@@ -165,7 +154,6 @@ void Start()
 	Statics::UpdateWindowSize();
 	StaticMesh::Init();
 	SceneManager::LoadScene(SCENES::ASSESSMENT2);
-	m_FrameBuffer = new FrameBuffer;
 }
 
 void Update()
@@ -186,34 +174,12 @@ void Update()
 
 void Render()
 {
-	if (m_FrameBuffer)
-		m_FrameBuffer->Bind();
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-	if (Statics::BlackBars)
-	{
-		glEnable(GL_SCISSOR_TEST);
-		glScissor(0, 50, Statics::WindowSize.x, Statics::WindowSize.y - 100);
-	}
-
 	SceneManager::Draw();
-
-	if (Statics::BlackBars)
-		glDisable(GL_SCISSOR_TEST);
-
-	if (m_FrameBuffer)
-		m_FrameBuffer->Unbind();
-
-	glfwSwapBuffers(Statics::RenderWindow);
 }
 
 int Cleanup()
 {
 	SceneManager::CleanupScene();
-	if (m_FrameBuffer)
-		delete m_FrameBuffer;
-	m_FrameBuffer = nullptr;
 	StaticMesh::Cleanup();
 	Statics::Cleanup();
 

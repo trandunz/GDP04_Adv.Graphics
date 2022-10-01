@@ -20,7 +20,8 @@ enum class SHAPE
 	SPHERE,
 	HEMISPHERE,
 	PATCH_TRIANGLE,
-	PATCH_QUAD
+	PATCH_QUAD,
+	PLANE
 };
 
 class Mesh
