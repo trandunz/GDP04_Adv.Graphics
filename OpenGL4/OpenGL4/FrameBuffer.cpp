@@ -2,6 +2,7 @@
 #include "TextureLoader.h"
 #include "ShaderLoader.h"
 #include "StaticMesh.h"
+#include "ShadowMap.h"
 
 FrameBuffer::FrameBuffer()
 {
@@ -99,8 +100,8 @@ void FrameBuffer::Unbind()
 		glUseProgram(m_CAShaderID);
 		glm::dvec2 cursorPos{};
 		glfwGetCursorPos(Statics::RenderWindow, &cursorPos.x, &cursorPos.y);
-		ShaderLoader::SetUniform2f(std::move(m_CAShaderID), "MousePos", cursorPos.x, cursorPos.y);
-		ShaderLoader::SetUniform2f(std::move(m_CAShaderID), "Resolution", Statics::WindowSize.x, Statics::WindowSize.y);
+		ShaderLoader::SetUniform2f(std::move(m_CAShaderID), "MousePos", (GLfloat)cursorPos.x, (GLfloat)cursorPos.y);
+		ShaderLoader::SetUniform2f(std::move(m_CAShaderID), "Resolution", (GLfloat)Statics::WindowSize.x, (GLfloat)Statics::WindowSize.y);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_RenderTexture.ID);
@@ -111,7 +112,7 @@ void FrameBuffer::Unbind()
 	{
 		glUseProgram(m_CRTShaderID);
 
-		ShaderLoader::SetUniform2f(std::move(m_CRTShaderID), "WindowSize", Statics::WindowSize.x, Statics::WindowSize.y);
+		ShaderLoader::SetUniform2f(std::move(m_CRTShaderID), "WindowSize", (GLfloat)Statics::WindowSize.x, (GLfloat)Statics::WindowSize.y);
 		ShaderLoader::SetUniform1f(std::move(m_RainShaderID), "ElapsedTime", (float)glfwGetTime());
 
 		glActiveTexture(GL_TEXTURE0);
@@ -124,11 +125,10 @@ void FrameBuffer::Unbind()
 		glUseProgram(m_ShaderID);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_RenderTexture.ID);
+		//glBindTexture(GL_TEXTURE_2D, ShadowMap::GetInstance().GetShadowMapTexture().ID);
 		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
 		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
 	}
-
-
 
 	StaticMesh::Quad->Draw();
 

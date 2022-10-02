@@ -204,7 +204,7 @@ vec3 CalculateSpotLight(SpotLight _spotLight)
 float ShadowCalculation()
 {
     vec3 ndc = FragPosLightSpace.xyz / FragPosLightSpace.w;
-    vec3 texCoordSpace = 0.5f * ndc + 0.5f;
+    vec3 texCoordSpace = (ndc + 1.0f) / 2.0f;
     float currentDepth = texCoordSpace.z;
     float shadowMapDepth = texture(ShadowMap, texCoordSpace.xy).r;
     float shadow = currentDepth > shadowMapDepth ? 1.0f : 0.0f;

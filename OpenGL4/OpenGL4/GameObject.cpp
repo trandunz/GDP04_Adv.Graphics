@@ -22,6 +22,7 @@ GameObject::GameObject(glm::vec3 _position)
     SetTranslation(_position);
     m_StencilShaderID = ShaderLoader::CreateShader("Outline.vert", "UnlitColor_Fog.frag");
     m_NormalsShaderID = ShaderLoader::CreateShader("Normals3D.vert", "ShowNormals.geo", "UnlitColor.frag");
+    m_ShadowMapShaderID = ShaderLoader::CreateShader("ShadowMap.vert", "ShadowMap.frag");
 }
 
 GameObject::~GameObject()
@@ -255,6 +256,10 @@ void GameObject::Draw()
                 SetSingleColorUniforms(m_ShaderID, { 1,0,1 });
             }
         }
+        else if (m_ShaderLocation.vertShader == "ShadowMap.vert")
+        {
+            SetShadowMapUniforms();
+        }
         
         if (Statics::StencilTest && m_StencilOutline)
         {
@@ -314,6 +319,22 @@ void GameObject::Draw()
             glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         }
     }
+}
+
+void GameObject::DrawShadows()
+{
+    // Bind shader
+    glUseProgram(m_ShadowMapShaderID);
+
+    SetShadowMapUniforms();
+
+    // Draw the mesh
+    m_Mesh->Draw();
+
+    // Unbind
+    glUseProgram(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void GameObject::SetMesh(Mesh* _mesh)
@@ -726,7 +747,7 @@ void GameObject::SetPositionOnlyUniforms()
 
 void GameObject::SetExplodeUniforms(GLuint _shaderID)
 {
-    ShaderLoader::SetUniform1f(std::move(_shaderID), "ElapsedTime", glfwGetTime());
+    ShaderLoader::SetUniform1f(std::move(_shaderID), "ElapsedTime", (GLfloat)glfwGetTime());
     ShaderLoader::SetUniform1f(std::move(_shaderID), "Magnitude", 1.0f);
 }
 
@@ -750,8 +771,15 @@ void GameObject::SetHeightMapUniforms(GLuint _shaderID)
 void GameObject::SetBlinnFong3DShadowsUniform(GLuint _shaderID)
 {
     ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "ModelMatrix", m_Transform.transform);
     
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, ShadowMap::GetInstance().GetShadowMapTexture().ID);
     ShaderLoader::SetUniform1i(std::move(_shaderID), "ShadowMap", 1);
+}
+
+void GameObject::SetShadowMapUniforms()
+{
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShadowMapShaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShadowMapShaderID), "Model", m_Transform.transform);
 }

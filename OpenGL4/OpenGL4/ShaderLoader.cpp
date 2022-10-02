@@ -189,7 +189,7 @@ GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoSha
 
     // Create Shaders And Store There ID's Locally
     GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader));
-    GLuint geoShader;
+    GLuint geoShader{};
     if (_geoShader != "")
         geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader));
     GLuint tcShader = CompileShader(GL_TESS_CONTROL_SHADER, PassFileToString(_tcShader));

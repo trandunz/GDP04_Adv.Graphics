@@ -89,13 +89,13 @@ void Scene_Assessment2::Start()
 	m_ShadowCube = new GameObject();
 	m_ShadowCube->SetMesh(StaticMesh::Cube);
 	m_ShadowCube->SetShader("Normals3D_Shadows.vert", "BlinnFong3D_Shadows.frag");
-	m_ShadowCube->SetTranslation({ 0.0f,0,10.0f });
+	m_ShadowCube->SetTranslation({ 0.0f,1.0f,2.0f });
 	m_ShadowCube->SetScale({ 0.2f, 0.2f, 0.2f });
 
 	m_ShadowPlane = new GameObject();
 	m_ShadowPlane->SetMesh(StaticMesh::Plane);
 	m_ShadowPlane->SetShader("Normals3D_Shadows.vert", "BlinnFong3D_Shadows.frag");
-	m_ShadowPlane->SetTranslation({ 0.0f,-2.0f,10.0f });
+	m_ShadowPlane->SetTranslation({ 0.0f,0.0f,2.0f });
 	m_ShadowPlane->SetScale({ 5.0f, 1.0f, 5.0f });
 	m_ShadowPlane->SetActiveTextures({ TextureLoader::LoadTexture("Moss.jpg")});
 }
@@ -138,22 +138,22 @@ void Scene_Assessment2::Draw()
 	ShadowMap::GetInstance().Bind();
 
 	if (m_GeoStar)
-		m_GeoStar->Draw();
-
+		m_GeoStar->DrawShadows();
+	
 	if (m_NormalsSphere)
-		m_NormalsSphere->Draw();
-
+		m_NormalsSphere->DrawShadows();
+	
 	if (m_ExplodingObject)
-		m_ExplodingObject->Draw();
-
+		m_ExplodingObject->DrawShadows();
+	
 	if (m_TesselationTriangle)
-		m_TesselationTriangle->Draw();
+		m_TesselationTriangle->DrawShadows();
 
 	if (m_ShadowCube)
-		m_ShadowCube->Draw();
+		m_ShadowCube->DrawShadows();
 
 	if (m_ShadowPlane)
-		m_ShadowPlane->Draw();
+		m_ShadowPlane->DrawShadows();
 
 	ShadowMap::GetInstance().Unbind();
 

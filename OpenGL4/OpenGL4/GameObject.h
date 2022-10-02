@@ -58,6 +58,8 @@ public:
 	/// </summary>
 	void Draw();
 
+	void DrawShadows();
+
 	/// <summary>
 	/// Attaches a mesh to be used for drawing.
 	/// </summary>
@@ -268,6 +270,8 @@ private:
 
 	void SetBlinnFong3DShadowsUniform(GLuint _shaderID);
 	
+	void SetShadowMapUniforms();
+
 	bool m_ShowNormals = false;
 	bool m_RimLighting = false;
 	bool m_StencilOutline = Statics::StencilTest;
@@ -275,6 +279,7 @@ private:
 	GLuint m_ShaderID{0};
 	GLuint m_StencilShaderID{ 0 };
 	GLuint m_NormalsShaderID{ 0 };
+	GLuint m_ShadowMapShaderID{ 0 };
 	ShaderProgramLocation m_ShaderLocation{};
 	glm::vec4 m_Input{};
 	float m_MovementSpeed = 10.0f;

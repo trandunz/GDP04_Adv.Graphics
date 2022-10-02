@@ -8,8 +8,10 @@
 // Mail : william.inman@mds.ac.nz
 
 #version 460 core
+layout(location = 0) out float depth;
 
 // Main function that gets called per vertex fragment.
 void main()
 {
+	depth = gl_FragCoord.z;
 }
