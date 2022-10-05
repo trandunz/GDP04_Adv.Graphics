@@ -11,6 +11,7 @@
 #include "SceneManager.h"
 #include "Scene_Assessment1.h"
 #include "Scene_Assessment2.h"
+#include "Scene_Clothsim.h"
 
 Scene* SceneManager::CurrentScene = nullptr;
 SCENES SceneManager::SceneToLoad = SCENES::UNASSIGNED;
@@ -75,6 +76,11 @@ void SceneManager::ChangeToPendingScene()
 		case SCENES::ASSESSMENT2:
 		{
 			CurrentScene = new Scene_Assessment2();
+			break;
+		}
+		case SCENES::CLOTHSIM:
+		{
+			CurrentScene = new Scene_Clothsim();
 			break;
 		}
 		default:

@@ -153,7 +153,7 @@ void Start()
 {
 	Statics::UpdateWindowSize();
 	StaticMesh::Init();
-	SceneManager::LoadScene(SCENES::ASSESSMENT2);
+	SceneManager::LoadScene(SCENES::CLOTHSIM);
 }
 
 void Update()

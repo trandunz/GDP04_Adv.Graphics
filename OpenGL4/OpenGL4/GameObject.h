@@ -51,7 +51,7 @@ public:
 	/// Update function for GameObject.
 	/// Should be called every frame.
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// Draws The gameobject if it has a mesh attached
@@ -213,7 +213,7 @@ public:
 
 	void SetShowNormals(bool _showNormals);
 
-private:
+protected:
 
 	/// <summary>
 	/// Sets Uniforms for Use With Normals3D.vert

@@ -16,7 +16,8 @@ enum class SCENES
 	UNASSIGNED = 0,
 
 	ASSESSMENT1,
-	ASSESSMENT2
+	ASSESSMENT2,
+	CLOTHSIM
 };
 
 class SceneManager
