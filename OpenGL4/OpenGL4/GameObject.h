@@ -268,7 +268,7 @@ protected:
 
 	void SetHeightMapUniforms(GLuint _shaderID);
 
-	void SetBlinnFong3DShadowsUniform(GLuint _shaderID);
+	void SetBlinnFong3DShadowsUniform();
 	
 	void SetShadowMapUniforms();
 
