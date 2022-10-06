@@ -41,7 +41,7 @@ void Scene_Clothsim::Start()
 	m_FloorPlane->SetActiveTextures({TextureLoader::LoadTexture("Grass.jpg")});
 	m_FloorPlane->SetScale({ 10,1,10 });
 
-	m_Cloth = new Cloth;
+	m_Cloth = new Cloth(10, 10, 1.0f, {0,2,-10});
 }
 
 void Scene_Clothsim::Update()

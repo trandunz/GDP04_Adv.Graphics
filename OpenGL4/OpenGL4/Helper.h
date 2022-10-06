@@ -160,6 +160,12 @@ inline float Magnitude(glm::vec3 _vector)
 	return sqrtf((_vector.x * _vector.x) + (_vector.y * _vector.y) + (_vector.z * _vector.z));
 }
 
+inline float Distance(glm::vec3 _v1, glm::vec3 _v2)
+{
+	return Magnitude(_v2 - _v1);
+}
+
+
 /// <summary>
 /// Prints the given string withought a heap allocation to the console output stream.
 /// </summary>
