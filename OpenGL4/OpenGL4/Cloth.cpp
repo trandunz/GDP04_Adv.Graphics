@@ -1,7 +1,7 @@
 #include "Cloth.h"
 #include "DistanceJoint.h"
 
-Cloth::Cloth(unsigned width, unsigned height, unsigned spacing, glm::vec3 _startPos)
+Cloth::Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos)
 {
 	for (int y = 0; y <= height; y++) 
 	{
@@ -19,7 +19,7 @@ Cloth::Cloth(unsigned width, unsigned height, unsigned spacing, glm::vec3 _start
 				m_DistanceJoints.emplace_back(new DistanceJoint(particle, m_Particles[x + (y - 1) * (width + 1)], spacing));
 			}
 
-			if (y == 0 && x % 2 == 0) {
+			if (y == 0) {
 				particle->TogglePinned();
 			}
 
@@ -90,7 +90,7 @@ void ClothParticle::Update()
 		return;
 	}
 
-	glm::vec3 force = { 0,-1.0f, 0 };
+	glm::vec3 force = { 0.1f,-1.0f, -0.5f };
 
 	auto acceleration = force;
 

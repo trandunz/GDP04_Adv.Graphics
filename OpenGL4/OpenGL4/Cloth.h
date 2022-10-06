@@ -25,7 +25,7 @@ public:
 class Cloth
 {
 public:
-	Cloth(unsigned width, unsigned height, unsigned spacing, glm::vec3 _startPos);
+	Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos);
 	~Cloth();
 
 	void Update();

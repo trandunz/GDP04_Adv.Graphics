@@ -21,6 +21,6 @@ void DistanceJoint::Update()
     auto diffFactor = (m_Length - Magnitude(diff)) / Magnitude(diff) * 0.5f;
 	auto offset = diff * diffFactor;
 
-    m_P1->Move(offset);
-	m_P2->Move(-offset);
+    m_P1->Move(offset, false);
+	m_P2->Move(-offset, false);
 }
