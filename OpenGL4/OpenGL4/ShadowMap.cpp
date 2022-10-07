@@ -16,8 +16,6 @@ ShadowMap::ShadowMap()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//float clampColor[] = { 1.0f,1.0f,1.0f,1.0f };
-	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
 
 	glGenFramebuffers(1, &m_FrameBufferID);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
@@ -48,11 +46,13 @@ void ShadowMap::Bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
 	glClear(GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void ShadowMap::Unbind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH_TEST);
 }
 
 glm::mat4 ShadowMap::GetLightVPMatrix()
@@ -60,7 +60,7 @@ glm::mat4 ShadowMap::GetLightVPMatrix()
 	//glm::mat4 orthogonalProjection = glm::ortho(-300.0f, 300.0f, -300.0f, 300.0f, 0.1f, 75.0f);
 	glm::mat4 lightViewMatrix = glm::lookAt
 	(
-		LightManager::GetInstance().GetDirectionalLights()[0].Direction * 10.0f,
+		LightManager::GetInstance().GetDirectionalLights()[0].Direction * -10.0f,
 		glm::vec3{0.0f,0.0f,0.0f},
 		glm::vec3{0.0f,0.0f,1.0f}
 	);

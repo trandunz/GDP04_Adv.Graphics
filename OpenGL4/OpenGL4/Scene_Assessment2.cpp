@@ -52,7 +52,7 @@ void Scene_Assessment2::Start()
 {
 	LightManager::GetInstance().CreateDirectionalLight({ { 0,-1,0 } });
 
-	m_AsymmetricModel = new Mesh("LowPoly/Cross.obj");
+	//m_AsymmetricModel = new Mesh("LowPoly/Cross.obj");
 
 	m_GeoStar = new GameObject();
 	m_GeoStar->SetMesh(StaticMesh::Point);
@@ -67,12 +67,12 @@ void Scene_Assessment2::Start()
 	m_NormalsSphere->SetActiveTextures({ TextureLoader::LoadTexture("Dirt.jpg") });
 	m_NormalsSphere->SetShowNormals(true);
 
-	m_ExplodingObject = new GameObject();
-	m_ExplodingObject->SetMesh(m_AsymmetricModel);
-	m_ExplodingObject->SetShader("Normals3D.vert", "Explode.geo", "SingleTexture.frag");
-	m_ExplodingObject->SetTranslation({ 3,0,-2.0f });
-	m_ExplodingObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
-	m_ExplodingObject->SetScale({ 0.01f, 0.01f, 0.01f });
+	//m_ExplodingObject = new GameObject();
+	//m_ExplodingObject->SetMesh(m_AsymmetricModel);
+	//m_ExplodingObject->SetShader("Normals3D.vert", "Explode.geo", "SingleTexture.frag");
+	//m_ExplodingObject->SetTranslation({ 3,0,-2.0f });
+	//m_ExplodingObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
+	//m_ExplodingObject->SetScale({ 0.01f, 0.01f, 0.01f });
 
 	m_TesselationTriangle = new GameObject();
 	m_TesselationTriangle->SetMesh(StaticMesh::Patch_Quad);
