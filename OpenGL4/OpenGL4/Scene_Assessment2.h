@@ -23,6 +23,7 @@ private:
 
 	GameObject* m_ShadowPlane{ nullptr };
 	GameObject* m_ShadowCube{ nullptr };
+	GameObject* m_ShadowSphere{ nullptr };
 	GameObject* m_TesselationTriangle{ nullptr };
 	GameObject* m_GeoStar{ nullptr };
 	GameObject* m_NormalsSphere{ nullptr };

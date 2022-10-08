@@ -196,13 +196,12 @@ void GameObject::Draw()
         else if (m_ShaderLocation.vertShader == "Normals3D_Shadows.vert")
         {
            SetNormals3DVertUniforms(m_ShaderID);
-
-           if (m_ShaderLocation.fragShader == "BlinnFong3D_Shadows.frag")
-           {
-               SetBlinnFong3DUniforms();
-               SetRimLighingUniforms();
-               SetBlinnFong3DShadowsUniform();
-           }
+        }
+        if (m_ShaderLocation.fragShader == "BlinnFong3D_Shadows.frag")
+        {
+            SetBlinnFong3DUniforms();
+            SetRimLighingUniforms();
+            SetBlinnFong3DShadowsUniform();
         }
         // Else if vertex shader is fog
         else if (m_ShaderLocation.vertShader == "Fog.vert")
@@ -769,10 +768,9 @@ void GameObject::SetBlinnFong3DShadowsUniform()
     glBindTexture(GL_TEXTURE_2D, ShadowMap::GetInstance().GetShadowMapTexture().ID);
     ShaderLoader::SetUniform1i(std::move(m_ShaderID), "ShadowMap", 1);
 
+    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "ShadowBias", 0.0001f);
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "ModelMatrix", m_Transform.transform);
-    
-
 }
 
 void GameObject::SetShadowMapUniforms()

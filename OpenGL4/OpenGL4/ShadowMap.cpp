@@ -47,10 +47,14 @@ void ShadowMap::Bind()
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 }
 
 void ShadowMap::Unbind()
 {
+	glDisable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
 }
