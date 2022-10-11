@@ -114,7 +114,7 @@ GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoSha
         glGetProgramInfoLog(program, length, &length, message);
         std::string debugOutput = "Failed to Compile Shader Program ";
         if (message != 0)
-            debugOutput += message;
+            debugOutput += *message;
         Print(debugOutput);
         glDeleteProgram(program);
         _freea(message);

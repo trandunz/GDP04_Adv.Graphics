@@ -56,14 +56,14 @@ Scene_Assessment2::~Scene_Assessment2()
 void Scene_Assessment2::Start()
 {
 	LightManager::GetInstance().CreateDirectionalLight({ { 0,-1,0 } });
-	LightManager::GetInstance().CreateDirectionalLight({ { 0,1,0 } });
 
 	m_AsymmetricModel = new Mesh("LowPoly/Cross.obj");
 
 	m_GeoStar = new GameObject();
 	m_GeoStar->SetMesh(StaticMesh::Point);
-	m_GeoStar->SetShader("PositionOnly.vert", "PointToStar.geo", "SingleTexture.frag");
-	m_GeoStar->SetTranslation({ 0,0,-5.0f });
+	m_GeoStar->SetShader("PositionOnly.vert", "PointToStar.geo", "BlinnFong3D_Shadows.frag");
+	m_GeoStar->SetTranslation({ 0,0,0.0f });
+	m_GeoStar->SetRotation({ 1,0,0 }, 90);
 	m_GeoStar->SetActiveTextures({ TextureLoader::LoadTexture("Snow.jpg") });
 
 	m_NormalsSphere = new GameObject();
@@ -95,7 +95,7 @@ void Scene_Assessment2::Start()
 	m_ShadowCube = new GameObject();
 	m_ShadowCube->SetMesh(StaticMesh::Cube);
 	m_ShadowCube->SetShader("Normals3D_Shadows.vert", "BlinnFong3D_Shadows.frag");
-	m_ShadowCube->SetTranslation({ 0.0f,1.0f,2.0f });
+	m_ShadowCube->SetTranslation({ 0.0f,0.5f,2.0f });
 
 	m_ShadowPlane = new GameObject();
 	m_ShadowPlane->SetMesh(StaticMesh::Plane);

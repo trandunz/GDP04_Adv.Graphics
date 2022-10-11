@@ -20,12 +20,8 @@ out vec2 TextureCoords[];
 
 void main()
 {
-    // ----------------------------------------------------------------------
-    // pass attributes through
     TextureCoords[gl_InvocationID] = TexCoords[gl_InvocationID];
 
-    // ----------------------------------------------------------------------
-    // invocation zero controls tessellation levels for the entire patch
     if (gl_InvocationID == 0)
     {
         gl_TessLevelOuter[0] = 5.0f;

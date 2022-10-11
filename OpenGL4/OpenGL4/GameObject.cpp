@@ -164,14 +164,9 @@ void GameObject::Draw()
                 SetExplodeUniforms(m_ShaderID);
             }
         
-            // If Frag Shader is Blinn_Phong Lighting
-            if (m_ShaderLocation.fragShader == "BlinnFong3D.frag")
-            {
-                SetBlinnFong3DUniforms();
-                SetRimLighingUniforms();
-            }
-            // Else if Frag Shader is Reflection
-            else if (m_ShaderLocation.fragShader == "Reflection.frag")
+            
+            // if Frag Shader is Reflection
+            if (m_ShaderLocation.fragShader == "Reflection.frag")
             {
                 SetReflectionUniforms();
             }
@@ -197,6 +192,12 @@ void GameObject::Draw()
         {
            SetNormals3DVertUniforms(m_ShaderID);
         }
+        // If Frag Shader is Blinn_Phong Lighting
+        if (m_ShaderLocation.fragShader == "BlinnFong3D.frag")
+        {
+            SetBlinnFong3DUniforms();
+            SetRimLighingUniforms();
+        }
         if (m_ShaderLocation.fragShader == "BlinnFong3D_Shadows.frag")
         {
             SetBlinnFong3DUniforms();
@@ -204,7 +205,7 @@ void GameObject::Draw()
             SetBlinnFong3DShadowsUniform();
         }
         // Else if vertex shader is fog
-        else if (m_ShaderLocation.vertShader == "Fog.vert")
+        if (m_ShaderLocation.vertShader == "Fog.vert")
         {
             SetFogUniforms();
             // If frag shader is Lit Fog
@@ -424,18 +425,21 @@ void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, st
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource,_fragmentSource);
     m_ShaderLocation = { _vertexSource , _geoSource, "", "", _fragmentSource };
+    m_ShadowMapShaderID = ShaderLoader::CreateShader("ShadowMap.vert", _geoSource, "ShadowMap.frag");
 }
 
 void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, std::string _tcSource, std::string _fragmentSource)
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource, _tcSource, _fragmentSource);
     m_ShaderLocation = { _vertexSource , _geoSource, _tcSource, "", _fragmentSource };
+    m_ShadowMapShaderID = ShaderLoader::CreateShader("ShadowMap.vert", _geoSource, _tcSource, "ShadowMap.frag");
 }
 
 void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, std::string _tcSource, std::string _teSource, std::string _fragmentSource)
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource, _tcSource,_teSource, _fragmentSource);
     m_ShaderLocation = { _vertexSource , _geoSource, _tcSource, _teSource, _fragmentSource };
+    m_ShadowMapShaderID = ShaderLoader::CreateShader("ShadowMap.vert", _geoSource, _tcSource, _teSource, "ShadowMap.frag");
 }
 
 GLuint GameObject::GetShader()
@@ -737,6 +741,8 @@ void GameObject::SetPositionOnlyUniforms()
 {
     // Projection * View * Model Matrix
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
 }
 
 void GameObject::SetExplodeUniforms(GLuint _shaderID)
