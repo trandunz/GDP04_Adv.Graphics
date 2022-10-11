@@ -27,23 +27,19 @@ void main()
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	EmitVertex();
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, -0.2f, 0.0f, 0.0f);
-	TexCoords = vec2(0.5f, 0.3f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, -0.2f, 0.0f, 0.0f);
-	EmitVertex();
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.2f, -0.1f, 0.0f, 0.0f);
 	TexCoords = vec2(0.3f,0.4f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.2f, -0.1f, 0.0f, 0.0f);
 	EmitVertex();
-
-	// Bottom Left Point
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, -0.2f, 0.0f, 0.0f);
-	TexCoords = vec2(0.5f,0.3f);
+	TexCoords = vec2(0.5f, 0.3f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, -0.2f, 0.0f, 0.0f);
 	EmitVertex();
+
+
+	// Bottom Left Point
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.2f, -0.1f, 0.0f, 0.0f);
 	TexCoords = vec2(0.3f,0.4f);
 	CreateOutputNormalsAndPosition();
@@ -53,6 +49,11 @@ void main()
 	TexCoords = vec2(0.2f,0.0f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.3f, -0.5f, 0.0f, 0.0f);
+	EmitVertex();
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, -0.2f, 0.0f, 0.0f);
+	TexCoords = vec2(0.5f,0.3f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, -0.2f, 0.0f, 0.0f);
 	EmitVertex();
 
 	// Bottom Right Centre
@@ -78,15 +79,15 @@ void main()
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, -0.2f, 0.0f, 0.0f);
 	EmitVertex();
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.2f, -0.1f, 0.0f, 0.0f);
-	TexCoords = vec2(0.7f,0.4f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.2f, -0.1f, 0.0f, 0.0f);
-	EmitVertex();
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.3f, -0.5f, 0.0f, 0.0f);
 	TexCoords = vec2(0.8f,0.0f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.3f, -0.5f, 0.0f, 0.0f);
+	EmitVertex();
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.2f, -0.1f, 0.0f, 0.0f);
+	TexCoords = vec2(0.7f,0.4f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.2f, -0.1f, 0.0f, 0.0f);
 	EmitVertex();
 
 	// Top Right Centre
@@ -112,74 +113,72 @@ void main()
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.2f, -0.1f, 0.0f, 0.0f);
 	EmitVertex();
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.1f, +0.1f, 0.0f, 0.0f);
-	TexCoords = vec2(0.6f,0.6f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.1f, +0.1f, 0.0f, 0.0f);
-	EmitVertex();
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.5f, 0.1f, 0.0f, 0.0f); 
 	TexCoords = vec2(1.0f,0.6f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.5f, 0.1f, 0.0f, 0.0f);
 	EmitVertex();
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.1f, +0.1f, 0.0f, 0.0f);
+	TexCoords = vec2(0.6f,0.6f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.1f, +0.1f, 0.0f, 0.0f);
+	EmitVertex();
 
 	// Top Middle Centre
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	TexCoords = vec2(0.5f,0.5f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	EmitVertex();
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.2f, -0.1f, 0.0f, 0.0f); 
-	TexCoords = vec2(0.3f,0.4f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.2f, -0.1f, 0.0f, 0.0f);
-	EmitVertex();
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.1f, +0.1f, 0.0f, 0.0f); 
-	TexCoords = vec2(0.4f,0.6f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.1f, +0.1f, 0.0f, 0.0f);
-	EmitVertex();
-
-	// Top Middle Point
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.125f, 0.1f, 0.0f, 0.0f); 
-	TexCoords = vec2(0.5f - 0.125f,0.6f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.125f, 0.1f, 0.0f, 0.0f);
-	EmitVertex();
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.125f, +0.1f, 0.0f, 0.0f); 
-	TexCoords = vec2(0.5f + 0.125f,0.6f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.125f, +0.1f, 0.0f, 0.0f);
-	EmitVertex();
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, 0.5f, 0.0f, 0.0f); 
-	TexCoords = vec2(0.5f,1.0f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, 0.5f, 0.0f, 0.0f);
-	EmitVertex();
-
-	// Top Left Centre
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, 0.0f, 0.0f, 0.0f); 
 	TexCoords = vec2(0.5f,0.5f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	EmitVertex();
-	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.1f, +0.1f, 0.0f, 0.0f); 
-	TexCoords = vec2(0.4f,0.6f);
-	CreateOutputNormalsAndPosition();
-	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.1f, +0.1f, 0.0f, 0.0f);
 	EmitVertex();
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.1f, +0.1f, 0.0f, 0.0f); 
 	TexCoords = vec2(0.6f,0.6f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.1f, +0.1f, 0.0f, 0.0f);
 	EmitVertex();
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.1f, +0.1f, 0.0f, 0.0f); 
+	TexCoords = vec2(0.4f,0.6f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.1f, +0.1f, 0.0f, 0.0f);
+	EmitVertex();
 
-	// Top Left Point
+
+	// Top Middle Point
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.1f, +0.1f, 0.0f, 0.0f); 
+	TexCoords = vec2(0.6f,0.6f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.1f, +0.1f, 0.0f, 0.0f);
+	EmitVertex();
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, 0.5f, 0.0f, 0.0f);
+	TexCoords = vec2(0.5f,1.0f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, 0.5f, 0.0f, 0.0f);
+	EmitVertex();
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.1f, +0.1f, 0.0f, 0.0f); 
+	TexCoords = vec2(0.4f,0.6f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.1f, +0.1f, 0.0f, 0.0f);
+	EmitVertex();
+
+	// Top left Centre
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	TexCoords = vec2(0.5f,0.5f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	EmitVertex();
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.1f, +0.1f, 0.0f, 0.0f); 
+	TexCoords = vec2(0.4f,0.6f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.1f, +0.1f, 0.0f, 0.0f);
+	EmitVertex();
+	
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.2f, -0.1f, 0.0f, 0.0f); 
 	TexCoords = vec2(0.3f,0.4f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.2f, -0.1f, 0.0f, 0.0f);
 	EmitVertex();
+
+
+	// Top left Point
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.1f, +0.1f, 0.0f, 0.0f); 
 	TexCoords = vec2(0.4f,0.6f);
 	CreateOutputNormalsAndPosition();
@@ -189,6 +188,11 @@ void main()
 	TexCoords = vec2(0.0f,0.6f);
 	CreateOutputNormalsAndPosition();
 	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.5f, 0.1f, 0.0f, 0.0f);
+	EmitVertex();
+	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(-0.2f, -0.1f, 0.0f, 0.0f); 
+	TexCoords = vec2(0.3f,0.4f);
+	CreateOutputNormalsAndPosition();
+	FragPosLightSpace = gs_in[0].AttribPosition + gs_in[0].LightVPMatrix * gs_in[0].Model * vec4(-0.2f, -0.1f, 0.0f, 0.0f);
 	EmitVertex();
 
 	EndPrimitive();

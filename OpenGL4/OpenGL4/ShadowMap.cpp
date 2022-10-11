@@ -64,7 +64,7 @@ glm::mat4 ShadowMap::GetLightVPMatrix()
 	//glm::mat4 orthogonalProjection = glm::ortho(-300.0f, 300.0f, -300.0f, 300.0f, 0.1f, 75.0f);
 	glm::mat4 lightViewMatrix = glm::lookAt
 	(
-		LightManager::GetInstance().GetDirectionalLights()[0].Direction * -10.0f,
+		LightManager::GetInstance().GetDirectionalLights()[0].Direction * -30.0f,
 		glm::vec3{0.0f,0.0f,0.0f},
 		glm::vec3{0.0f,0.0f,1.0f}
 	);

@@ -271,6 +271,7 @@ protected:
 	void SetBlinnFong3DShadowsUniform();
 	
 	void SetShadowMapUniforms();
+	void SetHeightmapShadowsUniforms();
 
 	bool m_ShowNormals = false;
 	bool m_RimLighting = false;

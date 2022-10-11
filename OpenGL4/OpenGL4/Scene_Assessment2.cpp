@@ -82,7 +82,7 @@ void Scene_Assessment2::Start()
 
 	m_TesselationTriangle = new GameObject();
 	m_TesselationTriangle->SetMesh(StaticMesh::Patch_Quad);
-	m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "HeightMap.te", "SingleTexture.frag");
+	m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "HeightMap_Shadows.te", "BlinnFong3D_Shadows.frag");
 	m_TesselationTriangle->SetTranslation({0,0,-10.0f});
 	m_TesselationTriangle->SetRotation({1,0,0}, 90);
 	m_TesselationTriangle->SetActiveTextures(
@@ -155,7 +155,6 @@ void Scene_Assessment2::Draw()
 	//
 	// Shadow Map Pass
 	//
-
 	ShadowMap::GetInstance().Bind();
 
 	if (m_GeoStar)
@@ -167,8 +166,10 @@ void Scene_Assessment2::Draw()
 	if (m_ExplodingObject)
 		m_ExplodingObject->DrawShadows();
 	
+	glDisable(GL_CULL_FACE);
 	if (m_TesselationTriangle)
 		m_TesselationTriangle->DrawShadows();
+	glEnable(GL_CULL_FACE);
 
 	if (m_ShadowCube)
 		m_ShadowCube->DrawShadows();

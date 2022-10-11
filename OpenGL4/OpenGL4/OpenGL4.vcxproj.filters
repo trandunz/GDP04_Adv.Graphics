@@ -403,5 +403,11 @@
     <None Include="Resources\Shaders\Normals3D_Shadows.vert">
       <Filter>Resource Files\Vert Shader</Filter>
     </None>
+    <None Include="Resources\Shaders\HeightMap_Shadows.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\HeightMap_ToShadowMap.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,0 +1,56 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : 
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
+#version 460 core
+
+layout (triangles, equal_spacing, ccw) in;
+
+uniform sampler2D HeightMap;
+uniform mat4 PVMMatrix;
+uniform mat4 Model;
+uniform mat4 LightVPMatrix;
+
+// received from Tessellation Control Shader - all texture coordinates for the patch vertices
+in vec2 TextureCoords[];
+
+out vec2 TexCoords;
+out vec3 Position;
+out vec3 Normals;
+out vec4 FragPosLightSpace;
+
+void main()
+{
+	TexCoords =
+    gl_TessCoord.x * TextureCoords[0] +
+    gl_TessCoord.y * TextureCoords[1] + 
+    gl_TessCoord.z * TextureCoords[2]; 
+
+	vec4 p00 = gl_in[0].gl_Position;
+    vec4 p01 = gl_in[1].gl_Position;
+    vec4 p10 = gl_in[2].gl_Position;
+    vec4 uVec = p01 - p00;
+    vec4 vVec = p10 - p00;
+    vec4 normal = normalize( vec4(cross(vVec.xyz, uVec.xyz), 0.0f) );
+
+    float height = texture(HeightMap, TexCoords).y * 1.0f - 0.5f;
+
+    vec4 p = gl_TessCoord.x * gl_in[0].gl_Position +
+	gl_TessCoord.y * gl_in[1].gl_Position +
+	gl_TessCoord.z * gl_in[2].gl_Position;
+
+    p += normal * height;
+
+    Position = vec3(Model * p);
+    Normals = vec3(normal);
+    FragPosLightSpace = LightVPMatrix * vec4(Position, 1.0f);
+
+    gl_Position = LightVPMatrix * Model * p;
+}
+
+	
