@@ -35,13 +35,13 @@ void Scene_Clothsim::Start()
 				"MountainOutpost/Front.jpg",
 			}));
 
-	m_FloorPlane = new GameObject({0,-2,-10});
-	m_FloorPlane->SetMesh(StaticMesh::Plane);
-	m_FloorPlane->SetShader("SingleTexture.vert", "SingleTexture.frag");
-	m_FloorPlane->SetActiveTextures({TextureLoader::LoadTexture("Grass.jpg")});
-	m_FloorPlane->SetScale({ 10,1,10 });
+	//m_FloorPlane = new GameObject({0,-2,-10});
+	//m_FloorPlane->SetMesh(StaticMesh::Plane);
+	//m_FloorPlane->SetShader("SingleTexture.vert", "SingleTexture.frag");
+	//m_FloorPlane->SetActiveTextures({TextureLoader::LoadTexture("Grass.jpg")});
+	//m_FloorPlane->SetScale({ 10,1,10 });
 
-	m_Cloth = new Cloth(10, 10, 1.0f, {0,2,-10});
+	m_Cloth = new Cloth(10, 10, 1.0f, {-5,5,-20});
 }
 
 void Scene_Clothsim::Update()

@@ -18,13 +18,14 @@ Mesh* StaticMesh::Sphere{ nullptr };
 Mesh* StaticMesh::Hemisphere{ nullptr };
 Mesh* StaticMesh::Pyramid{ nullptr };
 Mesh* StaticMesh::Patch_Triangle{ nullptr };
+Mesh* StaticMesh::Patch_Triangle_Quad{ nullptr };
 Mesh* StaticMesh::Patch_Quad{ nullptr };
 Mesh* StaticMesh::Plane{ nullptr };
 
 void StaticMesh::Init()
 {
 	Cleanup();
-	Patch_Quad = new Mesh(SHAPE::PATCH_QUAD);
+	Patch_Triangle_Quad = new Mesh(SHAPE::PATCH_TRIANGLE_QUAD);
 	Patch_Triangle = new Mesh(SHAPE::PATCH_TRIANGLE);
 	Point = new Mesh(SHAPE::POINT);
 	Quad = new Mesh(4);
@@ -34,6 +35,7 @@ void StaticMesh::Init()
 	Hemisphere = new Mesh(SHAPE::HEMISPHERE);
 	Pyramid = new Mesh(SHAPE::PYRAMID);
 	Plane = new Mesh(SHAPE::PLANE);
+	Patch_Quad = new Mesh(SHAPE::PATCH_QUAD);
 }
 
 void StaticMesh::Cleanup()
@@ -78,14 +80,19 @@ void StaticMesh::Cleanup()
 		delete Patch_Triangle;
 		Patch_Triangle = nullptr;
 	}
-	if (Patch_Quad != nullptr)
+	if (Patch_Triangle_Quad != nullptr)
 	{
-		delete Patch_Quad;
-		Patch_Quad = nullptr;
+		delete Patch_Triangle_Quad;
+		Patch_Triangle_Quad = nullptr;
 	}
 	if (Plane != nullptr)
 	{
 		delete Plane;
 		Plane = nullptr;
+	}
+	if (Patch_Quad != nullptr)
+	{
+		delete Patch_Quad;
+		Patch_Quad = nullptr;
 	}
 }

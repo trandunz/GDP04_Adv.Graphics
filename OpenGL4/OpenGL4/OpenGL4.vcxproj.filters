@@ -409,5 +409,11 @@
     <None Include="Resources\Shaders\HeightMap_ToShadowMap.te">
       <Filter>Resource Files\Tesselation Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\QuadPatch.tc">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\DynamicQuad.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,8 +1,13 @@
 #include "Cloth.h"
 #include "DistanceJoint.h"
+#include "ShaderLoader.h"
 
 Cloth::Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos)
 {
+	m_Size.x = width;
+	m_Size.y = height;
+	m_Transform.translation = _startPos;
+	UpdateModelValueOfTransform(m_Transform);
 	for (int y = 0; y <= height; y++) 
 	{
 		for (int x = 0; x <= width; x++) 
@@ -19,13 +24,23 @@ Cloth::Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos
 				m_DistanceJoints.emplace_back(new DistanceJoint(particle, m_Particles[x + (y - 1) * (width + 1)], spacing));
 			}
 
-			if (y == 0) {
+			if (y == 0) 
+			{
 				particle->TogglePinned();
 			}
 
 			m_Particles.emplace_back(particle);
 		}
 	}
+
+	m_ShaderID = ShaderLoader::CreateShader(
+		"PositionPassthrough.vert",
+		"",
+		"QuadPatch.tc",
+		"DynamicQuad.te",
+		"SingleTexture.frag");
+
+	//m_ShaderID = ShaderLoader::CreateShader("SingleTexture.vert", "SingleTexture.frag");
 }
 
 Cloth::~Cloth()
@@ -65,6 +80,27 @@ void Cloth::Draw()
 	{
 		particle->Draw();
 	}
+
+
+	glUseProgram(m_ShaderID);
+
+	UpdateModelValueOfTransform(m_Transform);
+
+	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "InnerFidelity", 10.0f);
+	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "OuterFidelity", 10.0f);
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+
+	for (int i = 0; i < m_Size.x * m_Size.y; i++)
+	{
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[" + std::to_string(i) + "]", m_Particles[i]->GetPosition());
+	}
+
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	StaticMesh::Patch_Quad->Draw();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glUseProgram(0);
 }
 
 ClothParticle::ClothParticle(glm::vec3 _startPos)

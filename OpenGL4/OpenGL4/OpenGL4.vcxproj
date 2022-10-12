@@ -222,6 +222,7 @@
     <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag" />
     <None Include="Resources\Shaders\BlinnFong3D_Shadows.frag" />
     <None Include="Resources\Shaders\Cloud.frag" />
+    <None Include="Resources\Shaders\DynamicQuad.te" />
     <None Include="Resources\Shaders\Explode.geo" />
     <None Include="Resources\Shaders\Fog.frag" />
     <None Include="Resources\Shaders\Fog.vert" />
@@ -243,6 +244,7 @@
     <None Include="Resources\Shaders\PointToStar.geo" />
     <None Include="Resources\Shaders\PositionOnly.vert" />
     <None Include="Resources\Shaders\PositionPassthrough.vert" />
+    <None Include="Resources\Shaders\QuadPatch.tc" />
     <None Include="Resources\Shaders\Reflection.frag" />
     <None Include="Resources\Shaders\ReflectionMap.frag" />
     <None Include="Resources\Shaders\ShadowMap.frag" />

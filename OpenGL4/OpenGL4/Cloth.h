@@ -35,6 +35,8 @@ private:
 	std::vector<ClothParticle*> m_Particles{};
 	std::vector< DistanceJoint*> m_DistanceJoints{};
 
-	glm::vec3 m_Position{0,01,-10};
+	glm::vec2 m_Size{};
+	Transform m_Transform{};
+	GLuint m_ShaderID{};
 };
 

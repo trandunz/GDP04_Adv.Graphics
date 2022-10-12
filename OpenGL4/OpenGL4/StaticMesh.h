@@ -24,6 +24,7 @@ public:
 	static void Cleanup();
 
 	static Mesh* Patch_Quad;
+	static Mesh* Patch_Triangle_Quad;
 	static Mesh* Patch_Triangle;
 	static Mesh* Point;
 	static Mesh* Plane;

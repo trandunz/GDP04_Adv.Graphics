@@ -125,9 +125,15 @@ void Mesh::Draw()
 			glDrawArrays(GL_POINTS, 0, m_Vertices.size());
 	}
 	else if (m_Shape == SHAPE::PATCH_TRIANGLE ||
-			 m_Shape == SHAPE::PATCH_QUAD)
+			 m_Shape == SHAPE::PATCH_TRIANGLE_QUAD)
 	{
 		glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
+	}
+	else if (m_Shape == SHAPE::PATCH_QUAD)
+	{
+		glPatchParameteri(GL_PATCH_VERTICES, 4);
+		glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
+		glPatchParameteri(GL_PATCH_VERTICES, 3);
 	}
 	else
 	{
@@ -231,7 +237,7 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 		m_Vertices.emplace_back(Vertex{ { 0.5f,  -0.5f, 0.0f }, {1.0f,0.0f} });
 		break;
 	}
-	case SHAPE::PATCH_QUAD:
+	case SHAPE::PATCH_TRIANGLE_QUAD:
 	{
 		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
 		m_Vertices.emplace_back(Vertex{ { -0.5f,  -0.5f, 0.0f }, {0.0f,0.0f} });
@@ -240,6 +246,15 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 		m_Vertices.emplace_back(Vertex{ { 0.5f,  -0.5f, 0.0f }, {1.0f,0.0f} });
 		m_Vertices.emplace_back(Vertex{ { 0.5f,  0.5f, 0.0f }, {1.0f,1.0f} });
 		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
+		break;
+	}
+	case SHAPE::PATCH_QUAD:
+	{
+		m_Vertices.emplace_back(Vertex{ { -0.5f,  -0.5f, 0.0f }, {0.0f,0.0f} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f,  -0.5f, 0.0f }, {1.0f,0.0f} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f,  0.5f, 0.0f }, {1.0f,1.0f} });
+		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
+
 		break;
 	}
 	case SHAPE::PLANE:
@@ -340,7 +355,7 @@ void Mesh::CreateShapeIndices(SHAPE _shape)
 		m_Indices.emplace_back(2);
 		break;
 	}
-	case SHAPE::PATCH_QUAD:
+	case SHAPE::PATCH_TRIANGLE_QUAD:
 	{
 		m_Indices.emplace_back(0);
 		m_Indices.emplace_back(1);

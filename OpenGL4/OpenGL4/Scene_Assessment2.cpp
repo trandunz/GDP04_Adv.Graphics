@@ -81,7 +81,7 @@ void Scene_Assessment2::Start()
 	m_ExplodingObject->SetScale({ 0.01f, 0.01f, 0.01f });
 
 	m_TesselationTriangle = new GameObject();
-	m_TesselationTriangle->SetMesh(StaticMesh::Patch_Quad);
+	m_TesselationTriangle->SetMesh(StaticMesh::Patch_Triangle_Quad);
 	m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "HeightMap_Shadows.te", "BlinnFong3D_Shadows.frag");
 	m_TesselationTriangle->SetTranslation({0,0,-10.0f});
 	m_TesselationTriangle->SetRotation({1,0,0}, 90);
