@@ -124,17 +124,17 @@ void Scene_Assessment1::Start()
 
 	m_LeftQuad = new GameObject;
 	m_LeftQuad->SetActiveTextures({ TextureLoader::LoadTexture("LeftQuad.PNG") });
-	m_LeftQuad->SetMesh(StaticMesh::Quad);
+	m_LeftQuad->SetMesh(StaticMesh::Triangle_Quad);
 	m_LeftQuad->SetShader("SingleTexture.vert", "SingleTexture.frag");
 
 	m_RightQuad = new GameObject;
 	m_RightQuad->SetActiveTextures({ TextureLoader::LoadTexture("RightQuad.PNG") });
-	m_RightQuad->SetMesh(StaticMesh::Quad);
+	m_RightQuad->SetMesh(StaticMesh::Triangle_Quad);
 	m_RightQuad->SetShader("SingleTexture.vert", "SingleTexture.frag");
 
 	m_FlatQuad = new GameObject;
 	m_FlatQuad->SetActiveTextures({ TextureLoader::LoadTexture("Dirt.JPG") });
-	m_FlatQuad->SetMesh(StaticMesh::Quad);
+	m_FlatQuad->SetMesh(StaticMesh::Triangle_Quad);
 	m_FlatQuad->SetShader("Fog.vert", "Fog.frag");
 	m_FlatQuad->SetRotation({ 1,0,0 }, 90.0f);
 	m_FlatQuad->SetScale({ 10.0f,10.0f,10.0f });
@@ -146,7 +146,7 @@ void Scene_Assessment1::Start()
 			TextureLoader::LoadTexture("Moss.JPG"),
 			TextureLoader::LoadTexture("Heightmaps/MossNoise.JPG")
 		});
-	m_MossQuad->SetMesh(StaticMesh::Quad);
+	m_MossQuad->SetMesh(StaticMesh::Triangle_Quad);
 	m_MossQuad->SetShader("Fog.vert", "Perlin_Moss.frag");
 	m_MossQuad->SetScale({ 10.0f,10.0f,10.0f });
 	m_MossQuad->SetTranslation({ 0, 0.0f, -10.0f });

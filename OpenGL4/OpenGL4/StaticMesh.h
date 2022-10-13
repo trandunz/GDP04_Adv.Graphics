@@ -28,11 +28,13 @@ public:
 	static Mesh* Patch_Triangle;
 	static Mesh* Point;
 	static Mesh* Plane;
-	static Mesh* Quad;
+	static Mesh* Triangle_Quad;
 	static Mesh* Cube;
 	static Mesh* InvertedCube;
 	static Mesh* Sphere;
 	static Mesh* Hemisphere;
 	static Mesh* Pyramid;
+	static Mesh* Quad;
+	static Mesh* Triangle;
 };
 

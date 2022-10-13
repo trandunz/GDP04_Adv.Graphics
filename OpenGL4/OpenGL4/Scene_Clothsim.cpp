@@ -41,7 +41,7 @@ void Scene_Clothsim::Start()
 	//m_FloorPlane->SetActiveTextures({TextureLoader::LoadTexture("Grass.jpg")});
 	//m_FloorPlane->SetScale({ 10,1,10 });
 
-	m_Cloth = new Cloth(10, 10, 1.0f, {-5,5,-20});
+	m_Cloth = new Cloth(m_ClothWidth, m_ClothHeight, 1.0f, {-5,5,-20});
 }
 
 void Scene_Clothsim::Update()
@@ -51,7 +51,13 @@ void Scene_Clothsim::Update()
 	Statics::SceneCamera.Movement();
 
 	if (m_Cloth)
+	{
+		m_Cloth->SetHeight(m_ClothHeight);
+		m_Cloth->SetWidth(m_ClothWidth);
+		m_Cloth->SetElasticity(m_ClothElasticity);
+		m_Cloth->SetRingSpacing(m_RingDistance);
 		m_Cloth->Update();
+	}	
 }
 
 void Scene_Clothsim::KeyEvents()
@@ -68,6 +74,10 @@ void Scene_Clothsim::CursorMoveEvent(double& xpos, double& ypos)
 
 void Scene_Clothsim::CursorClickEvent(int button, int action, int mods)
 {
+	if (m_Cloth)
+	{
+
+	}
 }
 
 void Scene_Clothsim::Draw()
@@ -110,9 +120,39 @@ void Scene_Clothsim::BindImGUI()
 
 void Scene_Clothsim::HandleDebugTools()
 {
-	ImGui::Begin("Window Name");
-	ImGui::Text("Helo World!");
-	ImGui::End();
+	if (m_Cloth)
+	{
+		ImGui::Begin("Cloth Settings");
+
+		int hookCount = m_Cloth->GetHookCount();
+		ImGui::SliderInt("Hook Count", &hookCount, 0, m_Cloth->GetWidth());
+		m_Cloth->SetHookCount(hookCount);
+
+		m_ClothWidth = m_Cloth->GetWidth();
+		ImGui::SliderInt("Width", &m_ClothWidth, 1, 40);
+
+		m_ClothHeight = m_Cloth->GetHeight();
+		ImGui::SliderInt("Height", &m_ClothHeight, 1, 40);
+
+		m_ClothElasticity = m_Cloth->GetElasticity();
+		ImGui::SliderFloat("Elasticity", &m_ClothElasticity, 0.0f, 1.0f);
+
+		if (ImGui::Button("Reset Simulation"))
+		{
+			if (m_Cloth)
+				delete m_Cloth;
+			m_Cloth = nullptr;
+			m_Cloth = new Cloth(m_ClothWidth, m_ClothHeight, 1.0f, { -5,5,-20 });
+		}
+
+		m_RingDistance = m_Cloth->m_RingSpacing;
+		ImGui::SliderFloat("Ring Distance", &m_RingDistance, 0.0f, 1.0f);
+
+		ImGui::Text("Mouse Interactions");
+		ImGui::Checkbox("Draggable", &m_DragCloth);
+
+		ImGui::End();
+	}
 }
 
 void Scene_Clothsim::DrawImGUI()

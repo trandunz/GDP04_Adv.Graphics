@@ -22,7 +22,9 @@ enum class SHAPE
 	PATCH_TRIANGLE,
 	PATCH_TRIANGLE_QUAD,
 	PATCH_QUAD,
-	PLANE
+	PLANE,
+	QUAD,
+	TRIANGLE
 };
 
 class Mesh
@@ -60,6 +62,22 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	std::vector<unsigned>& GetIndices();
+
+	/// <summary>
+	/// Checks raycast intersection and returns bool
+	/// </summary>
+	/// <param name="_ray"></param>
+	/// <returns></returns>
+	bool RayIntersection(Ray _ray, Transform _transform);
+
+	/// <summary>
+	/// Checks raycast intersection and returns bool 
+	/// along with the point of intersection
+	/// </summary>
+	/// <param name="_ray"></param>
+	/// <param name="_point"></param>
+	/// <returns></returns>
+	bool RayIntersection(Ray _ray, Transform _transform, glm::vec3& _point);
 
 private:
 	/// <summary>

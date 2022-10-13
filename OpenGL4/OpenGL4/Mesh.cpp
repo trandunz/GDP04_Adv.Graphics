@@ -10,6 +10,7 @@
 
 #include "Mesh.h"
 #include "Statics.h"
+#include "Physics.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <TinyOBJ/tiny_obj_loader.h>
@@ -135,6 +136,13 @@ void Mesh::Draw()
 		glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
 		glPatchParameteri(GL_PATCH_VERTICES, 3);
 	}
+	else if (m_Shape == SHAPE::QUAD)
+	{
+		if (m_Indices.size() > 0)
+			glDrawElements(GL_QUADS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+		else
+			glDrawArrays(GL_QUADS, 0, m_Vertices.size());
+	}
 	else
 	{
 		if (m_Indices.size() > 0)
@@ -154,6 +162,72 @@ std::vector<Vertex>& Mesh::GetVertices()
 std::vector<unsigned>& Mesh::GetIndices()
 {
 	return m_Indices;
+}
+
+bool Mesh::RayIntersection(Ray _ray, Transform _transform)
+{
+	bool intersection = false;
+
+	int index{ 0 };
+	unsigned element{ 0 };
+	// Loop over all indices and get points for each triangle in vertices
+	for (unsigned i = 0; i < m_Indices.size() / 3; i++)
+	{
+		element = (m_Indices)[index];
+		glm::vec4 point1{ (m_Vertices)[element].position, 1.0f };
+		point1 = _transform.transform * point1;
+
+		element = (m_Indices)[index + 1];
+		glm::vec4 point2{ (m_Vertices)[element].position, 1.0f };
+		point2 = _transform.transform * point2;
+
+		element = (m_Indices)[index + 2];
+		glm::vec4 point3{ (m_Vertices)[element].position, 1.0f };
+		point3 = _transform.transform * point3;
+
+		// test for intersection with triangle
+		intersection = Physics::IntersectTriangle(_ray, point1, point2, point3);
+		
+		if (intersection)
+			return true;
+
+		index += 3;
+	}
+
+	return intersection;
+}
+
+bool Mesh::RayIntersection(Ray _ray, Transform _transform, glm::vec3& _point)
+{
+	bool intersection = false;
+
+	int index{ 0 };
+	unsigned element{ 0 };
+	// Loop over all indices and get points for each triangle in vertices
+	for (unsigned i = 0; i < m_Indices.size() / 3; i++)
+	{
+		element = (m_Indices)[index];
+		glm::vec4 point1{ (m_Vertices)[element].position, 1.0f };
+		point1 = _transform.transform * point1;
+
+		element = (m_Indices)[index + 1];
+		glm::vec4 point2{ (m_Vertices)[element].position, 1.0f };
+		point2 = _transform.transform * point2;
+
+		element = (m_Indices)[index + 2];
+		glm::vec4 point3{ (m_Vertices)[element].position, 1.0f };
+		point3 = _transform.transform * point3;
+
+		// test for intersection with triangle
+		intersection = Physics::IntersectTriangle(_ray, point1, point2, point3, _point);
+
+		if (intersection)
+			return true;
+
+		index += 3;
+	}
+
+	return intersection;
 }
 
 void Mesh::CreateShapeVertices(SHAPE _shape)
@@ -230,6 +304,13 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 		m_Vertices.emplace_back(Vertex{});
 		break;
 	}
+	case SHAPE::TRIANGLE:
+	{
+		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
+		m_Vertices.emplace_back(Vertex{ { -0.5f,  -0.5f, 0.0f }, {0.0f,0.0f} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f,  -0.5f, 0.0f }, {1.0f,0.0f} });
+		break;
+	}
 	case SHAPE::PATCH_TRIANGLE:
 	{
 		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
@@ -266,6 +347,14 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 		m_Vertices.emplace_back(Vertex{ { 0.5f,0.0f , -0.5f }, {1.0f,0.0f},{0,1,0} });
 		m_Vertices.emplace_back(Vertex{ { 0.5f, 0.0f, 0.5f }, {1.0f,1.0f},{0,1,0} });
 		m_Vertices.emplace_back(Vertex{ { -0.5f, 0.0f, 0.5f }, {0.0f,1.0f},{0,1,0} });
+		break;
+	}
+	case SHAPE::QUAD:
+	{
+		m_Vertices.emplace_back(Vertex{ { -0.5f,  -0.5f, 0.0f }, {0.0f,0.0f} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f,  -0.5f, 0.0f }, {1.0f,0.0f} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f,  0.5f, 0.0f }, {1.0f,1.0f} });
+		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
 		break;
 	}
 	default:
@@ -375,6 +464,21 @@ void Mesh::CreateShapeIndices(SHAPE _shape)
 		m_Indices.emplace_back(0);
 		break;
 	}
+	case SHAPE::QUAD:
+	{
+		m_Indices.emplace_back(0);
+		m_Indices.emplace_back(1);
+		m_Indices.emplace_back(2);
+		m_Indices.emplace_back(3);
+		break;
+	}
+	case SHAPE::TRIANGLE:
+	{
+		m_Indices.emplace_back(0);
+		m_Indices.emplace_back(1);
+		m_Indices.emplace_back(2);
+		break;
+	}
 	default:
 	{
 		break;
@@ -456,7 +560,7 @@ void Mesh::CreateAndInitializeBuffersNONDSA(bool _ebo)
 	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), &m_Vertices[0], GL_STATIC_DRAW);
 
 	// Index Buffer
-	if (_ebo)
+	if (m_Indices.size() > 0)
 	{
 		glGenBuffers(1, &m_IndexBufferID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);

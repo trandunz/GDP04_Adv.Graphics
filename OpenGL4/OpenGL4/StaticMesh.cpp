@@ -11,7 +11,7 @@
 #include "StaticMesh.h"
 
 Mesh* StaticMesh::Point{ nullptr };
-Mesh* StaticMesh::Quad{ nullptr };
+Mesh* StaticMesh::Triangle_Quad{ nullptr };
 Mesh* StaticMesh::Cube{ nullptr };
 Mesh* StaticMesh::InvertedCube{ nullptr };
 Mesh* StaticMesh::Sphere{ nullptr };
@@ -21,6 +21,8 @@ Mesh* StaticMesh::Patch_Triangle{ nullptr };
 Mesh* StaticMesh::Patch_Triangle_Quad{ nullptr };
 Mesh* StaticMesh::Patch_Quad{ nullptr };
 Mesh* StaticMesh::Plane{ nullptr };
+Mesh* StaticMesh::Quad{ nullptr };
+Mesh* StaticMesh::Triangle { nullptr };
 
 void StaticMesh::Init()
 {
@@ -28,7 +30,7 @@ void StaticMesh::Init()
 	Patch_Triangle_Quad = new Mesh(SHAPE::PATCH_TRIANGLE_QUAD);
 	Patch_Triangle = new Mesh(SHAPE::PATCH_TRIANGLE);
 	Point = new Mesh(SHAPE::POINT);
-	Quad = new Mesh(4);
+	Triangle_Quad = new Mesh(4);
 	InvertedCube = new Mesh(SHAPE::CUBE, GL_CW);
 	Cube = new Mesh(SHAPE::CUBE);
 	Sphere = new Mesh(SHAPE::SPHERE, GL_CCW);
@@ -36,14 +38,16 @@ void StaticMesh::Init()
 	Pyramid = new Mesh(SHAPE::PYRAMID);
 	Plane = new Mesh(SHAPE::PLANE);
 	Patch_Quad = new Mesh(SHAPE::PATCH_QUAD);
+	Quad = new Mesh(SHAPE::QUAD);
+	Triangle = new Mesh(SHAPE::TRIANGLE);
 }
 
 void StaticMesh::Cleanup()
 {
-	if (Quad != nullptr)
+	if (Triangle_Quad != nullptr)
 	{
-		delete Quad;
-		Quad = nullptr;
+		delete Triangle_Quad;
+		Triangle_Quad = nullptr;
 	}
 	if (Cube != nullptr)
 	{
@@ -94,5 +98,15 @@ void StaticMesh::Cleanup()
 	{
 		delete Patch_Quad;
 		Patch_Quad = nullptr;
+	}
+	if (Quad != nullptr)
+	{
+		delete Quad;
+		Quad = nullptr;
+	}
+	if (Triangle != nullptr)
+	{
+		delete Triangle;
+		Triangle = nullptr;
 	}
 }

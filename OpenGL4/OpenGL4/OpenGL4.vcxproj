@@ -124,6 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -222,6 +223,7 @@
     <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag" />
     <None Include="Resources\Shaders\BlinnFong3D_Shadows.frag" />
     <None Include="Resources\Shaders\Cloud.frag" />
+    <None Include="Resources\Shaders\DynamicQuad.geo" />
     <None Include="Resources\Shaders\DynamicQuad.te" />
     <None Include="Resources\Shaders\Explode.geo" />
     <None Include="Resources\Shaders\Fog.frag" />

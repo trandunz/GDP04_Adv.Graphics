@@ -130,7 +130,7 @@ void FrameBuffer::Unbind()
 		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
 	}
 
-	StaticMesh::Quad->Draw();
+	StaticMesh::Triangle_Quad->Draw();
 
 	glUseProgram(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
