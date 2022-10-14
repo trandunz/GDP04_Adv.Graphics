@@ -20,7 +20,9 @@ private:
 	glm::vec2 m_CursorPos{};
 	
 	Mesh* m_AsymmetricModel{ nullptr };
+	Mesh* m_PugModel{ nullptr };
 
+	GameObject* m_PugObject{ nullptr };
 	GameObject* m_ShadowPlane{ nullptr };
 	GameObject* m_ShadowCube{ nullptr };
 	GameObject* m_ShadowSphere{ nullptr };

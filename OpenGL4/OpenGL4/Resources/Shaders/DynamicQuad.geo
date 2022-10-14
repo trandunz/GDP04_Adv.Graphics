@@ -6,6 +6,7 @@ layout (triangle_strip, max_vertices = 3) out;
 in VS_GS_VERTEX
 {
 	in vec4 Position;
+    in vec4 LocalPos;
 	in mat4 PVMMatrix;
 	in vec3 Normals;
 	in vec2 TexCoords;

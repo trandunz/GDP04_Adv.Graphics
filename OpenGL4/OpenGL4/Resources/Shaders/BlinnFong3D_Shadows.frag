@@ -86,7 +86,7 @@ vec3 CalculateDirectionalLight(DirectionalLight _directionalLight);
 vec3 CalculateSpotLight(SpotLight _spotLight);
 vec3 CalculateRimLight();
 
-float ShadowCalculation(DirectionalLight _directionalLight);
+float ShadowCalculation(PointLight _light);
 
 vec3 ReverseViewDir;
 
@@ -100,11 +100,11 @@ void main()
     for (int i = 0; i < MAX_POINT_LIGHTS && i < NumberOfPointLights; i++)
     {
         combinedLighting += CalculatePointLight(PointLights[i]);
+        shadow += ShadowCalculation(PointLights[i]);
     }
     for (int i = 0; i < MAX_DIRECTIONAL_LIGHTS && i < NumberOfDirectionalLights; i++)
     {
         combinedLighting += CalculateDirectionalLight(DirectionalLights[i]);
-        shadow += ShadowCalculation(DirectionalLights[i]);
     }
     for (int i = 0; i < MAX_SPOT_LIGHTS && i < NumberOfSpotLights; i++)
     {
@@ -203,15 +203,14 @@ vec3 CalculateSpotLight(SpotLight _spotLight)
     return ((diffuseLight + specularLight) * intensity) / attenuation;
 }
 
-float ShadowCalculation(DirectionalLight _directionalLight)
+float ShadowCalculation(PointLight _light)
 {
     vec3 ndc = FragPosLightSpace.xyz / FragPosLightSpace.w;
     vec3 texCoordSpace = (ndc + 1.0f) / 2.0f;
     float currentDepth = texCoordSpace.z;
     float shadowMapDepth = texture(ShadowMap, texCoordSpace.xy).r;
-    vec3 lightDir = -normalize(_directionalLight.Direction * 10);
-    float bias = max(ShadowBias * 10 * (1.0f - dot(Normals, lightDir)), ShadowBias);
-    float shadow = currentDepth - bias > shadowMapDepth ? 1.0f : 0.0f;
+    
+    float shadow = currentDepth - ShadowBias > shadowMapDepth ? 1.0f : 0.0f;
 
     return shadow;
 }

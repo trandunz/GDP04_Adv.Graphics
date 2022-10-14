@@ -62,13 +62,13 @@ void ShadowMap::Unbind()
 glm::mat4 ShadowMap::GetLightVPMatrix()
 {
 	//glm::mat4 orthogonalProjection = glm::ortho(-300.0f, 300.0f, -300.0f, 300.0f, 0.1f, 75.0f);
-	auto& directLights = LightManager::GetInstance().GetDirectionalLights();
+	auto& pointLights = LightManager::GetInstance().GetPointLights();
 	glm::mat4 lightViewMatrix{};
-	if (directLights.size() > 0)
+	if (pointLights.size() > 0)
 	{
 		lightViewMatrix = glm::lookAt
 		(
-			LightManager::GetInstance().GetDirectionalLights()[0].Direction * -30.0f,
+			LightManager::GetInstance().GetPointLights()[0].Position,
 			glm::vec3{ 0.0f,0.0f,0.0f },
 			glm::vec3{ 0.0f,0.0f,1.0f }
 		);

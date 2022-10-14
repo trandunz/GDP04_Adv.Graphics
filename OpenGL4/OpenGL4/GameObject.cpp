@@ -158,11 +158,6 @@ void GameObject::Draw()
         else if (m_ShaderLocation.vertShader == "Normals3D.vert")   
         {
             SetNormals3DVertUniforms(m_ShaderID);
-
-            if (m_ShaderLocation.geoShader == "Explode.geo")
-            {
-                SetExplodeUniforms(m_ShaderID);
-            }
         
             
             // if Frag Shader is Reflection
@@ -192,6 +187,12 @@ void GameObject::Draw()
         {
            SetNormals3DVertUniforms(m_ShaderID);
         }
+
+        if (m_ShaderLocation.geoShader == "Explode.geo")
+        {
+            SetExplodeUniforms(m_ShaderID);
+        }
+
         // If Frag Shader is Blinn_Phong Lighting
         if (m_ShaderLocation.fragShader == "BlinnFong3D.frag")
         {
@@ -334,6 +335,7 @@ void GameObject::DrawShadows()
     if (m_ShaderLocation.teShader == "HeightMap_Shadows.te")
         SetHeightMapUniforms(m_ShadowMapShaderID);
 
+
     // Draw the mesh
     m_Mesh->Draw();
 
@@ -435,7 +437,11 @@ void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, st
 {
     m_ShaderID = ShaderLoader::CreateShader(_vertexSource, _geoSource,_fragmentSource);
     m_ShaderLocation = { _vertexSource , _geoSource, "", "", _fragmentSource };
-    m_ShadowMapShaderID = ShaderLoader::CreateShader("ShadowMap.vert", _geoSource, "ShadowMap.frag");
+
+    if (_geoSource == "Explode.geo")
+        m_ShadowMapShaderID = ShaderLoader::CreateShader("ShadowMap.vert", "Explode_ToShadowMap.geo", "ShadowMap.frag");
+    else
+        m_ShadowMapShaderID = ShaderLoader::CreateShader("ShadowMap.vert", _geoSource, "ShadowMap.frag");
 }
 
 void GameObject::SetShader(std::string _vertexSource, std::string _geoSource, std::string _tcSource, std::string _fragmentSource)
@@ -762,6 +768,8 @@ void GameObject::SetExplodeUniforms(GLuint _shaderID)
 {
     ShaderLoader::SetUniform1f(std::move(_shaderID), "ElapsedTime", (GLfloat)glfwGetTime());
     ShaderLoader::SetUniform1f(std::move(_shaderID), "Magnitude", 1.0f);
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "ModelMatrix", m_Transform.transform);
 }
 
 void GameObject::SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color)
@@ -776,9 +784,19 @@ void GameObject::SetTrianglePatchLODUniforms(GLuint _shaderID)
 
 void GameObject::SetHeightMapUniforms(GLuint _shaderID)
 {
-    glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, m_ActiveTextures[1].ID);
-    ShaderLoader::SetUniform1i(std::move(_shaderID), "HeightMap", 1);
+    ShaderLoader::SetUniform1i(std::move(_shaderID), "HeightMap", 2);
+
+    if (m_ActiveTextures.size() > 2)
+    {
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, m_ActiveTextures[2].ID);
+        ShaderLoader::SetUniform1i(std::move(_shaderID), "NormalMap", 3);
+    }
+
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "Model", m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
 }
 
 void GameObject::SetBlinnFong3DShadowsUniform()
@@ -787,7 +805,7 @@ void GameObject::SetBlinnFong3DShadowsUniform()
     glBindTexture(GL_TEXTURE_2D, ShadowMap::GetInstance().GetShadowMapTexture().ID);
     ShaderLoader::SetUniform1i(std::move(m_ShaderID), "ShadowMap", 1);
 
-    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "ShadowBias", 0.0001f);
+    ShaderLoader::SetUniform1f(std::move(m_ShaderID), "ShadowBias", 0.00001f);
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "ModelMatrix", m_Transform.transform);
 }

@@ -6,15 +6,21 @@ layout (triangle_strip, max_vertices = 3) out;
 in VS_GS_VERTEX
 {
 	in vec4 Position;
+    in vec4 LocalPos;
 	in mat4 PVMMatrix;
 	in vec3 Normals;
 	in vec2 TexCoords;
 }gs_in[];
 
 out vec2 TexCoords;
+out vec3 Position;
+out vec3 Normals;
+out vec4 FragPosLightSpace;
 
 uniform float ElapsedTime;
 uniform float Magnitude;
+uniform mat4 ModelMatrix;
+uniform mat4 LightVPMatrix;
 
 vec4 Explode(vec4 _position, vec3 _normal);
 vec3 GetNormal();
@@ -24,12 +30,21 @@ void main()
 	vec3 normal = GetNormal();
 
     gl_Position = Explode(gl_in[0].gl_Position, normal);
+    Position = vec3(ModelMatrix * gs_in[0].LocalPos);
+    Normals = gs_in[0].Normals;
+    FragPosLightSpace = LightVPMatrix * vec4(Position, 1.0f);
     TexCoords = gs_in[0].TexCoords;
     EmitVertex();
     gl_Position = Explode(gl_in[1].gl_Position, normal);
+    Position = vec3(ModelMatrix * gs_in[1].LocalPos);
+    Normals = gs_in[1].Normals;
+    FragPosLightSpace = LightVPMatrix * vec4(Position, 1.0f);
     TexCoords = gs_in[1].TexCoords;
     EmitVertex();
     gl_Position = Explode(gl_in[2].gl_Position, normal);
+    Position = vec3(ModelMatrix * gs_in[2].LocalPos);
+    Normals = gs_in[2].Normals;
+    FragPosLightSpace = LightVPMatrix * vec4(Position, 1.0f);
     TexCoords = gs_in[2].TexCoords;
     EmitVertex();
 

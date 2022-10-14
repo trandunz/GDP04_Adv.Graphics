@@ -95,7 +95,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;freetype.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,7 +115,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;freetype.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -226,6 +226,7 @@
     <None Include="Resources\Shaders\DynamicQuad.geo" />
     <None Include="Resources\Shaders\DynamicQuad.te" />
     <None Include="Resources\Shaders\Explode.geo" />
+    <None Include="Resources\Shaders\Explode_ToShadowMap.geo" />
     <None Include="Resources\Shaders\Fog.frag" />
     <None Include="Resources\Shaders\Fog.vert" />
     <None Include="Resources\Shaders\Fog_Skybox.frag" />

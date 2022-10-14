@@ -26,12 +26,8 @@ float GetTessLevel(float Distance0, float Distance1);
 
 void main()
 {
-    // ----------------------------------------------------------------------
-    // pass attributes through
     TextureCoords[gl_InvocationID] = TexCoords[gl_InvocationID];
 
-    // ----------------------------------------------------------------------
-    // invocation zero controls tessellation levels for the entire patch
     if (gl_InvocationID == 0)
     {
         float EyeToVertexDistance0 = distance(CameraPos, Position[0]);
@@ -54,7 +50,7 @@ float GetTessLevel(float Distance0, float Distance1)
 
     if (AvgDistance <= 10.0f) 
     {
-        return 40.0f;
+        return 100.0f;
     }
     else if (AvgDistance <= 15.0f) 
     {
@@ -82,7 +78,7 @@ float GetTessLevel(float Distance0, float Distance1)
     }
     else
     {
-        return 5.0f;
+        return 1.0f;
     }
 }
 	

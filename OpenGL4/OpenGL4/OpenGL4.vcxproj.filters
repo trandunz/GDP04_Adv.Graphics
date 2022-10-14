@@ -418,5 +418,8 @@
     <None Include="Resources\Shaders\DynamicQuad.geo">
       <Filter>Resource Files\Geo Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\Explode_ToShadowMap.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

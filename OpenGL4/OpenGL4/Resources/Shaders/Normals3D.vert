@@ -22,6 +22,7 @@ out vec3 Normals;
 out VS_GS_VERTEX
 {
 	out vec4 Position;
+	out vec4 LocalPos;
 	out mat4 PVMMatrix;
 	out vec3 Normals;
 	out vec2 TexCoords;
@@ -39,6 +40,7 @@ void main()
 	Position = vec3(ModelMatrix * vec4(l_position, 1.0f));
 	gl_Position = PVMMatrix * vec4(l_position,1.0f);
 
+	vs_out.LocalPos = vec4(l_position, 1.0f);
 	vs_out.Position = gl_Position;
 	vs_out.PVMMatrix = PVMMatrix;
 	vs_out.Normals = Normals;

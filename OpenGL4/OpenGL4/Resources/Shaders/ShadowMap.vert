@@ -34,6 +34,10 @@ void main()
 	Position = l_position;
 	TexCoords = l_texCoords;
     gl_Position = LightVPMatrix * Model * vec4(l_position, 1.0f);
+
+	vs_out.AttribPosition = vec4(l_position, 1.0f);
+	vs_out.Model = Model;
+	vs_out.LightVPMatrix = LightVPMatrix;
 	vs_out.Position = gl_Position;
 	vs_out.PVMMatrix = LightVPMatrix * Model;
 }

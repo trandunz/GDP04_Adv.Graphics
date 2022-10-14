@@ -51,13 +51,30 @@ Scene_Assessment2::~Scene_Assessment2()
 		delete m_ShadowSphere;
 		m_ShadowSphere = nullptr;
 	}
+	if (m_PugModel)
+	{
+		delete m_PugModel;
+		m_PugModel = nullptr;
+	}
+	if (m_PugObject)
+	{
+		delete m_PugObject;
+		m_PugObject = nullptr;
+	}
 }
 
 void Scene_Assessment2::Start()
 {
-	LightManager::GetInstance().CreateDirectionalLight({ { 0,-1,0 } });
+	LightManager::GetInstance().CreatePointLight({ { 0,20,0 } });
 
 	m_AsymmetricModel = new Mesh("LowPoly/Cross.obj");
+	m_PugModel = new Mesh("Pug/Pug.obj");
+
+	m_PugObject = new GameObject;
+	m_PugObject->SetMesh(m_PugModel);
+	m_PugObject->SetShader("Normals3D_Shadows.vert", "BlinnFong3D_Shadows.frag");
+	m_PugObject->SetTranslation({ 2,-1,0.0f });
+	m_PugObject->SetActiveTextures({ TextureLoader::LoadTexture("Pug.png") });
 
 	m_GeoStar = new GameObject();
 	m_GeoStar->SetMesh(StaticMesh::Point);
@@ -68,14 +85,13 @@ void Scene_Assessment2::Start()
 
 	m_NormalsSphere = new GameObject();
 	m_NormalsSphere->SetMesh(StaticMesh::Sphere);
-	m_NormalsSphere->SetShader("SingleTexture.vert", "SingleTexture.frag");
+	m_NormalsSphere->SetShader("Normals3D_Shadows.vert", "BlinnFong3D_Shadows.frag");
 	m_NormalsSphere->SetTranslation({ 0,0,-2.0f });
-	m_NormalsSphere->SetActiveTextures({ TextureLoader::LoadTexture("Dirt.jpg") });
 	m_NormalsSphere->SetShowNormals(true);
 
 	m_ExplodingObject = new GameObject();
 	m_ExplodingObject->SetMesh(m_AsymmetricModel);
-	m_ExplodingObject->SetShader("Normals3D.vert", "Explode.geo", "SingleTexture.frag");
+	m_ExplodingObject->SetShader("Normals3D_Shadows.vert", "Explode.geo", "BlinnFong3D_Shadows.frag");
 	m_ExplodingObject->SetTranslation({ 3,0,-2.0f });
 	m_ExplodingObject->SetActiveTextures({ TextureLoader::LoadTexture("LowPoly/Cross.png") });
 	m_ExplodingObject->SetScale({ 0.01f, 0.01f, 0.01f });
@@ -83,12 +99,14 @@ void Scene_Assessment2::Start()
 	m_TesselationTriangle = new GameObject();
 	m_TesselationTriangle->SetMesh(StaticMesh::Patch_Triangle_Quad);
 	m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "HeightMap_Shadows.te", "BlinnFong3D_Shadows.frag");
-	m_TesselationTriangle->SetTranslation({0,0,-10.0f});
+	//m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "HeightMap.te", "BlinnFong3D.frag");
+	m_TesselationTriangle->SetTranslation({0,-5.0f,0.0f});
 	m_TesselationTriangle->SetRotation({1,0,0}, 90);
 	m_TesselationTriangle->SetActiveTextures(
 		{ 
 			TextureLoader::LoadTexture("Moss.jpg"),
-			TextureLoader::LoadTexture("Heightmaps/MossNoise.jpg")
+			TextureLoader::LoadTexture("Heightmaps/MossNoise.jpg"),
+			TextureLoader::LoadTexture("Heightmaps/MossNoise_Normals.bmp")
 		});
 	m_TesselationTriangle->Scale({ 10.0f, 10.0f, 10.0f });
 
@@ -100,7 +118,7 @@ void Scene_Assessment2::Start()
 	m_ShadowPlane = new GameObject();
 	m_ShadowPlane->SetMesh(StaticMesh::Plane);
 	m_ShadowPlane->SetShader("Normals3D_Shadows.vert", "BlinnFong3D_Shadows.frag");
-	m_ShadowPlane->SetTranslation({ 0.0f,-5.0f,-2.0f });
+	m_ShadowPlane->SetTranslation({ 0.0f,-10.0f,-2.0f });
 	m_ShadowPlane->SetScale({ 30.0f, 1.0f, 30.0f });
 	m_ShadowPlane->SetActiveTextures({ TextureLoader::LoadTexture("Moss.jpg")});
 
@@ -125,6 +143,12 @@ void Scene_Assessment2::Update()
 			m_ShadowCube->Movement_WASDEQ();
 			m_ShadowCube->Update();
 		}
+
+	}
+
+	if (m_PugObject)
+	{
+		m_PugObject->Rotate({ 0,1,0 }, Statics::DeltaTime * 10.0f);
 	}
 }
 
@@ -166,10 +190,8 @@ void Scene_Assessment2::Draw()
 	if (m_ExplodingObject)
 		m_ExplodingObject->DrawShadows();
 	
-	glDisable(GL_CULL_FACE);
 	if (m_TesselationTriangle)
 		m_TesselationTriangle->DrawShadows();
-	glEnable(GL_CULL_FACE);
 
 	if (m_ShadowCube)
 		m_ShadowCube->DrawShadows();
@@ -179,6 +201,9 @@ void Scene_Assessment2::Draw()
 
 	if (m_ShadowSphere)
 		m_ShadowSphere->DrawShadows();
+
+	if (m_PugObject)
+		m_PugObject->DrawShadows();
 
 	ShadowMap::GetInstance().Unbind();
 
@@ -209,6 +234,9 @@ void Scene_Assessment2::Draw()
 
 	if (m_ShadowSphere)
 		m_ShadowSphere->Draw();
+
+	if (m_PugObject)
+		m_PugObject->Draw();
 
 	FrameBuffer::GetInstance().Unbind();
 	glfwSwapBuffers(Statics::RenderWindow);

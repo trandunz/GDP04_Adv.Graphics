@@ -25,8 +25,8 @@ struct PointLight
     glm::vec3 Color{1.0f,1.0f,1.0f};
     float SpecularStrength = 1.0f;
 
-    float AttenuationLinear = 0.045f;
-    float AttenuationExponent = 0.0075f;
+    float AttenuationLinear = 0.00045f;
+    float AttenuationExponent = 0.000075f;
 };
 
 /// <summary>

@@ -8,6 +8,7 @@ out vec2 TexCoords;
 in VS_GS_VERTEX
 {
 	in vec4 Position;
+	in vec4 LocalPos;
 	in mat4 PVMMatrix;
 	in vec3 Normals;
 	in vec2 TexCoords;
