@@ -99,16 +99,15 @@ void Scene_Assessment2::Start()
 	m_TesselationTriangle = new GameObject();
 	m_TesselationTriangle->SetMesh(StaticMesh::Patch_Triangle_Quad);
 	m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "HeightMap_Shadows.te", "BlinnFong3D_Shadows.frag");
-	//m_TesselationTriangle->SetShader("PositionPassthrough.vert", "", "TrianglePatch_LOD.tc", "HeightMap.te", "BlinnFong3D.frag");
-	m_TesselationTriangle->SetTranslation({0,-5.0f,0.0f});
-	m_TesselationTriangle->SetRotation({1,0,0}, 90);
+	m_TesselationTriangle->SetTranslation({1,-5.0f,-5.0f});
+	m_TesselationTriangle->SetRotation({0.5f,0,0}, 90);
 	m_TesselationTriangle->SetActiveTextures(
 		{ 
 			TextureLoader::LoadTexture("Moss.jpg"),
 			TextureLoader::LoadTexture("Heightmaps/MossNoise.jpg"),
 			TextureLoader::LoadTexture("Heightmaps/MossNoise_Normals.bmp")
 		});
-	m_TesselationTriangle->Scale({ 10.0f, 10.0f, 10.0f });
+	m_TesselationTriangle->Scale({ 5.0f, 5.0f, 5.0f });
 
 	m_ShadowCube = new GameObject();
 	m_ShadowCube->SetMesh(StaticMesh::Cube);

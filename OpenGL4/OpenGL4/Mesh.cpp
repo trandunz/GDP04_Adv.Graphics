@@ -438,6 +438,14 @@ void Mesh::CreateShapeIndices(SHAPE _shape)
 		m_Indices.emplace_back(2);
 		break;
 	}
+	case SHAPE::PATCH_QUAD:
+	{
+		m_Indices.emplace_back(0);
+		m_Indices.emplace_back(1);
+		m_Indices.emplace_back(2);
+		m_Indices.emplace_back(3);
+		break;
+	}
 	case SHAPE::PATCH_TRIANGLE_QUAD:
 	{
 		m_Indices.emplace_back(0);

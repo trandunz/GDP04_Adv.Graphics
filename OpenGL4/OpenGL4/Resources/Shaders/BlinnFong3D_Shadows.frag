@@ -207,10 +207,18 @@ float ShadowCalculation(PointLight _light)
 {
     vec3 ndc = FragPosLightSpace.xyz / FragPosLightSpace.w;
     vec3 texCoordSpace = (ndc + 1.0f) / 2.0f;
-    float currentDepth = texCoordSpace.z;
-    float shadowMapDepth = texture(ShadowMap, texCoordSpace.xy).r;
-    
-    float shadow = currentDepth - ShadowBias > shadowMapDepth ? 1.0f : 0.0f;
-
+    float bias = ShadowBias;
+    float currentDepth = texCoordSpace.z - bias;
+    vec2 texelSize = 1.0f / textureSize(ShadowMap, 0);
+    float shadow = 0.0f;
+    for(int x = -1; x <= 1; x++)
+    {
+        for(int y = -1; y <= 1; y++)
+        {
+            float pcfDepth = texture(ShadowMap, texCoordSpace.xy + (vec2(x, y) * texelSize)).x;
+            shadow += (currentDepth) > pcfDepth ? 1.0f : 0.0f;
+        }
+    }
+    shadow /= 9.0f;
     return shadow;
 }

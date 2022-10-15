@@ -8,7 +8,7 @@ ShadowMap::ShadowMap()
 	glGenTextures(1, &m_DepthTexture.ID);
 	glBindTexture(GL_TEXTURE_2D, m_DepthTexture.ID);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Statics::WindowSize.x, Statics::WindowSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 4096, 4096, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	Print((float)Statics::WindowSize.x);
 
@@ -49,14 +49,18 @@ void ShadowMap::Bind()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
+	glViewport(0, 0, 4096, 4096);
 }
 
 void ShadowMap::Unbind()
 {
+	glFlush();
+	glFinish();
 	glDisable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
+	glViewport(0,0,Statics::WindowSize.x, Statics::WindowSize.y);
 }
 
 glm::mat4 ShadowMap::GetLightVPMatrix()
