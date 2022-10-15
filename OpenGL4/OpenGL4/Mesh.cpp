@@ -65,9 +65,9 @@ Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<unsigned> _indices, std::v
 	m_AssimpTextures = _textures;
 
 	if (Statics::DSA)
-		CreateAndInitializeBuffersDSA(false);
+		CreateAndInitializeBuffersDSA(true);
 	else
-		CreateAndInitializeBuffersNONDSA(false);
+		CreateAndInitializeBuffersNONDSA(true);
 }
 
 Mesh::~Mesh()
@@ -812,9 +812,9 @@ void Mesh::ProcessNode(aiNode* _node, const aiScene* _scene)
 
 Mesh* Mesh::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
 {
-	//std::vector<Vertex> vertices{};
-	//std::vector<unsigned> indices{};
-	//std::vector<Texture> textures{};
+	std::vector<Vertex> vertices{};
+	std::vector<unsigned> indices{};
+	std::vector<Texture> textures{};
 	//
 	//// vertices
 	//for (unsigned i = 0; i < _mesh->mNumVertices; i++)
@@ -860,12 +860,12 @@ Mesh* Mesh::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
 	//	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	//}
 	//
-	//return new Mesh(vertices, indices, textures);
+	return new Mesh(vertices, indices, textures);
 }
 
 std::vector<Texture> Mesh::LoadTextures(aiMaterial* _mat, aiTextureType _type)
 {
-	//std::vector<Texture> textures;
+	std::vector<Texture> textures;
 	//for (unsigned i = 0; i < _mat->GetTextureCount(_type); i++)
 	//{
 	//	aiString string{};
@@ -890,5 +890,5 @@ std::vector<Texture> Mesh::LoadTextures(aiMaterial* _mat, aiTextureType _type)
 	//	}
 	//}
 	//
-	//return textures;
+	return textures;
 }

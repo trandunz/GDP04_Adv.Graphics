@@ -20,7 +20,7 @@ bool Statics::StencilTest{ false };
 bool Statics::Foggy{ false };
 bool Statics::BlackBars{ false };
 bool Statics::ActiveCursor{ false };
-bool Statics::DSA{ false };
+bool Statics::DSA{ true };
 
 void Statics::CalculateDeltaTime()
 {
