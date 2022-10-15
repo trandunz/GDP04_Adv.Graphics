@@ -11,9 +11,14 @@
 #include "Mesh.h"
 #include "Statics.h"
 #include "Physics.h"
+#include "TextureLoader.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <TinyOBJ/tiny_obj_loader.h>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 Mesh::Mesh(SHAPE _shape, GLenum _windingOrder)
 {
@@ -44,50 +49,20 @@ Mesh::Mesh(unsigned int _numberOfSides, GLenum _windingOrder)
 
 Mesh::Mesh(std::string _objModel)
 {
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string error;
-	_objModel = "Resources/Models/" + _objModel;
-	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &error, _objModel.c_str()))
-	{
-		throw std::runtime_error(error);
-	}
+	LoadModelTinyOBJ(_objModel);
+	//LoadModelASSIMP(_objModel);
 
-	for (const auto& shape : shapes)
-	{
-		for (const auto& index : shape.mesh.indices)
-		{
-			Vertex vertice{};
-			if (index.vertex_index >= 0)
-			{
-				vertice.position =
-				{
-					attrib.vertices[3 * index.vertex_index + 0],
-					attrib.vertices[3 * index.vertex_index + 1],
-					attrib.vertices[3 * index.vertex_index + 2]
-				};
-			}
-			if (index.normal_index >= 0)
-			{
-				vertice.normals =
-				{
-					attrib.normals[3 * index.normal_index + 0],
-					attrib.normals[3 * index.normal_index + 1],
-					attrib.normals[3 * index.normal_index + 2]
-				};
-			}
-			if (index.texcoord_index >= 0)
-			{
-				vertice.texCoords =
-				{
-					attrib.texcoords[2 * index.texcoord_index + 0],
-					attrib.texcoords[2 * index.texcoord_index + 1]
-				};
-			}
-			m_Vertices.push_back(vertice);
-		}
-	}
+	if (Statics::DSA)
+		CreateAndInitializeBuffersDSA(false);
+	else
+		CreateAndInitializeBuffersNONDSA(false);
+}
+
+Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<unsigned> _indices, std::vector<Texture> _textures)
+{
+	m_Vertices = _vertices;
+	m_Indices = _indices;
+	m_AssimpTextures = _textures;
 
 	if (Statics::DSA)
 		CreateAndInitializeBuffersDSA(false);
@@ -97,6 +72,15 @@ Mesh::Mesh(std::string _objModel)
 
 Mesh::~Mesh()
 {
+	for (auto& mesh : m_AssimpMeshes)
+	{
+		if (mesh)
+		{
+			delete mesh;
+			mesh = nullptr;
+		}
+	}
+	m_AssimpMeshes.clear();
 	m_Indices.clear();
 	m_Vertices.clear();
 
@@ -116,42 +100,52 @@ Mesh::~Mesh()
 
 void Mesh::Draw()
 {
-	glBindVertexArray(m_VertexArrayID);
-
-	if (m_Shape == SHAPE::POINT)
+	if (m_AssimpMeshes.size() > 0)
 	{
-		if (m_Indices.size() > 0)
-			glDrawElements(GL_POINTS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
-		else
-			glDrawArrays(GL_POINTS, 0, m_Vertices.size());
-	}
-	else if (m_Shape == SHAPE::PATCH_TRIANGLE ||
-			 m_Shape == SHAPE::PATCH_TRIANGLE_QUAD)
-	{
-		glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
-	}
-	else if (m_Shape == SHAPE::PATCH_QUAD)
-	{
-		glPatchParameteri(GL_PATCH_VERTICES, 4);
-		glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
-		glPatchParameteri(GL_PATCH_VERTICES, 3);
-	}
-	else if (m_Shape == SHAPE::QUAD)
-	{
-		if (m_Indices.size() > 0)
-			glDrawElements(GL_QUADS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
-		else
-			glDrawArrays(GL_QUADS, 0, m_Vertices.size());
+		for (auto& mesh : m_AssimpMeshes)
+		{
+			mesh->Draw();
+		}
 	}
 	else
 	{
-		if (m_Indices.size() > 0)
-			glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
-		else
-			glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
-	}
+		glBindVertexArray(m_VertexArrayID);
 
-	glBindVertexArray(0);
+		if (m_Shape == SHAPE::POINT)
+		{
+			if (m_Indices.size() > 0)
+				glDrawElements(GL_POINTS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+			else
+				glDrawArrays(GL_POINTS, 0, m_Vertices.size());
+		}
+		else if (m_Shape == SHAPE::PATCH_TRIANGLE ||
+			m_Shape == SHAPE::PATCH_TRIANGLE_QUAD)
+		{
+			glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
+		}
+		else if (m_Shape == SHAPE::PATCH_QUAD)
+		{
+			glPatchParameteri(GL_PATCH_VERTICES, 4);
+			glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
+			glPatchParameteri(GL_PATCH_VERTICES, 3);
+		}
+		else if (m_Shape == SHAPE::QUAD)
+		{
+			if (m_Indices.size() > 0)
+				glDrawElements(GL_QUADS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+			else
+				glDrawArrays(GL_QUADS, 0, m_Vertices.size());
+		}
+		else
+		{
+			if (m_Indices.size() > 0)
+				glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+			else
+				glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
+		}
+
+		glBindVertexArray(0);
+	}
 }
 
 std::vector<Vertex>& Mesh::GetVertices()
@@ -737,4 +731,164 @@ void Mesh::GenerateHemiSphereVertices(int _fidelity)
 		// Angle uses 2*PI to get the full circumference as this layer is built as a full ring
 		Phi += (glm::pi<float>()) / ((float)_fidelity - 1.0f);
 	}
+}
+
+void Mesh::LoadModelTinyOBJ(std::string _path)
+{
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string error;
+	_path = "Resources/Models/" + _path;
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &error, _path.c_str()))
+	{
+		throw std::runtime_error(error);
+	}
+
+	for (const auto& shape : shapes)
+	{
+		for (const auto& index : shape.mesh.indices)
+		{
+			Vertex vertice{};
+			if (index.vertex_index >= 0)
+			{
+				vertice.position =
+				{
+					attrib.vertices[3 * index.vertex_index + 0],
+					attrib.vertices[3 * index.vertex_index + 1],
+					attrib.vertices[3 * index.vertex_index + 2]
+				};
+			}
+			if (index.normal_index >= 0)
+			{
+				vertice.normals =
+				{
+					attrib.normals[3 * index.normal_index + 0],
+					attrib.normals[3 * index.normal_index + 1],
+					attrib.normals[3 * index.normal_index + 2]
+				};
+			}
+			if (index.texcoord_index >= 0)
+			{
+				vertice.texCoords =
+				{
+					attrib.texcoords[2 * index.texcoord_index + 0],
+					attrib.texcoords[2 * index.texcoord_index + 1]
+				};
+			}
+			m_Vertices.push_back(vertice);
+		}
+	}
+}
+
+void Mesh::LoadModelASSIMP(std::string _path)
+{
+	//Assimp::Importer importer;
+	//const aiScene* scene = importer.ReadFile(_path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	//
+	//if (!scene)
+	//	Print("Failed to load model " + _path);
+	//else if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	//	Print("Failed to load model " + _path);
+	//else
+	//{
+	//	ProcessNode(scene->mRootNode, scene);
+	//}
+}
+
+void Mesh::ProcessNode(aiNode* _node, const aiScene* _scene)
+{
+	//for (unsigned i = 0; i < _node->mNumMeshes; i++)
+	//{
+	//	aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
+	//	m_AssimpMeshes.push_back(ProcessMesh(mesh, _scene));
+	//}
+	//
+	//for (unsigned i = 0; i < _node->mNumChildren; i++)
+	//{
+	//	ProcessNode(_node->mChildren[i], _scene);
+	//}
+}
+
+Mesh* Mesh::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
+{
+	//std::vector<Vertex> vertices{};
+	//std::vector<unsigned> indices{};
+	//std::vector<Texture> textures{};
+	//
+	//// vertices
+	//for (unsigned i = 0; i < _mesh->mNumVertices; i++)
+	//{
+	//	Vertex vertex{};
+	//	if (_mesh->mVertices)
+	//	{
+	//		vertex.position = { _mesh->mVertices[i].x, _mesh->mVertices[i].y, _mesh->mVertices[i].z };
+	//	}
+	//	if (_mesh->mNormals)
+	//	{
+	//		vertex.normals = { _mesh->mNormals[i].x, _mesh->mNormals[i].y, _mesh->mNormals[i].z };
+	//	}
+	//	if (_mesh->mTextureCoords[0])
+	//	{
+	//		vertex.texCoords = { _mesh->mTextureCoords[0][i].x, _mesh->mTextureCoords[0][i].y };
+	//	}
+	//
+	//	vertices.push_back(vertex);
+	//}
+	//
+	//// indices
+	//for (unsigned i = 0; i < _mesh->mNumFaces; i++)
+	//{
+	//	aiFace face = _mesh->mFaces[i];
+	//	for (unsigned j = 0; j < face.mNumIndices; j++)
+	//	{
+	//		indices.push_back(face.mIndices[j]);
+	//	}
+	//}
+	//
+	//// material
+	//if (_mesh->mMaterialIndex >= 0)
+	//{
+	//	aiMaterial* material = _scene->mMaterials[_mesh->mMaterialIndex];
+	//
+	//	// diffuse
+	//	std::vector<Texture> diffuseMaps = LoadTextures(material, aiTextureType_DIFFUSE);
+	//	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+	//
+	//	// specular
+	//	std::vector<Texture> specularMaps = LoadTextures(material, aiTextureType_SPECULAR);
+	//	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+	//}
+	//
+	//return new Mesh(vertices, indices, textures);
+}
+
+std::vector<Texture> Mesh::LoadTextures(aiMaterial* _mat, aiTextureType _type)
+{
+	//std::vector<Texture> textures;
+	//for (unsigned i = 0; i < _mat->GetTextureCount(_type); i++)
+	//{
+	//	aiString string{};
+	//	_mat->GetTexture(_type, i, &string);
+	//
+	//	bool skipTexture{ false };
+	//	for (unsigned j = 0; j < m_AssimpTextures.size(); j++)
+	//	{
+	//		if (std::strcmp(m_AssimpTextures[j].FilePath.data(), string.C_Str()) == 0)
+	//		{
+	//			textures.push_back(m_AssimpTextures[j]);
+	//			skipTexture = true;
+	//			break;
+	//		}
+	//	}
+	//
+	//	if (!skipTexture)
+	//	{
+	//		Texture texture = TextureLoader::LoadTexture(string.C_Str());
+	//		textures.push_back(texture);
+	//		m_AssimpTextures.push_back(texture);
+	//	}
+	//}
+	//
+	//return textures;
 }

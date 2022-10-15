@@ -27,6 +27,11 @@ enum class SHAPE
 	TRIANGLE
 };
 
+struct aiNode;
+struct aiScene;
+struct aiMesh;
+struct aiMaterial;
+enum aiTextureType;
 class Mesh
 {
 public:
@@ -42,6 +47,9 @@ public:
 	Mesh(unsigned int _numberOfSides, GLenum _windingOrder = GL_CCW);
 
 	Mesh(std::string _objModel);
+
+	Mesh(std::vector<Vertex> _vertices, std::vector<unsigned> _indices, std::vector<Texture> _textures);
+
 	/// <summary>
 	/// Mesh Destructor
 	/// </summary>
@@ -134,6 +142,18 @@ private:
 	/// <param name="_fidelity"></param>
 	void GenerateHemiSphereVertices(int _fidelity);
 
+	void LoadModelTinyOBJ(std::string _path);
+
+	void LoadModelASSIMP(std::string _path);
+
+	void ProcessNode(aiNode* _node, const aiScene* _scene);
+
+	Mesh* ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
+
+	std::vector<Texture> LoadTextures(aiMaterial* _mat, aiTextureType _type);
+
+	std::vector<Texture> m_AssimpTextures{};
+	std::vector<Mesh*> m_AssimpMeshes{};
 	std::vector<unsigned int> m_Indices{};
 	std::vector<Vertex> m_Vertices{};
 
