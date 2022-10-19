@@ -41,7 +41,7 @@ void Scene_Clothsim::Start()
 	//m_FloorPlane->SetActiveTextures({TextureLoader::LoadTexture("Grass.jpg")});
 	//m_FloorPlane->SetScale({ 10,1,10 });
 
-	m_Cloth = new Cloth(m_ClothWidth, m_ClothHeight, 1.0f, {-5,5,-20});
+	m_Cloth = new Cloth(m_ClothWidth, m_ClothLength, 1.0f, {-5,5,-20});
 }
 
 void Scene_Clothsim::Update()
@@ -52,10 +52,15 @@ void Scene_Clothsim::Update()
 
 	if (m_Cloth)
 	{
-		m_Cloth->SetHeight(m_ClothHeight);
+		m_Cloth->SetHookCount(m_HookCount);
+		m_Cloth->SetRingSpacing(m_HookDistance);
+		m_Cloth->SetElasticity(m_Stiffness);
 		m_Cloth->SetWidth(m_ClothWidth);
-		m_Cloth->SetElasticity(m_ClothElasticity);
-		m_Cloth->SetRingSpacing(m_RingDistance);
+		m_Cloth->SetHeight(m_ClothLength);
+		m_Cloth->SetRingSpacing(m_HookDistance);
+		m_Cloth->SetWindDirection(m_WindDirection);
+		m_Cloth->SetWindStrength(m_WindStrength);
+		m_Cloth->SetDebugDraw(m_DebugDraw);
 		m_Cloth->Update();
 	}	
 }
@@ -82,7 +87,6 @@ void Scene_Clothsim::CursorClickEvent(int button, int action, int mods)
 
 void Scene_Clothsim::Draw()
 {
-	BindImGUI();
 	FrameBuffer::GetInstance().Bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -91,13 +95,21 @@ void Scene_Clothsim::Draw()
 	if (m_FloorPlane)
 		m_FloorPlane->Draw();
 
+	if (m_WireFrame)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	if (m_Cloth)
 		m_Cloth->Draw();
 
-	HandleDebugTools();
+	if (m_WireFrame)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	FrameBuffer::GetInstance().Unbind();
+
+	BindImGUI();
+	HandleDebugTools();
 	DrawImGUI();
+
 	glfwSwapBuffers(Statics::RenderWindow);
 }
 
@@ -124,32 +136,38 @@ void Scene_Clothsim::HandleDebugTools()
 	{
 		ImGui::Begin("Cloth Settings");
 
-		int hookCount = m_Cloth->GetHookCount();
-		ImGui::SliderInt("Hook Count", &hookCount, 0, m_Cloth->GetWidth());
-		m_Cloth->SetHookCount(hookCount);
+		ImGui::Text("General Controls:");
+		ImGui::Checkbox("Wireframe Mode", &m_WireFrame);
+		ImGui::Checkbox("Draw Points", &m_DebugDraw);
+		ImGui::Combo("Mouse Mode", &m_SelectedMouseMode, &m_MouseModeItems[0], IM_ARRAYSIZE(m_MouseModeItems));
+		ImGui::Text("Cloth Shape:");
+		ImGui::SliderFloat("Cloth Length", &m_ClothLength, 2.0f, 20.0f);
+		ImGui::SliderFloat("Cloth Width", &m_ClothWidth, 2.0f, 20.0f);
+		ImGui::SliderInt("Number Of Hooks", &m_HookCount, 0, m_ClothWidth);
+		ImGui::SliderFloat("Hook Distance", &m_HookDistance, 0.5f, 1.0f);
+		ImGui::SliderFloat("Cloth Stiffness", &m_Stiffness, 100.0f, 1000.0f);
 
-		m_ClothWidth = m_Cloth->GetWidth();
-		ImGui::SliderInt("Width", &m_ClothWidth, 1, 40);
-
-		m_ClothHeight = m_Cloth->GetHeight();
-		ImGui::SliderInt("Height", &m_ClothHeight, 1, 40);
-
-		m_ClothElasticity = m_Cloth->GetElasticity();
-		ImGui::SliderFloat("Elasticity", &m_ClothElasticity, 0.0f, 1.0f);
-
-		if (ImGui::Button("Reset Simulation"))
+		if(ImGui::Button("Reset Cloth"))
 		{
-			if (m_Cloth)
-				delete m_Cloth;
-			m_Cloth = nullptr;
-			m_Cloth = new Cloth(m_ClothWidth, m_ClothHeight, 1.0f, { -5,5,-20 });
+			m_ClothLength = 20.0f;
+			m_ClothWidth = 20.0f;
+			m_HookCount = m_ClothWidth;
+			m_HookDistance = 1.0f;
+			m_Stiffness = 500.0f;
 		}
+		ImGui::Text("Object Interation:");
+		ImGui::Combo("Selected Object: ", &m_SelectedCollision, &m_CollisionItems[0], IM_ARRAYSIZE(m_CollisionItems));
+		ImGui::Text("Wind:");
+		ImGui::SliderFloat("Wind Direction (x)", &m_WindDirection.x, 0.0f, 1.0f);
+		ImGui::SliderFloat("Wind Direction (y)", &m_WindDirection.y, 0.0f, 1.0f);
+		ImGui::SliderFloat("Wind Direction (z)", &m_WindDirection.z, 0.0f, 1.0f);
+		ImGui::SliderFloat("Wind Strength:", &m_WindStrength, 0.0f, 25.0f);
 
-		m_RingDistance = m_Cloth->m_RingSpacing;
-		ImGui::SliderFloat("Ring Distance", &m_RingDistance, 0.0f, 1.0f);
-
-		ImGui::Text("Mouse Interactions");
-		ImGui::Checkbox("Draggable", &m_DragCloth);
+		if(ImGui::Button("Reset Wind"))
+		{
+			m_WindDirection = {};
+			m_WindStrength = 0.0f;
+		}
 
 		ImGui::End();
 	}

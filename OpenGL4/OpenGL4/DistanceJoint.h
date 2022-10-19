@@ -8,8 +8,13 @@ public:
 
 	void Update();
 
-private:
+	ClothParticle* GetP1();
+	ClothParticle* GetP2();
+
+	float m_Stiffness{ 500.0f };
 	float m_Length{};
+private:
+
 	ClothParticle* m_P1{};
 	ClothParticle* m_P2{};
 };

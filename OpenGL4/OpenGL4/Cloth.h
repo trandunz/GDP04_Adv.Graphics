@@ -12,13 +12,24 @@ public:
 
 	void Move(glm::vec3 _amount, bool _useDt = true);
 	void SetPosition(glm::vec3 _newPos);
+	void SetStartPos(glm::vec3 _newPos);
+	glm::vec3 GetStartPos();
+
+	void ApplyForce(glm::vec3 _amount);
 
 	void SetPinned(bool _pinned);
 	void TogglePinned();
 	bool IsPinned();
 
-	float m_Elasticity{ 0.0f };
+	float GetMass();
+
+	glm::vec3 m_Wind{};
+	float m_ConstraintLength{};
 private:
+	float m_Mass{ 1.0f };
+	float m_Damping{ 0.99f };
+	glm::vec3 m_Acceleration{};
+	glm::vec3 m_Velocity{};
 	bool m_IsPinned{ false };
 	glm::vec3 m_PreviousPosition{};
 	glm::vec3 m_StartPosition{};
@@ -38,15 +49,21 @@ public:
 	int GetWidth();
 	int GetHeight();
 	int GetHookCount();
+
 	void SetHookCount(unsigned _amount);
 	void SetWidth(unsigned _amount);
 	void SetHeight(unsigned _amount);
 	void SetRingSpacing(float _spacing);
+	void SetWindDirection(glm::vec3 _direction);
+	void SetWindStrength(float _strength);
+	void SetDebugDraw(bool _drawPoints);
 
 	void SetElasticity(float _amount);
 	float GetElasticity();
 
-	float m_RingSpacing{ 10.0f };
+	float m_RingSpacing{ 1.0f };
+	bool m_DebugDraw{ false };
+	glm::vec3 m_Wind{};
 private:
 	size_t Index(int x, int y) const { return x + m_Size.x * y; }
 
@@ -63,7 +80,6 @@ private:
 	std::vector<ClothParticle> m_Particles{};
 	std::vector<DistanceJoint*> m_DistanceJoints{};
 
-	
 	std::vector<unsigned int> m_Indices{};
 	std::vector<Vertex> m_Vertices{};
 	GLuint m_VertexArrayID{ 0 };

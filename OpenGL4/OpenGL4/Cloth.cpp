@@ -40,9 +40,12 @@ void Cloth::Update()
 	{
 		for (int x = 0; x < m_Size.x; x++)
 		{
+			auto mass = m_Particles[Index(y, x)].GetMass();
+			m_Particles[Index(y, x)].ApplyForce({ 0,-9.81f * mass, 0.0f});
 			m_Particles[Index(y, x)].Update();
 		}
 	}
+
 	for (auto& distanceJoint : m_DistanceJoints)
 	{
 		distanceJoint->Update();
@@ -53,9 +56,12 @@ void Cloth::Draw()
 {
 	if (m_Particles.size() > 0)
 	{
-		for (auto& particle : m_Particles)
+		if (m_DebugDraw)
 		{
-			particle.Draw();
+			for (auto& particle : m_Particles)
+			{
+				particle.Draw();
+			}
 		}
 
 		glUseProgram(m_ShaderID);
@@ -113,7 +119,6 @@ void Cloth::SetWidth(unsigned _amount)
 {
 	if (_amount != m_Size.x)
 	{
-		CleanupParticlesAndJoints();
 		UpdateWidth(_amount);
 	}
 }
@@ -122,7 +127,6 @@ void Cloth::SetHeight(unsigned _amount)
 {
 	if (_amount != m_Size.y)
 	{
-		CleanupParticlesAndJoints();
 		UpdateHeight(_amount);
 	}
 }
@@ -136,26 +140,55 @@ void Cloth::SetRingSpacing(float _spacing)
 	}
 }
 
+void Cloth::SetWindDirection(glm::vec3 _direction)
+{
+	if (m_Wind != _direction)
+	{
+		m_Wind = _direction;
+
+		for (auto& particle : m_Particles)
+		{
+			particle.m_Wind = m_Wind;
+		}
+	}
+}
+
+void Cloth::SetWindStrength(float _strength)
+{
+	if (glm::length(m_Wind) != _strength)
+	{
+		m_Wind = glm::normalize(m_Wind) * _strength;
+		for (auto& particle : m_Particles)
+		{
+			particle.m_Wind = m_Wind;
+		}
+	}
+}
+
+void Cloth::SetDebugDraw(bool _drawPoints)
+{
+	if (m_DebugDraw != _drawPoints)
+	{
+		m_DebugDraw = _drawPoints;
+	}
+}
+
 void Cloth::SetElasticity(float _amount)
 {
-	if (m_Particles.size() > 0)
+	for (auto& distanceJoint : m_DistanceJoints)
 	{
-		if (m_Particles[0].m_Elasticity != _amount)
+		if (distanceJoint->m_Stiffness != _amount)
 		{
-			for (auto& particle : m_Particles)
-			{
-
-				particle.m_Elasticity = _amount;
-			}
+			distanceJoint->m_Stiffness = _amount;
 		}
 	}
 }
 
 float Cloth::GetElasticity()
 {
-	if (m_Particles.size() > 0)
+	if (m_DistanceJoints.size() > 0)
 	{
-		return m_Particles[0].m_Elasticity;
+		return m_DistanceJoints[0]->m_Stiffness;
 	}
 
 	return 0.0f;
@@ -222,7 +255,10 @@ void Cloth::UpdateRingSpacing()
 		{
 			if (m_Particles[Index(0, x)].IsPinned())
 			{
-				m_Particles[Index(0, x)].SetPosition(m_Transform.translation + (m_Size.x * m_RingSpacing) / m_HookCount);
+				auto newPos = m_Transform.translation;
+				newPos.x += ((m_Size.x / m_HookCount) * m_RingSpacing) * x;
+				m_Particles[Index(0, x)].SetPosition(newPos);
+				m_Particles[Index(0, x)].SetStartPos(newPos);
 			}
 		}
 	}
@@ -289,6 +325,22 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y + 1, x - 1)], sqrtf(((m_Spacing * m_Spacing) * 2))));
 		}
 	}
+
+	for (int y = _startIndexY; y < _height - 2; y++)
+	{
+		for (int x = _startIndexX; x < _width; x++)
+		{
+			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y + 2, x)], m_Spacing * 2));
+		}
+	}
+	for (int y = _startIndexY; y < _height; y++)
+	{
+		for (int x = _startIndexX; x < _width - 2; x++)
+		{
+			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y, x + 2)], m_Spacing * 2));
+		}
+	}
+
 }
 
 ClothParticle::ClothParticle(glm::vec3 _startPos)
@@ -308,21 +360,25 @@ ClothParticle::~ClothParticle()
 
 void ClothParticle::Update()
 {
-	glm::vec3 force = { 0.1f,-1.0f, -0.5f };
-
-	auto acceleration = force;
-
-	auto prevPosition = m_Transform.translation;
-
-	m_Transform.translation = m_Transform.translation * 2.0f - m_PreviousPosition + acceleration * (1/60.0f * 1 / 60.0f);
-
-	m_PreviousPosition = prevPosition;
-	
-
-	if (m_IsPinned)
+	if (!m_IsPinned)
 	{
-		SetTranslation(m_StartPosition);
+		ApplyForce(m_Wind);
+		ApplyForce(-m_Velocity * m_Damping);
+
+		auto position = m_Transform.translation;
+
+		m_Transform.translation = ((1.0f + m_Damping) * m_Transform.translation) - (m_Damping * m_PreviousPosition) + (m_Acceleration * (1 / 60.0f * 1 / 60.0f));
+
+		m_PreviousPosition = position;
+
+		m_Velocity = m_Transform.translation - m_PreviousPosition;
+		m_Acceleration = {};
 	}
+	else
+	{
+		m_Transform.translation = m_StartPosition;
+	}
+
 	UpdateModelValueOfTransform(m_Transform);
 }
 
@@ -330,10 +386,10 @@ void ClothParticle::Move(glm::vec3 _amount, bool _useDt)
 {
 	if (!m_IsPinned)
 	{
-		float elasticity = std::lerp(60.0f, 1.0f, m_Elasticity);
+		//float elasticity = std::lerp(60.0f, 1.0f, m_Elasticity);
 
 		if (_useDt)
-			m_Transform.translation += _amount * (1 / 60.0f) * elasticity;
+			m_Transform.translation += _amount * (1 / 60.0f); //* elasticity;
 		else
 			m_Transform.translation += _amount;
 	}
@@ -342,6 +398,24 @@ void ClothParticle::Move(glm::vec3 _amount, bool _useDt)
 void ClothParticle::SetPosition(glm::vec3 _newPos)
 {
 	SetTranslation(_newPos);
+}
+
+void ClothParticle::SetStartPos(glm::vec3 _newPos)
+{
+	m_StartPosition = _newPos;
+}
+
+glm::vec3 ClothParticle::GetStartPos()
+{
+	return m_StartPosition;
+}
+
+void ClothParticle::ApplyForce(glm::vec3 _amount)
+{
+	if (!m_IsPinned)
+	{
+		m_Acceleration += (_amount / m_Mass);
+	}
 }
 
 void ClothParticle::SetPinned(bool _pinned)
@@ -357,6 +431,11 @@ void ClothParticle::TogglePinned()
 bool ClothParticle::IsPinned()
 {
 	return m_IsPinned;
+}
+
+float ClothParticle::GetMass()
+{
+	return m_Mass;
 }
 
 glm::vec3 ClothParticle::GetPosition() const

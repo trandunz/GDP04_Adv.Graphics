@@ -16,9 +16,10 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <TinyOBJ/tiny_obj_loader.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+// assimp-vc143-mtd.lib
+//#include <assimp/Importer.hpp>
+//#include <assimp/scene.h>
+//#include <assimp/postprocess.h>
 
 Mesh::Mesh(SHAPE _shape, GLenum _windingOrder)
 {
