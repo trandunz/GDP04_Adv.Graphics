@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : DistanceJoint.cpp 
+// Description : DistanceJoint Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "DistanceJoint.h"
 #include "Cloth.h"
 #include "Helper.h"

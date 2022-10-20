@@ -3,7 +3,7 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : SingleTexture.vert
+// File Name : PositionPassthrough.vert
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

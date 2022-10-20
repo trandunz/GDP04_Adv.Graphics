@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : FrameBuffer.cpp 
+// Description : FrameBuffer Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "FrameBuffer.h"
 #include "TextureLoader.h"
 #include "ShaderLoader.h"

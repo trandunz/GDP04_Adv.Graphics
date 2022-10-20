@@ -46,8 +46,18 @@ public:
 	/// <param name="_numberOfSides"></param>
 	Mesh(unsigned int _numberOfSides, GLenum _windingOrder = GL_CCW);
 
+	/// <summary>
+	/// Construct a mesh with a models filepath
+	/// </summary>
+	/// <param name="_objModel"></param>
 	Mesh(std::string _objModel);
 
+	/// <summary>
+	/// Construct a mesh with the specified vertices, indices and textures
+	/// </summary>
+	/// <param name="_vertices"></param>
+	/// <param name="_indices"></param>
+	/// <param name="_textures"></param>
 	Mesh(std::vector<Vertex> _vertices, std::vector<unsigned> _indices, std::vector<Texture> _textures);
 
 	/// <summary>
@@ -142,14 +152,39 @@ private:
 	/// <param name="_fidelity"></param>
 	void GenerateHemiSphereVertices(int _fidelity);
 
+	/// <summary>
+	/// Load the specified model with TinyOBJ loader
+	/// </summary>
+	/// <param name="_path"></param>
 	void LoadModelTinyOBJ(std::string _path);
 
+	/// <summary>
+	/// Load the specified model with ASSIMP loader
+	/// </summary>
+	/// <param name="_path"></param>
 	void LoadModelASSIMP(std::string _path);
 
+	/// <summary>
+	/// Process the specified ASSIMP node
+	/// </summary>
+	/// <param name="_node"></param>
+	/// <param name="_scene"></param>
 	void ProcessNode(aiNode* _node, const aiScene* _scene);
 
+	/// <summary>
+	/// Process the specified ASSIMP mesh
+	/// </summary>
+	/// <param name="_mesh"></param>
+	/// <param name="_scene"></param>
+	/// <returns></returns>
 	Mesh* ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
 
+	/// <summary>
+	/// Load all the embedded textures of the ASSIMP model
+	/// </summary>
+	/// <param name="_mat"></param>
+	/// <param name="_type"></param>
+	/// <returns></returns>
 	std::vector<Texture> LoadTextures(aiMaterial* _mat, aiTextureType _type);
 
 	std::vector<Texture> m_AssimpTextures{};

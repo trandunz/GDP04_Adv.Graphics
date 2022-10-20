@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Cloth.h 
+// Description : Cloth Header File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #pragma once
 #include "GameObject.h"
 
@@ -5,22 +15,48 @@ class DistanceJoint;
 class ClothParticle : public GameObject
 {
 public:
+	/// <summary>
+	/// Cloth Particle Constructor
+	/// </summary>
+	/// <param name="_startPos"></param>
 	ClothParticle(glm::vec3 _startPos = {0,0,-10});
+	/// <summary>
+	/// Cloth Particle Destructor
+	/// </summary>
 	~ClothParticle();
 
+	/// <summary>
+	/// Cloth Particle Update
+	/// </summary>
 	void Update() override;
 
+	/// <summary>
+	/// Move thr particle by the specified amount
+	/// </summary>
+	/// <param name="_amount"></param>
+	/// <param name="_useDt"></param>
 	void Move(glm::vec3 _amount, bool _useDt = true);
 	void SetPosition(glm::vec3 _newPos);
 	void SetStartPos(glm::vec3 _newPos);
 	glm::vec3 GetStartPos();
 
+	/// <summary>
+	/// Apply a force to the particle
+	/// </summary>
+	/// <param name="_amount"></param>
 	void ApplyForce(glm::vec3 _amount);
 
+	/// <summary>
+	/// Set whether or not the particle is pinned up
+	/// </summary>
+	/// <param name="_pinned"></param>
 	void SetPinned(bool _pinned);
+	/// <summary>
+	/// Toggle whether or not the particle is pinned up
+	/// </summary>
 	void TogglePinned();
-	bool IsPinned();
 
+	bool IsPinned();
 	float GetMass();
 
 	glm::vec3 m_Wind{};
@@ -40,10 +76,26 @@ public:
 class Cloth
 {
 public:
+	/// <summary>
+	/// Cloth Constructor
+	/// </summary>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	/// <param name="spacing"></param>
+	/// <param name="_startPos"></param>
 	Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos);
+	/// <summary>
+	/// Cloth Destructor
+	/// </summary>
 	~Cloth();
 
+	/// <summary>
+	/// Cloth update
+	/// </summary>
 	void Update();
+	/// <summary>
+	/// Draw the cloth
+	/// </summary>
 	void Draw();
 
 	int GetWidth();
@@ -67,14 +119,45 @@ public:
 private:
 	size_t Index(int x, int y) const { return x + m_Size.x * y; }
 
+	/// <summary>
+	/// Cleans up all particles and joints
+	/// </summary>
 	void CleanupParticlesAndJoints();
 
+	/// <summary>
+	/// Update the hook count
+	/// </summary>
 	void UpdateHookCount();
+	/// <summary>
+	/// Update the width of the cloth
+	/// </summary>
+	/// <param name="_newWidth"></param>
 	void UpdateWidth(unsigned _newWidth);
+	/// <summary>
+	/// Update the height of the cloth
+	/// </summary>
+	/// <param name="_newWidth"></param>
 	void UpdateHeight(unsigned _newWidth);
+	/// <summary>
+	/// Update the ring spacing of the cloth
+	/// </summary>
 	void UpdateRingSpacing();
 
+	/// <summary>
+	/// Creates particles
+	/// </summary>
+	/// <param name="_startIndexX"></param>
+	/// <param name="_startIndexY"></param>
+	/// <param name="_width"></param>
+	/// <param name="_height"></param>
 	void CreateParticles(unsigned _startIndexX, unsigned _startIndexY, unsigned _width, unsigned _height);
+	/// <summary>
+	/// Creates constraints
+	/// </summary>
+	/// <param name="_startIndexX"></param>
+	/// <param name="_startIndexY"></param>
+	/// <param name="_width"></param>
+	/// <param name="_height"></param>
 	void CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsigned _width, unsigned _height);
 
 	std::vector<ClothParticle> m_Particles{};

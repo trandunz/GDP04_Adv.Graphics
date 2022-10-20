@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Particle.cpp 
+// Description : Particle Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Particle.h"
 #include "StaticMesh.h"
 #include "ShaderLoader.h"

@@ -3,7 +3,7 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : BlinnFong3D.frag
+// File Name : BlinnFong3D_Shadows.frag
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

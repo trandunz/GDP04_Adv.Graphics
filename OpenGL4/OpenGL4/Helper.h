@@ -160,9 +160,15 @@ inline float Magnitude(glm::vec3 _vector)
 	return sqrtf((_vector.x * _vector.x) + (_vector.y * _vector.y) + (_vector.z * _vector.z));
 }
 
+/// <summary>
+/// Return the distance between two vectors
+/// </summary>
+/// <param name="_v1"></param>
+/// <param name="_v2"></param>
+/// <returns></returns>
 inline float Distance(glm::vec3 _v1, glm::vec3 _v2)
 {
-	return Magnitude(_v2 - _v1);
+	return glm::abs(Magnitude(_v2 - _v1));
 }
 
 

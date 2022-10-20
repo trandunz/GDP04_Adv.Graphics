@@ -3,7 +3,7 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : Normals3D.vert
+// File Name : Normals3D_Shadows.vert
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Scene_Assessment2.h 
+// Description : Scene_Assessment2 Header File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #pragma once
 #include "Scene.h"
 #include "GameObject.h"

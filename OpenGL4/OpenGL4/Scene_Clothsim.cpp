@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Scene_Clothsim.cpp 
+// Description : Scene_Clothsim Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Scene_Clothsim.h"
 #include "FrameBuffer.h"
 #include "Skybox.h"

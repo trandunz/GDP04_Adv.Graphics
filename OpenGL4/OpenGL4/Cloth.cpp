@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Cloth.cpp 
+// Description : Cloth Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Cloth.h"
 #include "DistanceJoint.h"
 #include "ShaderLoader.h"

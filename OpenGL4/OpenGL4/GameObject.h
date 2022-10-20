@@ -58,6 +58,9 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// Draws the gameobject's depth to the shadow map
+	/// </summary>
 	void DrawShadows();
 
 	/// <summary>
@@ -211,6 +214,10 @@ public:
 	/// <param name="_scale"></param>
 	void BillboardObjectToCamera(glm::vec3 _relativePos, glm::vec3 _scale);
 
+	/// <summary>
+	/// Toggle visible shape normals
+	/// </summary>
+	/// <param name="_showNormals"></param>
 	void SetShowNormals(bool _showNormals);
 
 protected:
@@ -258,19 +265,48 @@ protected:
 	/// </summary>
 	void SetMossUniforms();
 
+	/// <summary>
+	/// Set uniforms for position only vertex shader
+	/// </summary>
 	void SetPositionOnlyUniforms();
 
+	/// <summary>
+	/// Set the uniforms for the explode geometry shader
+	/// </summary>
+	/// <param name="_shaderID"></param>
 	void SetExplodeUniforms(GLuint _shaderID);
 
+	/// <summary>
+	/// Set the unfiroms for the single color frag shader
+	/// </summary>
+	/// <param name="_shaderID"></param>
+	/// <param name="_color"></param>
 	void SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color = {1,1,1});
 
+	/// <summary>
+	/// Set the uniforms for the triangle patch LOD tc shader
+	/// </summary>
+	/// <param name="_shaderID"></param>
 	void SetTrianglePatchLODUniforms(GLuint _shaderID);
 
+	/// <summary>
+	/// Set the uniforms for the heighmap te shader
+	/// </summary>
+	/// <param name="_shaderID"></param>
 	void SetHeightMapUniforms(GLuint _shaderID);
 
+	/// <summary>
+	/// Set the uniforms for the blinnPhong with shadows frag shader
+	/// </summary>
 	void SetBlinnFong3DShadowsUniform();
 	
+	/// <summary>
+	/// Set the uniforms for the shadowmap vert shader
+	/// </summary>
 	void SetShadowMapUniforms();
+	/// <summary>
+	/// Set the uniforms for the heightmap shadow map shader
+	/// </summary>
 	void SetHeightmapShadowsUniforms();
 
 	bool m_ShowNormals = false;

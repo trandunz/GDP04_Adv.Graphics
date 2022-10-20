@@ -1,3 +1,12 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Explode_ToShadowMap.geo
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #version 460 core
 
 layout (triangles) in;

@@ -3,7 +3,7 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : SingleTexture.frag
+// File Name : SingleTexture_Geo.frag
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 

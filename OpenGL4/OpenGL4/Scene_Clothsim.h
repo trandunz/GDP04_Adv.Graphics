@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Scene_Clothsim.h 
+// Description : Scene_Clothsim Header File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #pragma once
 #include "Scene.h"
 #include "Cloth.h"
@@ -16,10 +26,25 @@ public:
 	virtual void Draw() override;
 
 private:
+	/// <summary>
+	/// Initialize ImGUI
+	/// </summary>
 	void InitImGUI();
+	/// <summary>
+	/// Bind ImGUI
+	/// </summary>
 	void BindImGUI();
+	/// <summary>
+	/// Create and render all the sliders, buttons, e.t.c.
+	/// </summary>
 	void HandleDebugTools();
+	/// <summary>
+	/// Draw all ImGUI Elements
+	/// </summary>
 	void DrawImGUI();
+	/// <summary>
+	/// Cleanup ImGUI
+	/// </summary>
 	void CleanupImGUI();
 
 	Cloth* m_Cloth{ nullptr };
