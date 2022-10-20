@@ -6,6 +6,7 @@
 // File Name : Framebuffer_CA.frag
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
+// Credit to: PuZo , https://www.shadertoy.com/view/ltByR3
 
 #version 460 core
 

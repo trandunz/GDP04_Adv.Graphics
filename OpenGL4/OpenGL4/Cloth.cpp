@@ -28,7 +28,7 @@ Cloth::Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos
 	
 	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "DynamicQuad.geo", "SingleTexture.frag");
 
-	m_Texture = TextureLoader::LoadTexture("Moss.jpg");
+	m_Texture = TextureLoader::LoadTexture("chillmonkey.png");
 }
 
 Cloth::~Cloth()
@@ -89,11 +89,17 @@ void Cloth::Draw()
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_Particles[Index(y, x)].GetPosition());
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_Particles[Index(y + 1, x)].GetPosition());
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[2]", m_Particles[Index(y + 1, x + 1)].GetPosition());
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", (x / m_Size.x), 1.0f - ((y + 1.0f) / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", ((x + 1.0f) / m_Size.x), 1.0f - ((y + 1.0f) / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", (x / m_Size.x), 1.0f - (y / m_Size.y));
 				StaticMesh::Triangle->Draw();
 
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_Particles[Index(y + 1, x + 1)].GetPosition());
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_Particles[Index(y, x + 1)].GetPosition());
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[2]", m_Particles[Index(y, x)].GetPosition());
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", (x / m_Size.x), 1.0f - (y / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", ((x + 1.0f) / m_Size.x), 1.0f - (y / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", (x / m_Size.x), 1.0f - ((y + 1.0f) / m_Size.y));
 				StaticMesh::Triangle->Draw();
 			}
 		}

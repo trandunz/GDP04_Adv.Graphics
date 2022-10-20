@@ -6,6 +6,7 @@
 // File Name : Framebuffer_Rain.frag
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
+// Credit To: TomoAlien , https://www.shadertoy.com/view/4dXSzB
 
 #version 460 core
 

@@ -6,6 +6,7 @@
 // File Name : Framebuffer_CRT.frag
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
+// Credit to: Hoyong , https://www.shadertoy.com/view/ttffzs
 
 #version 460 core
 
@@ -36,12 +37,9 @@ void main()
         texture(Texture0,uv).g,
         texture(Texture0,uv-0.004f).b, 1.0f
     );
-                 //little thin lines            //big thick lines
+    //little thin lines                         //big thick lines
     float lines = 0.01*cos(uv.y*WindowSize.y) + 0.1f*sin(uv.y*20.0f + ElapsedTime);
     tex.rgb += lines;
-    
-    //wkrmfwkrmfgo
-    //tex *= step(uv.x,1.0f)*step(uv.y,1.0f)*step(0.0f,uv.x)*step(0.0f,uv.y);
     
     //smooth ver
     tex *= smoothstep(uv.x,uv.x+0.01f,1.0f)*smoothstep(uv.y,uv.y+0.01f,1.0f)*smoothstep(-0.01f,0.0f,uv.x)*smoothstep(-0.01f,0.0f,uv.y);

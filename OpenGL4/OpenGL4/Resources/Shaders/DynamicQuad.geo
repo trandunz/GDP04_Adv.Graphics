@@ -25,17 +25,18 @@ out vec2 TexCoords;
 
 uniform mat4 PVMatrix;
 uniform vec3 Points[3];
+uniform vec2 UniformTexCoords[3];
 
 void main()
 {
     gl_Position = PVMatrix * vec4(Points[0], 1.0f);
-    TexCoords = gs_in[0].TexCoords;
+    TexCoords = UniformTexCoords[0];
     EmitVertex();
     gl_Position = PVMatrix * vec4(Points[1], 1.0f);
-    TexCoords = gs_in[1].TexCoords;
+    TexCoords = UniformTexCoords[1];
     EmitVertex();
     gl_Position = PVMatrix * vec4(Points[2], 1.0f);
-    TexCoords = gs_in[2].TexCoords;
+    TexCoords = UniformTexCoords[2];
     EmitVertex();
 
 	EndPrimitive();

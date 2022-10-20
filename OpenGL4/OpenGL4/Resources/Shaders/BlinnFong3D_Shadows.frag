@@ -203,19 +203,27 @@ vec3 CalculateSpotLight(SpotLight _spotLight)
     return ((diffuseLight + specularLight) * intensity) / attenuation;
 }
 
+// Calculates the shadow from the point light
 float ShadowCalculation(PointLight _light)
 {
+    // Convert to NDC
     vec3 ndc = FragPosLightSpace.xyz / FragPosLightSpace.w;
+    // Convert to Tex Coords Space (0->1)
     vec3 texCoordSpace = (ndc + 1.0f) / 2.0f;
+    // Get current depth - shadow bias
     float bias = ShadowBias;
     float currentDepth = texCoordSpace.z - bias;
+    // get the size of each pixel in the shadow map
     vec2 texelSize = 1.0f / textureSize(ShadowMap, 0);
     float shadow = 0.0f;
+    // interpolate values of shadow map around the current point
     for(int x = -1; x <= 1; x++)
     {
         for(int y = -1; y <= 1; y++)
         {
             float pcfDepth = texture(ShadowMap, texCoordSpace.xy + (vec2(x, y) * texelSize)).x;
+
+            // Add to shadow
             shadow += (currentDepth) > pcfDepth ? 1.0f : 0.0f;
         }
     }
