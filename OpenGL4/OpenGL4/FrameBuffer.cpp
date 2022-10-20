@@ -19,19 +19,26 @@ FrameBuffer::FrameBuffer()
 	m_Transform.scale = { 2,2,2 };
 	UpdateModelValueOfTransform(m_Transform);
 
+	// Create shaders
 	m_ShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer.frag");
 	m_RainShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer_Rain.frag");
 	m_CAShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer_CA.frag");
 	m_CRTShaderID = ShaderLoader::CreateShader("Framebuffer.vert", "Framebuffer_CRT.frag");
+
+	// Create textures
 	m_RenderTexture = TextureLoader::CreateRenderTexture();
 	m_RainTexture = TextureLoader::LoadTexture("Rain.png");
 
 	if (Statics::DSA)
 	{
+		// Create frame buffers and render buffers
 		glCreateFramebuffers(1, &m_FrameBufferID);
 		glCreateRenderbuffers(1, &m_RenderBufferID);
+		// Set frame buffer attachment
 		glNamedFramebufferTexture(m_FrameBufferID, GL_COLOR_ATTACHMENT0, m_RenderTexture.ID, 0);
+		// Set render buffer storage type
 		glNamedRenderbufferStorage(m_RenderBufferID, GL_DEPTH24_STENCIL8, Statics::WindowSize.x, Statics::WindowSize.y);
+		// Set render buffer attachment
 		glNamedFramebufferRenderbuffer(m_FrameBufferID, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
 	
 		auto status = glCheckNamedFramebufferStatus(m_FrameBufferID, GL_FRAMEBUFFER);
@@ -42,15 +49,19 @@ FrameBuffer::FrameBuffer()
 	}
 	else
 	{
+		// Generate frame buffer
 		glGenFramebuffers(1, &m_FrameBufferID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
 
+		// Set frame buffer attachment
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RenderTexture.ID, 0);
 
+		// Generate render buffer
 		glGenRenderbuffers(1, &m_RenderBufferID);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
+		// Set render buffer storage type
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Statics::WindowSize.x, Statics::WindowSize.y);
-
+		// Set render buffer attachment
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
 		
 		auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -76,6 +87,7 @@ FrameBuffer::~FrameBuffer()
 
 void FrameBuffer::Bind()
 {
+	// Bind frame buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
 	if (Statics::DSA)
 	{
@@ -87,9 +99,11 @@ void FrameBuffer::Bind()
 
 void FrameBuffer::Unbind()
 {
+	// unbind frame buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
 
+	// bind appropriate program and set corresponding uniforms
 	if (m_EnableRain)
 	{
 		glUseProgram(m_RainShaderID);
@@ -140,6 +154,7 @@ void FrameBuffer::Unbind()
 		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
 	}
 
+	// Draw the quad
 	StaticMesh::Triangle_Quad->Draw();
 
 	glUseProgram(0);

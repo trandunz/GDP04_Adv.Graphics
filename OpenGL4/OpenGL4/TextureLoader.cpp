@@ -84,18 +84,22 @@ Texture TextureLoader::LoadTexture(std::string&& _fileName)
 
 Texture TextureLoader::CreateRenderTexture()
 {
+    // Generate the texture
     GLuint id;
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
 
+    // set the storage type (RGB)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Statics::WindowSize.x, Statics::WindowSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    // set the texture parameeters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+    // geenrate mip maps
     glGenerateMipmap(GL_TEXTURE_2D);
-
 
     return Texture{ id , Statics::WindowSize};
 }

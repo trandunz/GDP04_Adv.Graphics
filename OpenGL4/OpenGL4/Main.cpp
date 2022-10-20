@@ -136,7 +136,7 @@ void InitGLFW()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	Statics::RenderWindow = glfwCreateWindow(800, 800, "Title", NULL, NULL);
+	Statics::RenderWindow = glfwCreateWindow(800, 800, "ASSESSMENT_2", NULL, NULL);
 
 	glfwMakeContextCurrent(Statics::RenderWindow);
 
@@ -152,7 +152,7 @@ void Start()
 {
 	Statics::UpdateWindowSize();
 	StaticMesh::Init();
-	SceneManager::LoadScene(SCENES::CLOTHSIM);
+	SceneManager::LoadScene(SCENES::ASSESSMENT2);
 }
 
 void Update()

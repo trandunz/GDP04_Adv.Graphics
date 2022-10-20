@@ -56,7 +56,7 @@ private:
 	bool m_WireFrame = false;
 	float m_ClothLength = 20.0f;
 	float m_ClothWidth = 20.0f;
-	int m_HookCount = m_ClothWidth;
+	int m_HookCount = (int)m_ClothWidth;
 	float m_HookDistance{1.0f};
 	float m_Stiffness = 500.0f;
 	int m_SelectedMouseMode{};

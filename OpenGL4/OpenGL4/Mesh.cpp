@@ -790,114 +790,114 @@ void Mesh::LoadModelTinyOBJ(std::string _path)
 	}
 }
 
-void Mesh::LoadModelASSIMP(std::string _path)
-{
-	//Assimp::Importer importer;
-	//const aiScene* scene = importer.ReadFile(_path, aiProcess_Triangulate | aiProcess_FlipUVs);
-	//
-	//if (!scene)
-	//	Print("Failed to load model " + _path);
-	//else if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-	//	Print("Failed to load model " + _path);
-	//else
-	//{
-	//	ProcessNode(scene->mRootNode, scene);
-	//}
-}
+//void Mesh::LoadModelASSIMP(std::string _path)
+//{
+//	//Assimp::Importer importer;
+//	//const aiScene* scene = importer.ReadFile(_path, aiProcess_Triangulate | aiProcess_FlipUVs);
+//	//
+//	//if (!scene)
+//	//	Print("Failed to load model " + _path);
+//	//else if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+//	//	Print("Failed to load model " + _path);
+//	//else
+//	//{
+//	//	ProcessNode(scene->mRootNode, scene);
+//	//}
+//}
+//
+//void Mesh::ProcessNode(aiNode* _node, const aiScene* _scene)
+//{
+//	//for (unsigned i = 0; i < _node->mNumMeshes; i++)
+//	//{
+//	//	aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
+//	//	m_AssimpMeshes.push_back(ProcessMesh(mesh, _scene));
+//	//}
+//	//
+//	//for (unsigned i = 0; i < _node->mNumChildren; i++)
+//	//{
+//	//	ProcessNode(_node->mChildren[i], _scene);
+//	//}
+//}
+//
+//Mesh* Mesh::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
+//{
+//	std::vector<Vertex> vertices{};
+//	std::vector<unsigned> indices{};
+//	std::vector<Texture> textures{};
+//	//
+//	//// vertices
+//	//for (unsigned i = 0; i < _mesh->mNumVertices; i++)
+//	//{
+//	//	Vertex vertex{};
+//	//	if (_mesh->mVertices)
+//	//	{
+//	//		vertex.position = { _mesh->mVertices[i].x, _mesh->mVertices[i].y, _mesh->mVertices[i].z };
+//	//	}
+//	//	if (_mesh->mNormals)
+//	//	{
+//	//		vertex.normals = { _mesh->mNormals[i].x, _mesh->mNormals[i].y, _mesh->mNormals[i].z };
+//	//	}
+//	//	if (_mesh->mTextureCoords[0])
+//	//	{
+//	//		vertex.texCoords = { _mesh->mTextureCoords[0][i].x, _mesh->mTextureCoords[0][i].y };
+//	//	}
+//	//
+//	//	vertices.push_back(vertex);
+//	//}
+//	//
+//	//// indices
+//	//for (unsigned i = 0; i < _mesh->mNumFaces; i++)
+//	//{
+//	//	aiFace face = _mesh->mFaces[i];
+//	//	for (unsigned j = 0; j < face.mNumIndices; j++)
+//	//	{
+//	//		indices.push_back(face.mIndices[j]);
+//	//	}
+//	//}
+//	//
+//	//// material
+//	//if (_mesh->mMaterialIndex >= 0)
+//	//{
+//	//	aiMaterial* material = _scene->mMaterials[_mesh->mMaterialIndex];
+//	//
+//	//	// diffuse
+//	//	std::vector<Texture> diffuseMaps = LoadTextures(material, aiTextureType_DIFFUSE);
+//	//	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+//	//
+//	//	// specular
+//	//	std::vector<Texture> specularMaps = LoadTextures(material, aiTextureType_SPECULAR);
+//	//	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+//	//}
+//	//
+//	return new Mesh(vertices, indices, textures);
+//}
 
-void Mesh::ProcessNode(aiNode* _node, const aiScene* _scene)
-{
-	//for (unsigned i = 0; i < _node->mNumMeshes; i++)
-	//{
-	//	aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
-	//	m_AssimpMeshes.push_back(ProcessMesh(mesh, _scene));
-	//}
-	//
-	//for (unsigned i = 0; i < _node->mNumChildren; i++)
-	//{
-	//	ProcessNode(_node->mChildren[i], _scene);
-	//}
-}
-
-Mesh* Mesh::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
-{
-	std::vector<Vertex> vertices{};
-	std::vector<unsigned> indices{};
-	std::vector<Texture> textures{};
-	//
-	//// vertices
-	//for (unsigned i = 0; i < _mesh->mNumVertices; i++)
-	//{
-	//	Vertex vertex{};
-	//	if (_mesh->mVertices)
-	//	{
-	//		vertex.position = { _mesh->mVertices[i].x, _mesh->mVertices[i].y, _mesh->mVertices[i].z };
-	//	}
-	//	if (_mesh->mNormals)
-	//	{
-	//		vertex.normals = { _mesh->mNormals[i].x, _mesh->mNormals[i].y, _mesh->mNormals[i].z };
-	//	}
-	//	if (_mesh->mTextureCoords[0])
-	//	{
-	//		vertex.texCoords = { _mesh->mTextureCoords[0][i].x, _mesh->mTextureCoords[0][i].y };
-	//	}
-	//
-	//	vertices.push_back(vertex);
-	//}
-	//
-	//// indices
-	//for (unsigned i = 0; i < _mesh->mNumFaces; i++)
-	//{
-	//	aiFace face = _mesh->mFaces[i];
-	//	for (unsigned j = 0; j < face.mNumIndices; j++)
-	//	{
-	//		indices.push_back(face.mIndices[j]);
-	//	}
-	//}
-	//
-	//// material
-	//if (_mesh->mMaterialIndex >= 0)
-	//{
-	//	aiMaterial* material = _scene->mMaterials[_mesh->mMaterialIndex];
-	//
-	//	// diffuse
-	//	std::vector<Texture> diffuseMaps = LoadTextures(material, aiTextureType_DIFFUSE);
-	//	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-	//
-	//	// specular
-	//	std::vector<Texture> specularMaps = LoadTextures(material, aiTextureType_SPECULAR);
-	//	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-	//}
-	//
-	return new Mesh(vertices, indices, textures);
-}
-
-std::vector<Texture> Mesh::LoadTextures(aiMaterial* _mat, aiTextureType _type)
-{
-	std::vector<Texture> textures;
-	//for (unsigned i = 0; i < _mat->GetTextureCount(_type); i++)
-	//{
-	//	aiString string{};
-	//	_mat->GetTexture(_type, i, &string);
-	//
-	//	bool skipTexture{ false };
-	//	for (unsigned j = 0; j < m_AssimpTextures.size(); j++)
-	//	{
-	//		if (std::strcmp(m_AssimpTextures[j].FilePath.data(), string.C_Str()) == 0)
-	//		{
-	//			textures.push_back(m_AssimpTextures[j]);
-	//			skipTexture = true;
-	//			break;
-	//		}
-	//	}
-	//
-	//	if (!skipTexture)
-	//	{
-	//		Texture texture = TextureLoader::LoadTexture(string.C_Str());
-	//		textures.push_back(texture);
-	//		m_AssimpTextures.push_back(texture);
-	//	}
-	//}
-	//
-	return textures;
-}
+//std::vector<Texture> Mesh::LoadTextures(aiMaterial* _mat, aiTextureType _type)
+//{
+//	std::vector<Texture> textures;
+//	//for (unsigned i = 0; i < _mat->GetTextureCount(_type); i++)
+//	//{
+//	//	aiString string{};
+//	//	_mat->GetTexture(_type, i, &string);
+//	//
+//	//	bool skipTexture{ false };
+//	//	for (unsigned j = 0; j < m_AssimpTextures.size(); j++)
+//	//	{
+//	//		if (std::strcmp(m_AssimpTextures[j].FilePath.data(), string.C_Str()) == 0)
+//	//		{
+//	//			textures.push_back(m_AssimpTextures[j]);
+//	//			skipTexture = true;
+//	//			break;
+//	//		}
+//	//	}
+//	//
+//	//	if (!skipTexture)
+//	//	{
+//	//		Texture texture = TextureLoader::LoadTexture(string.C_Str());
+//	//		textures.push_back(texture);
+//	//		m_AssimpTextures.push_back(texture);
+//	//	}
+//	//}
+//	//
+//	return textures;
+//}

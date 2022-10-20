@@ -117,7 +117,7 @@ public:
 	bool m_DebugDraw{ false };
 	glm::vec3 m_Wind{};
 private:
-	size_t Index(int x, int y) const { return x + m_Size.x * y; }
+	size_t Index(int x, int y) const { return (size_t)(x + m_Size.x * y); }
 
 	/// <summary>
 	/// Cleans up all particles and joints

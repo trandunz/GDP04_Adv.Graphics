@@ -31,29 +31,47 @@ uniform float Magnitude;
 uniform mat4 ModelMatrix;
 uniform mat4 LightVPMatrix;
 
+// returns the position of the vertex exploded along the normal
 vec4 Explode(vec4 _position, vec3 _normal);
+// interpolates the vertex positions and returns the normal
 vec3 GetNormal();
 
 void main()
 {
 	vec3 normal = GetNormal();
 
+    // set exploded position
     gl_Position = Explode(gl_in[0].gl_Position, normal);
+    // position for lighting
     Position = vec3(ModelMatrix * gs_in[0].LocalPos);
+    // normals for lighting
     Normals = gs_in[0].Normals;
+    // frag pos in light space
     FragPosLightSpace = LightVPMatrix * vec4(Position, 1.0f);
+    // tex coords
     TexCoords = gs_in[0].TexCoords;
     EmitVertex();
+
+    //
     gl_Position = Explode(gl_in[1].gl_Position, normal);
+    //
     Position = vec3(ModelMatrix * gs_in[1].LocalPos);
+    //
     Normals = gs_in[1].Normals;
     FragPosLightSpace = LightVPMatrix * vec4(Position, 1.0f);
+    //
     TexCoords = gs_in[1].TexCoords;
     EmitVertex();
+
+    //
     gl_Position = Explode(gl_in[2].gl_Position, normal);
+    //
     Position = vec3(ModelMatrix * gs_in[2].LocalPos);
+    //
     Normals = gs_in[2].Normals;
+    //
     FragPosLightSpace = LightVPMatrix * vec4(Position, 1.0f);
+    //
     TexCoords = gs_in[2].TexCoords;
     EmitVertex();
 

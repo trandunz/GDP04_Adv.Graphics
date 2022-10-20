@@ -15,16 +15,16 @@
 
 Cloth::Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos)
 {
-	m_Size.x = width;
-	m_Size.y = height;
+	m_Size.x = (float)width;
+	m_Size.y = (float)height;
 	m_Transform.translation = _startPos;
 	m_Spacing = spacing;
 	m_HookCount = width;
 	m_RingSpacing = spacing;
 	UpdateModelValueOfTransform(m_Transform);
 
-	CreateParticles(0,0, m_Size.x, m_Size.y);
-	CreateConstraints(0,0, m_Size.x, m_Size.y);
+	CreateParticles(0,0, (unsigned)m_Size.x, (unsigned)m_Size.y);
+	CreateConstraints(0,0, (unsigned)m_Size.x, (unsigned)m_Size.y);
 	
 	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "DynamicQuad.geo", "SingleTexture.frag");
 
@@ -109,12 +109,12 @@ void Cloth::Draw()
 
 int Cloth::GetWidth()
 {
-	return m_Size.x;
+	return (int)m_Size.x;
 }
 
 int Cloth::GetHeight()
 {
-	return m_Size.y;
+	return (int)m_Size.y;
 }
 
 int Cloth::GetHookCount()
@@ -246,9 +246,9 @@ void Cloth::UpdateWidth(unsigned _newWidth)
 {
 	if (m_Size.x < _newWidth)
 	{
-		CreateParticles(0, 0, _newWidth, m_Size.y);
-		CreateConstraints(0, 0, _newWidth, m_Size.y);
-		m_Size.x = _newWidth;
+		CreateParticles(0, 0, _newWidth, (unsigned)m_Size.y);
+		CreateConstraints(0, 0, _newWidth, (unsigned)m_Size.y);
+		m_Size.x = (float)_newWidth;
 		m_HookCount = _newWidth;
 	}
 }
@@ -257,9 +257,9 @@ void Cloth::UpdateHeight(unsigned _newHeight)
 {
 	if (m_Size.y < _newHeight)
 	{
-		CreateParticles(0, 0, m_Size.x, _newHeight);
-		CreateConstraints(0, 0, m_Size.x, _newHeight);
-		m_Size.y = _newHeight;
+		CreateParticles(0, 0, (unsigned)m_Size.x, _newHeight);
+		CreateConstraints(0, 0, (unsigned)m_Size.x, _newHeight);
+		m_Size.y = (float)_newHeight;
 	}
 }
 
@@ -284,9 +284,9 @@ void Cloth::CreateParticles(unsigned _startIndexX, unsigned _startIndexY, unsign
 {
 	m_Particles.resize(_width * _height);
 
-	for (int y = _startIndexY; y < _height; y++)
+	for (int y = (int)_startIndexY; y < (int)_height; y++)
 	{
-		for (int x = _startIndexX; x < _width; x++)
+		for (int x = (int)_startIndexX; x < (int)_width; x++)
 		{
 			m_Particles[Index(y, x)] = ClothParticle({ m_Transform.translation.x + (x * m_Spacing),m_Transform.translation.y - (y * m_Spacing),m_Transform.translation.z });
 			if (y == 0)
@@ -299,59 +299,59 @@ void Cloth::CreateParticles(unsigned _startIndexX, unsigned _startIndexY, unsign
 
 void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsigned _width, unsigned _height)
 {
-	for (int y = _startIndexY; y < _height; y++)
+	for (int y = (int)_startIndexY; y < (int)_height; y++)
 	{
-		for (int x = _startIndexX; x < _width - 1; x++)
+		for (int x = (int)_startIndexX; x< (int)_width - 1; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y, x + 1)], m_Spacing));
 		}
 	}
-	for (int y = _startIndexY; y < _height - 1; y++)
+	for (int y = (int)_startIndexY; y < (int)_height - 1; y++)
 	{
-		for (int x = _startIndexX; x < _width; x++)
+		for (int x = (int)_startIndexX; x < (int)_width; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y + 1, x)], m_Spacing));
 		}
 	}
-	for (int y = _startIndexY + 1; y < _height; y++)
+	for (int y = (int)_startIndexY + 1; y < (int)_height; y++)
 	{
-		for (int x = _startIndexX; x < _width - 1; x++)
+		for (int x = (int)_startIndexX; x < (int)_width - 1; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y - 1, x + 1)], sqrtf(((m_Spacing * m_Spacing) * 2))));
 		}
 	}
-	for (int y = _startIndexY; y < _height - 1; y++)
+	for (int y = (int)_startIndexY; y < (int)_height - 1; y++)
 	{
-		for (int x = _startIndexX; x < _width - 1; x++)
+		for (int x = (int)_startIndexX; x < (int)_width - 1; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y + 1, x + 1)], sqrtf(((m_Spacing * m_Spacing) * 2))));
 		}
 	}
-	for (int y = _startIndexY + 1; y < _height; y++)
+	for (int y = (int)_startIndexY + 1; y < (int)_height; y++)
 	{
-		for (int x = _startIndexX + 1; x < _width; x++)
+		for (int x = (int)_startIndexX + 1; x < (int)_width; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y - 1, x - 1)], sqrtf(((m_Spacing * m_Spacing) * 2))));
 		}
 	}
-	for (int y = _startIndexY; y < _height - 1; y++)
+	for (int y = (int)_startIndexY; y < (int)_height - 1; y++)
 	{
-		for (int x = _startIndexX + 1; x < _width; x++)
+		for (int x = (int)_startIndexX + 1; x < (int)_width; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y + 1, x - 1)], sqrtf(((m_Spacing * m_Spacing) * 2))));
 		}
 	}
 
-	for (int y = _startIndexY; y < _height - 2; y++)
+	for (int y = (int)_startIndexY; y < (int)_height - 2; y++)
 	{
-		for (int x = _startIndexX; x < _width; x++)
+		for (int x = (int)_startIndexX; x < (int)_width; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y + 2, x)], m_Spacing * 2));
 		}
 	}
-	for (int y = _startIndexY; y < _height; y++)
+	for (int y = (int)_startIndexY; y < (int)_height; y++)
 	{
-		for (int x = _startIndexX; x < _width - 2; x++)
+		for (int x = (int)_startIndexX; x < (int)_width - 2; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(&m_Particles[Index(y, x)], &m_Particles[Index(y, x + 2)], m_Spacing * 2));
 		}

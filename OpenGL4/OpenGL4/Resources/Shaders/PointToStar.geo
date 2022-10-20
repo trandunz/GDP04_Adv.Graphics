@@ -26,6 +26,7 @@ in VS_GS_VERTEX
 	in mat4 Model;
 }gs_in[];
 
+// outputs the normals and position to the frag shader for each vertex
 void CreateOutputNormalsAndPosition();
 
 void main()

@@ -28,32 +28,39 @@ uniform sampler2D NormalMap;
 
 void main()
 {
+    // Interpolate and get texture coords
 	TexCoords =
     gl_TessCoord.x * TextureCoords[0] +
     gl_TessCoord.y * TextureCoords[1] + 
     gl_TessCoord.z * TextureCoords[2]; 
 
+    // Get normals of triangle
 	vec4 p00 = gl_in[0].gl_Position;
     vec4 p01 = gl_in[1].gl_Position;
     vec4 p10 = gl_in[2].gl_Position;
-
     vec4 uVec = p01 - p00;
     vec4 vVec = p10 - p00;
     vec4 normal = normalize( vec4(cross(vVec.xyz, uVec.xyz), 0.0f) );
 
+    // Sample height map
     float height = texture(HeightMap, TexCoords).y * 1.0f - 0.5f;
+    // Sample normal map
     vec4 normalmap = texture(NormalMap, TexCoords);
 
+        // interpolate and get position
     vec4 p = gl_TessCoord.x * gl_in[0].gl_Position +
 	gl_TessCoord.y * gl_in[1].gl_Position +
 	gl_TessCoord.z * gl_in[2].gl_Position;
 
-    p += normal * 0.5f * height;
+    // add the normal and height value
+    p += normal * height;
 
+    // output to frag shader for lighting
     Position = vec3(Model * p);
     Normals = vec3(normalmap);
     FragPosLightSpace = LightVPMatrix * vec4(Position, 1.0f);
 
+    // set the frag position
     gl_Position = PVMMatrix * p;
 }
 

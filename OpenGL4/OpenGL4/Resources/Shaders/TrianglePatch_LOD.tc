@@ -22,6 +22,7 @@ out vec2 TextureCoords[];
 uniform mat4 PVMMatrix;
 uniform vec3 CameraPos;
 
+// Get tesseletion level based on distance to camera
 float GetTessLevel(float Distance0, float Distance1);
 
 void main()

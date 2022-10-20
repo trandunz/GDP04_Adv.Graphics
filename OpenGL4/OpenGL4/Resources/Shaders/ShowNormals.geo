@@ -25,9 +25,10 @@ in VS_GS_VERTEX
 
 void main()
 {
-	// Bottom Left Centre
+	// point 1: on the shape
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	EmitVertex();
+	// point 2: point on shape + normal * some distance (0.05f)
 	gl_Position = gs_in[0].Position + gs_in[0].PVMMatrix * vec4(gs_in[0].Normals * 0.05f, 0.0f);
 	EmitVertex();
 

@@ -36,10 +36,13 @@ void main()
 {
 	vec3 normal = GetNormal();
 
+    // set exploded position
     gl_Position = gs_in[0].LightVPMatrix * gs_in[0].Model * Explode(gs_in[0].AttribPosition, normal);
     EmitVertex();
+    // set exploded position
     gl_Position = gs_in[1].LightVPMatrix * gs_in[1].Model * Explode(gs_in[1].AttribPosition, normal);
     EmitVertex();
+    // set exploded position
     gl_Position = gs_in[2].LightVPMatrix * gs_in[2].Model * Explode(gs_in[2].AttribPosition, normal);
     EmitVertex();
 

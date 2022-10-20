@@ -51,7 +51,7 @@ void Scene_Clothsim::Start()
 	//m_FloorPlane->SetActiveTextures({TextureLoader::LoadTexture("Grass.jpg")});
 	//m_FloorPlane->SetScale({ 10,1,10 });
 
-	m_Cloth = new Cloth(m_ClothWidth, m_ClothLength, 1.0f, {-5,5,-20});
+	m_Cloth = new Cloth((unsigned)m_ClothWidth, (unsigned)m_ClothLength, 1.0f, {-5,5,-20});
 }
 
 void Scene_Clothsim::Update()
@@ -65,8 +65,8 @@ void Scene_Clothsim::Update()
 		m_Cloth->SetHookCount(m_HookCount);
 		m_Cloth->SetRingSpacing(m_HookDistance);
 		m_Cloth->SetElasticity(m_Stiffness);
-		m_Cloth->SetWidth(m_ClothWidth);
-		m_Cloth->SetHeight(m_ClothLength);
+		m_Cloth->SetWidth((unsigned)m_ClothWidth);
+		m_Cloth->SetHeight((unsigned)m_ClothLength);
 		m_Cloth->SetRingSpacing(m_HookDistance);
 		m_Cloth->SetWindDirection(m_WindDirection);
 		m_Cloth->SetWindStrength(m_WindStrength);
@@ -153,7 +153,7 @@ void Scene_Clothsim::HandleDebugTools()
 		ImGui::Text("Cloth Shape:");
 		ImGui::SliderFloat("Cloth Length", &m_ClothLength, 2.0f, 20.0f);
 		ImGui::SliderFloat("Cloth Width", &m_ClothWidth, 2.0f, 20.0f);
-		ImGui::SliderInt("Number Of Hooks", &m_HookCount, 0, m_ClothWidth);
+		ImGui::SliderInt("Number Of Hooks", &m_HookCount, 0, (int)m_ClothWidth);
 		ImGui::SliderFloat("Hook Distance", &m_HookDistance, 0.5f, 1.0f);
 		ImGui::SliderFloat("Cloth Stiffness", &m_Stiffness, 100.0f, 1000.0f);
 
@@ -161,7 +161,7 @@ void Scene_Clothsim::HandleDebugTools()
 		{
 			m_ClothLength = 20.0f;
 			m_ClothWidth = 20.0f;
-			m_HookCount = m_ClothWidth;
+			m_HookCount = (int)m_ClothWidth;
 			m_HookDistance = 1.0f;
 			m_Stiffness = 500.0f;
 		}
