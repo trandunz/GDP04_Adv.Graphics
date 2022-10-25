@@ -28,7 +28,7 @@ Cloth::Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos
 	
 	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "DynamicQuad.geo", "SingleTexture.frag");
 
-	m_Texture = TextureLoader::LoadTexture("chillmonkey.png");
+	m_Texture = TextureLoader::LoadTexture("coollizard.png");
 }
 
 Cloth::~Cloth()
@@ -42,6 +42,8 @@ Cloth::~Cloth()
 	m_DistanceJoints.clear();
 
 	m_Particles.clear();
+
+	m_Plane = nullptr;
 }
 
 void Cloth::Update()
@@ -60,6 +62,8 @@ void Cloth::Update()
 	{
 		distanceJoint->Update();
 	}
+
+	HandleGroundCollision();
 }
 
 void Cloth::Draw()
@@ -89,17 +93,17 @@ void Cloth::Draw()
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_Particles[Index(y, x)].GetPosition());
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_Particles[Index(y + 1, x)].GetPosition());
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[2]", m_Particles[Index(y + 1, x + 1)].GetPosition());
-				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", (x / m_Size.x), 1.0f - ((y + 1.0f) / m_Size.y));
-				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", ((x + 1.0f) / m_Size.x), 1.0f - ((y + 1.0f) / m_Size.y));
-				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", (x / m_Size.x), 1.0f - (y / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", (x / m_Size.x), 1.0f - (y / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", (x / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", ((x + 1) / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
 				StaticMesh::Triangle->Draw();
 
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_Particles[Index(y + 1, x + 1)].GetPosition());
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_Particles[Index(y, x + 1)].GetPosition());
 				ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[2]", m_Particles[Index(y, x)].GetPosition());
-				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", (x / m_Size.x), 1.0f - (y / m_Size.y));
-				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", ((x + 1.0f) / m_Size.x), 1.0f - (y / m_Size.y));
-				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", (x / m_Size.x), 1.0f - ((y + 1.0f) / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", ((x + 1) / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", ((x + 1) / m_Size.x), 1.0f - (y / m_Size.y));
+				ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", (x / m_Size.x), 1.0f - (y / m_Size.y));
 				StaticMesh::Triangle->Draw();
 			}
 		}
@@ -120,6 +124,11 @@ int Cloth::GetHeight()
 int Cloth::GetHookCount()
 {
 	return m_HookCount;
+}
+
+void Cloth::SetGround(GameObject& _ground)
+{
+	m_Plane = &_ground;
 }
 
 void Cloth::SetHookCount(unsigned _amount)
@@ -210,6 +219,43 @@ float Cloth::GetElasticity()
 	return 0.0f;
 }
 
+void Cloth::HandleGroundCollision()
+{
+	if (m_Plane)
+	{
+		bool collided{};
+		for (auto& particle : m_Particles)
+		{
+			collided = particle.GetPosition().y < m_Plane->GetTransform().translation.y;
+			if (collided)
+			{
+				particle.ApplyForce(Up * 100.0f);
+			}
+		}
+	}
+}
+
+void Cloth::HandleSelfCollision()
+{
+	glm::vec3 collisionDirection{};
+	bool collided{};
+	for (auto& particle : m_Particles)
+	{
+		for (auto& otherParticle : m_Particles)
+		{
+			if (particle.GetPosition() != otherParticle.GetPosition())
+			{
+				collided = Physics::SphereVSSphere(particle.Collider, otherParticle.Collider, collisionDirection);
+				if (collided)
+				{
+					//Print("Self Collision!");
+					//particle.ApplyForce(glm::normalize(collisionDirection) * 1000.0f);
+				}
+			}
+		}
+	}
+}
+
 void Cloth::CleanupParticlesAndJoints()
 {
 	m_Particles.clear();
@@ -272,7 +318,7 @@ void Cloth::UpdateRingSpacing()
 			if (m_Particles[Index(0, x)].IsPinned())
 			{
 				auto newPos = m_Transform.translation;
-				newPos.x += ((m_Size.x / m_HookCount) * m_RingSpacing) * x;
+				newPos.x += (x * m_RingSpacing);
 				m_Particles[Index(0, x)].SetPosition(newPos);
 				m_Particles[Index(0, x)].SetStartPos(newPos);
 			}
@@ -368,6 +414,8 @@ ClothParticle::ClothParticle(glm::vec3 _startPos)
 	SetShader("PositionOnly.vert", "UnlitColor.frag");
 	SetTranslation(_startPos);
 	SetScale({ 0.1f,0.1f,0.1f });
+
+	Collider.Radius = 0.1f;
 }
 
 ClothParticle::~ClothParticle()
@@ -383,7 +431,7 @@ void ClothParticle::Update()
 
 		auto position = m_Transform.translation;
 
-		m_Transform.translation = ((1.0f + m_Damping) * m_Transform.translation) - (m_Damping * m_PreviousPosition) + (m_Acceleration * (1 / 60.0f * 1 / 60.0f));
+		m_Transform.translation = ((1.0f + m_Damping) * m_Transform.translation) - (m_Damping * m_PreviousPosition) + (m_Acceleration * (FIXED_DT * FIXED_DT));
 
 		m_PreviousPosition = position;
 
@@ -396,6 +444,8 @@ void ClothParticle::Update()
 	}
 
 	UpdateModelValueOfTransform(m_Transform);
+
+	Collider.Center = m_Transform.translation;
 }
 
 void ClothParticle::Move(glm::vec3 _amount, bool _useDt)
@@ -405,7 +455,7 @@ void ClothParticle::Move(glm::vec3 _amount, bool _useDt)
 		//float elasticity = std::lerp(60.0f, 1.0f, m_Elasticity);
 
 		if (_useDt)
-			m_Transform.translation += _amount * (1 / 60.0f); //* elasticity;
+			m_Transform.translation += _amount * (FIXED_DT); //* elasticity;
 		else
 			m_Transform.translation += _amount;
 	}
@@ -457,4 +507,9 @@ float ClothParticle::GetMass()
 glm::vec3 ClothParticle::GetPosition() const
 {
 	return m_Transform.translation;
+}
+
+glm::mat4 ClothParticle::GetTransform() const
+{
+	return m_Transform.transform;
 }

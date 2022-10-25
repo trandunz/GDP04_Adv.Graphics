@@ -140,6 +140,8 @@ void InitGLFW()
 
 	glfwMakeContextCurrent(Statics::RenderWindow);
 
+	glfwSwapInterval(0);
+
 	glfwSetKeyCallback(Statics::RenderWindow, KeyCallback);
 	glfwSetCursorPosCallback(Statics::RenderWindow, CursorCallback);
 	glfwSetMouseButtonCallback(Statics::RenderWindow, CursorClickCallback);
@@ -152,7 +154,7 @@ void Start()
 {
 	Statics::UpdateWindowSize();
 	StaticMesh::Init();
-	SceneManager::LoadScene(SCENES::ASSESSMENT2);
+	SceneManager::LoadScene(SCENES::CLOTHSIM);
 }
 
 void Update()

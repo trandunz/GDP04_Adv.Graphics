@@ -31,6 +31,18 @@ glm::vec3 Physics::IntersectPlane(Ray _ray, glm::vec3 _p0, glm::vec3 _p1, glm::v
     return intersection;
 }
 
+bool Physics::SphereVSSphere(SphereCollider& _sphere, SphereCollider& _otherSphere)
+{
+    return glm::distance(_sphere.Center, _otherSphere.Center) < (_sphere.Radius + _otherSphere.Radius);
+}
+
+bool Physics::SphereVSSphere(SphereCollider& _sphere, SphereCollider& _otherSphere, glm::vec3& _resolutionDirection)
+{
+    _resolutionDirection = _otherSphere.Center - _sphere.Center;
+
+    return glm::distance(_sphere.Center, _otherSphere.Center) < (_sphere.Radius + _otherSphere.Radius);
+}
+
 bool Physics::IntersectTriangle(Ray _ray, glm::vec3 _p0, glm::vec3 _p1, glm::vec3 _p2)
 {
     glm::vec3 intersectionPoint = IntersectPlane(_ray, _p0, _p1, _p2);

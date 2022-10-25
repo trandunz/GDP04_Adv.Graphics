@@ -200,6 +200,8 @@ public:
 	/// <returns></returns>
 	bool RayIntersection(Ray _ray, glm::vec3& _point);
 
+	bool PointIntersection(glm::vec3 _point);
+
 	/// <summary>
 	/// Toggles a stencil outline around the object
 	/// </summary>

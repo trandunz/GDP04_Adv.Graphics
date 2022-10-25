@@ -556,6 +556,47 @@ bool GameObject::RayIntersection(Ray _ray, glm::vec3& _point)
     return intersection;
 }
 
+bool GameObject::PointIntersection(glm::vec3 _point)
+{
+    bool intersection = false;
+    // If a mesh is assigned
+    if (m_Mesh)
+    {
+        // Get refrence too indices and vertices
+        std::vector<Vertex>* vertices = &m_Mesh->GetVertices();
+        std::vector<unsigned>* indices = &m_Mesh->GetIndices();
+
+        int index{ 0 };
+        unsigned element{ 0 };
+        // Loop over all indices and get points for each triangle in vertices
+        for (unsigned i = 0; i < indices->size() / 3; i++)
+        {
+            element = (*indices)[index];
+            glm::vec4 point1{ (*vertices)[element].position, 1.0f };
+            point1 = m_Transform.transform * point1;
+
+            element = (*indices)[index + 1];
+            glm::vec4 point2{ (*vertices)[element].position, 1.0f };
+            point2 = m_Transform.transform * point2;
+
+            element = (*indices)[index + 2];
+            glm::vec4 point3{ (*vertices)[element].position, 1.0f };
+            point3 = m_Transform.transform * point3;
+
+            // test for intersection with triangle
+            intersection = Physics::PointInTriangle(_point, point1, point2, point3);
+            if (intersection)
+                return true;
+
+            index += 3;
+        }
+        vertices = nullptr;
+        indices = nullptr;
+    }
+
+    return intersection;
+}
+
 void GameObject::SetStencilOutlineActive(bool _outline)
 {
     m_StencilOutline = _outline;

@@ -10,6 +10,7 @@
 
 #pragma once
 #include "GameObject.h"
+#include "Physics.h"
 
 class DistanceJoint;
 class ClothParticle : public GameObject
@@ -61,6 +62,7 @@ public:
 
 	glm::vec3 m_Wind{};
 	float m_ConstraintLength{};
+	SphereCollider Collider{};
 private:
 	float m_Mass{ 1.0f };
 	float m_Damping{ 0.99f };
@@ -71,6 +73,7 @@ private:
 	glm::vec3 m_StartPosition{};
 public:
 	glm::vec3 GetPosition() const;
+	glm::mat4 GetTransform() const;
 };
 
 class Cloth
@@ -102,6 +105,8 @@ public:
 	int GetHeight();
 	int GetHookCount();
 
+	void SetGround(GameObject& _ground);
+
 	void SetHookCount(unsigned _amount);
 	void SetWidth(unsigned _amount);
 	void SetHeight(unsigned _amount);
@@ -116,8 +121,13 @@ public:
 	float m_RingSpacing{ 1.0f };
 	bool m_DebugDraw{ false };
 	glm::vec3 m_Wind{};
+	GameObject* m_Plane{ nullptr };
 private:
 	size_t Index(int x, int y) const { return (size_t)(x + m_Size.x * y); }
+
+	void HandleGroundCollision();
+
+	void HandleSelfCollision();
 
 	/// <summary>
 	/// Cleans up all particles and joints
