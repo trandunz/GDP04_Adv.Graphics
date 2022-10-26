@@ -30,6 +30,10 @@ GameObject::~GameObject()
     if (m_Mesh)
         m_Mesh = nullptr;
 
+    if (m_Collider)
+        delete m_Collider;
+    m_Collider = nullptr;
+
     m_ActiveTextures.clear();
 }
 
@@ -113,6 +117,9 @@ void GameObject::Movement_YGHJ()
 
 void GameObject::Update()
 {
+    if (m_Collider)
+        m_Collider->Center = m_Transform.translation;
+
     // If player provides input, Translate the gameobject accordingly.
     if (glm::length((glm::vec3)m_Input) > 0)
         Translate(m_Input * m_MovementSpeed * Statics::DeltaTime);
@@ -726,6 +733,16 @@ void GameObject::BillboardObjectToCamera(glm::vec3 _relativePos, glm::vec3 _scal
 void GameObject::SetShowNormals(bool _showNormals)
 {
     m_ShowNormals = _showNormals;
+}
+
+void GameObject::SetCollider(Collider* _collider)
+{
+    m_Collider = _collider;
+}
+
+Collider* GameObject::GetCollider()
+{
+    return m_Collider;
 }
 
 void GameObject::SetNormals3DVertUniforms(GLuint _shaderID)

@@ -28,12 +28,24 @@ ShaderLoader::~ShaderLoader()
 
 GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _fragmentShader)
 {
+    for (auto& shader : m_ShaderPrograms)
+    {
+        if (shader.first.vertShader == _vertexShader
+            && shader.first.geoShader.size() == 0
+            && shader.first.tcShader.size() == 0
+            && shader.first.teShader.size() == 0
+            && shader.first.fragShader == _fragmentShader)
+        {
+            return shader.second;
+        }
+    }
+
     // Create A Default Program
     GLuint program = glCreateProgram();
 
     // Create Shaders And Store There ID's Locally
-    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader));
-    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader));
+    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader), _vertexShader);
+    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader), _fragmentShader);
 
     // Attach Shaders To Program
     if (IsDebug)
@@ -78,13 +90,25 @@ GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _fragme
 
 GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoShader, std::string _fragmentShader)
 {
+    for (auto& shader : m_ShaderPrograms)
+    {
+        if (shader.first.vertShader == _vertexShader
+            && shader.first.geoShader == _geoShader
+            && shader.first.tcShader.size() == 0
+            && shader.first.teShader.size() == 0
+            && shader.first.fragShader == _fragmentShader)
+        {
+            return shader.second;
+        }
+    }
+
     // Create A Default Program
     GLuint program = glCreateProgram();
 
     // Create Shaders And Store There ID's Locally
-    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader));
-    GLuint geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader));
-    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader));
+    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader), _vertexShader);
+    GLuint geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader), _geoShader);
+    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader), _fragmentShader);
 
     // Attach Shaders To Program
     if (IsDebug)
@@ -130,14 +154,26 @@ GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoSha
 
 GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoShader, std::string _tcShader, std::string _fragmentShader)
 {
+    for (auto& shader : m_ShaderPrograms)
+    {
+        if (shader.first.vertShader == _vertexShader
+            && shader.first.geoShader == _geoShader
+            && shader.first.tcShader == _tcShader
+            && shader.first.teShader.size() == 0
+            && shader.first.fragShader == _fragmentShader)
+        {
+            return shader.second;
+        }
+    }
+
     // Create A Default Program
     GLuint program = glCreateProgram();
 
     // Create Shaders And Store There ID's Locally
-    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader));
-    GLuint geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader));
-    GLuint tcShader = CompileShader(GL_TESS_CONTROL_SHADER, PassFileToString(_tcShader));
-    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader));
+    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader), _vertexShader);
+    GLuint geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader), _geoShader);
+    GLuint tcShader = CompileShader(GL_TESS_CONTROL_SHADER, PassFileToString(_tcShader), _tcShader);
+    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader), _fragmentShader);
 
     // Attach Shaders To Program
     if (IsDebug)
@@ -184,17 +220,29 @@ GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoSha
 
 GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoShader, std::string _tcShader, std::string _teShader, std::string _fragmentShader)
 {
+    for (auto& shader : m_ShaderPrograms)
+    {
+        if (shader.first.vertShader == _vertexShader
+            && shader.first.geoShader == _geoShader
+            && shader.first.tcShader == _tcShader
+            && shader.first.teShader == _teShader
+            && shader.first.fragShader == _fragmentShader)
+        {
+            return shader.second;
+        }
+    }
+
     // Create A Default Program
     GLuint program = glCreateProgram();
 
     // Create Shaders And Store There ID's Locally
-    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader));
+    GLuint vertShader = CompileShader(GL_VERTEX_SHADER, PassFileToString(_vertexShader), _vertexShader);
     GLuint geoShader{};
     if (_geoShader != "")
-        geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader));
-    GLuint tcShader = CompileShader(GL_TESS_CONTROL_SHADER, PassFileToString(_tcShader));
-    GLuint teShader = CompileShader(GL_TESS_EVALUATION_SHADER, PassFileToString(_teShader));
-    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader));
+        geoShader = CompileShader(GL_GEOMETRY_SHADER, PassFileToString(_geoShader), _geoShader);
+    GLuint tcShader = CompileShader(GL_TESS_CONTROL_SHADER, PassFileToString(_tcShader), _tcShader);
+    GLuint teShader = CompileShader(GL_TESS_EVALUATION_SHADER, PassFileToString(_teShader), _teShader);
+    GLuint fragShader = CompileShader(GL_FRAGMENT_SHADER, PassFileToString(_fragmentShader), _fragmentShader);
 
     // Attach Shaders To Program
     if (IsDebug)
@@ -291,17 +339,14 @@ void ShaderLoader::SetUniformMatrix4fv(GLuint&& _program, std::string_view&& _lo
     glUniformMatrix4fv(glGetUniformLocation(_program, _location.data()), 1, GL_FALSE, glm::value_ptr(_value));
 }
 
-GLuint ShaderLoader::CompileShader(GLenum&& _type, std::string _source)
+GLuint ShaderLoader::CompileShader(GLenum&& _type, std::string _source, std::string _filename)
 {
     // Check If there Is Already A Shader With The Same Specifications Created
     for (auto& item : m_Shaders)
     {
-        if (item.first == _source)
+        if (item.first == _filename)
         {
-            if (IsDebug)
-            {
-                Print("Re-used Shader " + std::to_string(item.second) + "!");
-            }
+            Print("Re-used Shader " + _filename + "!");
             return item.second;
         }
     }
@@ -309,9 +354,10 @@ GLuint ShaderLoader::CompileShader(GLenum&& _type, std::string _source)
     // Create A Shader Of The Specified Type
     GLuint shader = glCreateShader(_type);
 
+    const GLchar* data = _source.data();
+
     // Grab The Shader Information Assign It To The Newly Created Shader
-    const GLchar* src = _source.data();
-    glShaderSource(shader, 1, &src, nullptr);
+    glShaderSource(shader, 1, &data, nullptr);
 
     // Print Compiling Shader (Type Specific)
     if (IsDebug)
@@ -360,7 +406,7 @@ GLuint ShaderLoader::CompileShader(GLenum&& _type, std::string _source)
     }
 
     // Push New Shader Into Vector
-    m_Shaders.push_back(std::make_pair(_source, shader));
+    m_Shaders.push_back(std::make_pair(_filename, shader));
 
     return shader;
 }

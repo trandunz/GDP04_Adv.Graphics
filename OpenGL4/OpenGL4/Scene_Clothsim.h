@@ -47,8 +47,11 @@ private:
 	/// </summary>
 	void CleanupImGUI();
 
+	void UpdateClothInteractionType();
+
 	Cloth* m_Cloth{ nullptr };
 	GameObject* m_FloorPlane{ nullptr };
+	GameObject* m_CollisionSphere{ nullptr };
 	glm::vec2 m_CursorPos{};
 	void* m_Io{ nullptr };
 	

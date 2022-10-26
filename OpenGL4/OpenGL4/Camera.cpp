@@ -152,6 +152,55 @@ glm::vec3 Camera::GetRayCursorRayDirection(glm::vec2 _mousePos)
     return glm::normalize(worldRay);
 }
 
+glm::vec3 Camera::GetRayCursorRayDirection()
+{
+    double xpos, ypos;
+    glfwGetCursorPos(Statics::RenderWindow, &xpos, &ypos);
+    // Convert mouse pos to normalize device coordinates
+    glm::vec3 ndc
+    {
+        (2.0f * xpos) / Statics::WindowSize.x - 1.0f,
+        1.0f - (2.0f * ypos) / Statics::WindowSize.y,
+        1.0f
+    };
+    // Convert NDC to Clip Coordinates
+    glm::vec4 clip{ ndc.x, ndc.y, -1.0f, 1.0 };
+    // Convert Clip Coords to camera / eye coordinates by undoing projection transformation
+    glm::vec4 eye = glm::inverse(GetProjectionMatrix()) * clip;
+    // Force eye coordinate to be a forward direction instead of a point
+    eye = { eye.x, eye.y, -1.0f, 0.0 };
+    // Convert eye coordinates to world coordinates by undoing view transformation
+    glm::vec3 worldRay = glm::vec3(glm::inverse(GetViewMatrix()) * eye);
+    // Normalize it so its only a direction
+    return glm::normalize(worldRay);
+}
+
+Ray Camera::GetRayCursorRay()
+{
+    double xpos, ypos;
+    glfwGetCursorPos(Statics::RenderWindow, &xpos, &ypos);
+    // Convert mouse pos to normalize device coordinates
+    glm::vec3 ndc
+    {
+        (2.0f * xpos) / Statics::WindowSize.x - 1.0f,
+        1.0f - (2.0f * ypos) / Statics::WindowSize.y,
+        1.0f
+    };
+    // Convert NDC to Clip Coordinates
+    glm::vec4 clip{ ndc.x, ndc.y, -1.0f, 1.0 };
+    // Convert Clip Coords to camera / eye coordinates by undoing projection transformation
+    glm::vec4 eye = glm::inverse(GetProjectionMatrix()) * clip;
+    // Force eye coordinate to be a forward direction instead of a point
+    eye = { eye.x, eye.y, -1.0f, 0.0 };
+    // Convert eye coordinates to world coordinates by undoing view transformation
+    glm::vec3 worldRay = glm::vec3(glm::inverse(GetViewMatrix()) * eye);
+    // Normalize it so its only a direction
+    Ray cameraRay{};
+    cameraRay.origin = GetPosition();
+    cameraRay.direction = glm::normalize(worldRay);
+    return cameraRay;
+}
+
 void Camera::UpdatePosition()
 {
     float x;

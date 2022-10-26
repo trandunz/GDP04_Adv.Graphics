@@ -24,7 +24,7 @@ public:
 	/// <summary>
 	/// Cloth Particle Destructor
 	/// </summary>
-	~ClothParticle();
+	virtual ~ClothParticle();
 
 	/// <summary>
 	/// Cloth Particle Update
@@ -62,7 +62,7 @@ public:
 
 	glm::vec3 m_Wind{};
 	float m_ConstraintLength{};
-	SphereCollider Collider{};
+	Collider Collider{ {},0 };
 private:
 	float m_Mass{ 1.0f };
 	float m_Damping{ 0.99f };
@@ -73,12 +73,18 @@ private:
 	glm::vec3 m_StartPosition{};
 public:
 	glm::vec3 GetPosition() const;
-	glm::mat4 GetTransform() const;
 };
 
 class Cloth
 {
 public:
+	enum class INTERACTIONTYPE
+	{
+		UNASSIGNED = 0,
+		PULL,
+		PUSH
+	};
+
 	/// <summary>
 	/// Cloth Constructor
 	/// </summary>
@@ -118,6 +124,9 @@ public:
 	void SetElasticity(float _amount);
 	float GetElasticity();
 
+	void CheckCollision(Collider* _collider);
+
+	INTERACTIONTYPE InteractionType{};
 	float m_RingSpacing{ 1.0f };
 	bool m_DebugDraw{ false };
 	glm::vec3 m_Wind{};
@@ -169,6 +178,10 @@ private:
 	/// <param name="_width"></param>
 	/// <param name="_height"></param>
 	void CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsigned _width, unsigned _height);
+
+	void HandleMouseInteraction();
+	void HandlePushing(int _x, int _y);
+	void HandlePulling(int _x, int _y);
 
 	std::vector<ClothParticle> m_Particles{};
 	std::vector<DistanceJoint*> m_DistanceJoints{};

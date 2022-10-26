@@ -151,7 +151,7 @@ private:
     /// <param name="_type"></param>
     /// <param name="_source"></param>
     /// <returns></returns>
-    static GLuint CompileShader(GLenum&& _type, std::string _source);
+    static GLuint CompileShader(GLenum&& _type, std::string _source, std::string _filename);
 
     /// <summary>
     /// Passes A File At The Given Adress Into A String And Returns It.

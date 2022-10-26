@@ -52,6 +52,20 @@ public:
     glm::vec3 GetRayCursorRayDirection(glm::vec2 _mousePos);
 
     /// <summary>
+    /// Returns a direction in world space from the camera to the mouse position
+    /// </summary>
+    /// <param name="_mousePos"></param>
+    /// <returns></returns>
+    glm::vec3 GetRayCursorRayDirection();
+
+    /// <summary>
+    /// Returns a ray from the camera to the mouse position
+    /// </summary>
+    /// <param name="_mousePos"></param>
+    /// <returns></returns>
+    Ray GetRayCursorRay();
+
+    /// <summary>
     /// Returns The Camera's Position
     /// </summary>
     /// <returns></returns>

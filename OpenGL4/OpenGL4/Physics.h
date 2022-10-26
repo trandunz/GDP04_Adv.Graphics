@@ -14,22 +14,27 @@
 
 #define FIXED_DT 1.0f/144.0f
 
-struct SphereCollider
+struct Collider
 {
-	inline SphereCollider(glm::vec3 _center, float _radius)
+	inline Collider(glm::vec3 _center, float _radius)
 	{
 		Center = _center;
 		Radius = _radius;
 	}
 
-	inline SphereCollider()
+	inline bool Collision(Collider* _otherCollider)
 	{
+		if (!_otherCollider)
+			return false;
+
+		return glm::distance(Center, _otherCollider->Center) < (Radius + _otherCollider->Radius);
 	}
 
 	glm::vec3 Center{};
 	float Radius{};
 };
 
+class Mesh;
 class Physics
 {
 public:
@@ -63,8 +68,10 @@ public:
 	/// <returns></returns>
 	static bool PointInTriangle(glm::vec3 _px, glm::vec3 _p0, glm::vec3 _p1, glm::vec3 _p2);
 
-	static bool SphereVSSphere(SphereCollider& _sphere, SphereCollider& _otherSphere);
-	static bool SphereVSSphere(SphereCollider& _sphere, SphereCollider& _otherSphere, glm::vec3& _resolutionDirection);
+	static bool SphereVSSphere(Collider& _sphere, Collider& _otherSphere);
+	static bool SphereVSSphere(Collider& _sphere, Collider& _otherSphere, glm::vec3& _resolutionDirection);
+
+	static bool IntersectMesh(Mesh* _mesh, Transform _meshTransform, Ray _ray);
 private:
 	/// <summary>
 	/// Returns an interpolated value between 0 and the dot product of the cross product of (_b - _a, _p1 - _a) and (_b - _a, _p2 - _a)

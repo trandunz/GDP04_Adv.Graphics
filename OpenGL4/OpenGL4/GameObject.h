@@ -13,6 +13,7 @@
 #include "Statics.h"
 #include "StaticMesh.h"
 
+struct Collider;
 class GameObject
 {
 public:
@@ -25,7 +26,7 @@ public:
 	/// <summary>
 	/// GameObject Destructor
 	/// </summary>
-	~GameObject();
+	virtual ~GameObject();
 
 	/// <summary>
 	/// Handles moving the object with keyboard.
@@ -222,6 +223,9 @@ public:
 	/// <param name="_showNormals"></param>
 	void SetShowNormals(bool _showNormals);
 
+	void SetCollider(Collider* _collider);
+	Collider* GetCollider();
+
 protected:
 
 	/// <summary>
@@ -324,5 +328,6 @@ protected:
 	float m_MovementSpeed = 10.0f;
 	Mesh* m_Mesh = nullptr;
 	Transform m_Transform{};
+	Collider* m_Collider{ nullptr };
 };
 

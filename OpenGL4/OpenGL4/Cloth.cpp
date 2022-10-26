@@ -35,19 +35,21 @@ Cloth::~Cloth()
 {
 	for (auto& joint : m_DistanceJoints)
 	{
-		if (joint)
-			delete joint;
+		delete joint;
 		joint = nullptr;
 	}
-	m_DistanceJoints.clear();
-
 	m_Particles.clear();
+	m_DistanceJoints.clear();
 
 	m_Plane = nullptr;
 }
 
 void Cloth::Update()
 {
+	HandleGroundCollision();
+	HandleSelfCollision();
+	HandleMouseInteraction();
+
 	for (int y = 0; y < m_Size.y; y++)
 	{
 		for (int x = 0; x < m_Size.x; x++)
@@ -62,8 +64,6 @@ void Cloth::Update()
 	{
 		distanceJoint->Update();
 	}
-
-	HandleGroundCollision();
 }
 
 void Cloth::Draw()
@@ -219,6 +219,23 @@ float Cloth::GetElasticity()
 	return 0.0f;
 }
 
+void Cloth::CheckCollision(Collider* _collider)
+{
+	if (!_collider)
+		return;
+
+	glm::vec3 collisionDirection{};
+	bool collided{};
+	for (auto& particle : m_Particles)
+	{
+		collided = Physics::SphereVSSphere(particle.Collider, *_collider, collisionDirection);
+		if (collided)
+		{
+			particle.ApplyForce(collisionDirection * 100.0f);
+		}
+	}
+}
+
 void Cloth::HandleGroundCollision()
 {
 	if (m_Plane)
@@ -248,8 +265,8 @@ void Cloth::HandleSelfCollision()
 				collided = Physics::SphereVSSphere(particle.Collider, otherParticle.Collider, collisionDirection);
 				if (collided)
 				{
-					//Print("Self Collision!");
-					//particle.ApplyForce(glm::normalize(collisionDirection) * 1000.0f);
+					particle.ApplyForce(collisionDirection * 100.0f / 2.0f);
+					otherParticle.ApplyForce(-collisionDirection * 100.0f / 2.0f);
 				}
 			}
 		}
@@ -405,6 +422,109 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 
 }
 
+void Cloth::HandleMouseInteraction()
+{
+	for (int y = 0; y < m_Size.y - 1; y++)
+	{
+		for (int x = 0; x < m_Size.x - 1; x++)
+		{
+			switch (InteractionType)
+			{
+			case INTERACTIONTYPE::PULL:
+			{
+				HandlePulling(x, y);
+				break;
+			}
+			case INTERACTIONTYPE::PUSH:
+			{
+				HandlePushing(x, y);
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	}
+}
+
+void Cloth::HandlePushing(int _x, int _y)
+{
+	int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
+	if (state == GLFW_PRESS)
+	{
+		Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+
+		Transform triangleCenterTransform = m_Particles[Index(_y, _x)].GetTransform();
+		glm::vec3 particleAPos = m_Particles[Index(_y, _x)].GetPosition();
+		glm::vec3 particleBPos = m_Particles[Index(_y + 1, _x)].GetPosition();
+		glm::vec3 particleCPos = m_Particles[Index(_y + 1, _x + 1)].GetPosition();
+		triangleCenterTransform.translation = { ((particleAPos.x + particleBPos.x + particleCPos.x) / 3.0f),
+							((particleAPos.y + particleBPos.y + particleCPos.y) / 3.0f),
+							((particleAPos.z + particleBPos.z + particleCPos.z) / 3.0f) };
+		UpdateModelValueOfTransform(triangleCenterTransform);
+
+		if (Physics::IntersectMesh(StaticMesh::Triangle, triangleCenterTransform, cursorRay))
+		{
+			m_Particles[Index(_y, _x)].ApplyForce(cursorRay.direction * 1000.0f);
+			m_Particles[Index(_y + 1, _x)].ApplyForce(cursorRay.direction * 1000.0f);
+			m_Particles[Index(_y + 1, _x + 1)].ApplyForce(cursorRay.direction * 1000.0f);
+		}
+
+		particleAPos = m_Particles[Index(_y, _x)].GetPosition();
+		particleBPos = m_Particles[Index(_y, _x + 1)].GetPosition();
+		particleCPos = m_Particles[Index(_y + 1, _x + 1)].GetPosition();
+		triangleCenterTransform.translation = { ((particleAPos.x + particleBPos.x + particleCPos.x) / 3.0f),
+												((particleAPos.y + particleBPos.y + particleCPos.y) / 3.0f),
+												((particleAPos.z + particleBPos.z + particleCPos.z) / 3.0f) };
+		UpdateModelValueOfTransform(triangleCenterTransform);
+		if (Physics::IntersectMesh(StaticMesh::Triangle, triangleCenterTransform, cursorRay))
+		{
+			m_Particles[Index(_y, _x)].ApplyForce(cursorRay.direction * 1000.0f);
+			m_Particles[Index(_y, _x + 1)].ApplyForce(cursorRay.direction * 1000.0f);
+			m_Particles[Index(_y + 1, _x + 1)].ApplyForce(cursorRay.direction * 1000.0f);
+		}
+	}
+}
+
+void Cloth::HandlePulling(int _x, int _y)
+{
+	int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
+	if (state == GLFW_PRESS)
+	{
+		Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+
+		Transform triangleCenterTransform = m_Particles[Index(_y, _x)].GetTransform();
+		glm::vec3 particleAPos = m_Particles[Index(_y, _x)].GetPosition();
+		glm::vec3 particleBPos = m_Particles[Index(_y + 1, _x)].GetPosition();
+		glm::vec3 particleCPos = m_Particles[Index(_y + 1, _x + 1)].GetPosition();
+		triangleCenterTransform.translation = { ((particleAPos.x + particleBPos.x + particleCPos.x) / 3.0f),
+							((particleAPos.y + particleBPos.y + particleCPos.y) / 3.0f),
+							((particleAPos.z + particleBPos.z + particleCPos.z) / 3.0f) };
+		UpdateModelValueOfTransform(triangleCenterTransform);
+
+		if (Physics::IntersectMesh(StaticMesh::Triangle, triangleCenterTransform, cursorRay))
+		{
+			m_Particles[Index(_y, _x)].ApplyForce(-cursorRay.direction * 1000.0f);
+			m_Particles[Index(_y + 1, _x)].ApplyForce(-cursorRay.direction * 1000.0f);
+			m_Particles[Index(_y + 1, _x + 1)].ApplyForce(-cursorRay.direction * 1000.0f);
+		}
+
+		particleAPos = m_Particles[Index(_y, _x)].GetPosition();
+		particleBPos = m_Particles[Index(_y, _x + 1)].GetPosition();
+		particleCPos = m_Particles[Index(_y + 1, _x + 1)].GetPosition();
+		triangleCenterTransform.translation = { ((particleAPos.x + particleBPos.x + particleCPos.x) / 3.0f),
+												((particleAPos.y + particleBPos.y + particleCPos.y) / 3.0f),
+												((particleAPos.z + particleBPos.z + particleCPos.z) / 3.0f) };
+		UpdateModelValueOfTransform(triangleCenterTransform);
+		if (Physics::IntersectMesh(StaticMesh::Triangle, triangleCenterTransform, cursorRay))
+		{
+			m_Particles[Index(_y, _x)].ApplyForce(-cursorRay.direction * 1000.0f);
+			m_Particles[Index(_y, _x + 1)].ApplyForce(-cursorRay.direction * 1000.0f);
+			m_Particles[Index(_y + 1, _x + 1)].ApplyForce(-cursorRay.direction * 1000.0f);
+		}
+	}
+}
+
 ClothParticle::ClothParticle(glm::vec3 _startPos)
 {
 	m_Transform.translation = _startPos;
@@ -413,9 +533,9 @@ ClothParticle::ClothParticle(glm::vec3 _startPos)
 	SetMesh(StaticMesh::Sphere);
 	SetShader("PositionOnly.vert", "UnlitColor.frag");
 	SetTranslation(_startPos);
-	SetScale({ 0.1f,0.1f,0.1f });
+	SetScale({ 0.5f,0.5f,0.5f });
 
-	Collider.Radius = 0.1f;
+	Collider.Radius = 0.25f;
 }
 
 ClothParticle::~ClothParticle()
@@ -507,9 +627,4 @@ float ClothParticle::GetMass()
 glm::vec3 ClothParticle::GetPosition() const
 {
 	return m_Transform.translation;
-}
-
-glm::mat4 ClothParticle::GetTransform() const
-{
-	return m_Transform.transform;
 }
