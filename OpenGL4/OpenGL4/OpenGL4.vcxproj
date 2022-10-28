@@ -95,7 +95,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;freetype.lib;assimp-vc140-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,7 +115,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;freetype.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -125,10 +125,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3_64.dll;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,15 +142,21 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3_64.dll;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Animator.cpp" />
+    <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cloth.cpp" />
     <ClCompile Include="DistanceJoint.cpp" />
@@ -171,9 +180,11 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Scene_Assessment1.cpp" />
     <ClCompile Include="Scene_Assessment2.cpp" />
+    <ClCompile Include="Scene_Assignment3.cpp" />
     <ClCompile Include="Scene_Clothsim.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
+    <ClCompile Include="SkinnedMesh.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="Statics.cpp" />
@@ -182,6 +193,9 @@
     <ClCompile Include="TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="Animator.h" />
+    <ClInclude Include="Bone.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cloth.h" />
     <ClInclude Include="DistanceJoint.h" />
@@ -208,9 +222,11 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Scene_Assessment1.h" />
     <ClInclude Include="Scene_Assessment2.h" />
+    <ClInclude Include="Scene_Assignment3.h" />
     <ClInclude Include="Scene_Clothsim.h" />
     <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShadowMap.h" />
+    <ClInclude Include="SkinnedMesh.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="Statics.h" />
@@ -256,6 +272,7 @@
     <None Include="Resources\Shaders\SingleTexture.frag" />
     <None Include="Resources\Shaders\SingleTexture.vert" />
     <None Include="Resources\Shaders\SingleTexture_Geo.frag" />
+    <None Include="Resources\Shaders\SkeletalAnimation.vert" />
     <None Include="Resources\Shaders\Skybox.frag" />
     <None Include="Resources\Shaders\Skybox.vert" />
     <None Include="Resources\Shaders\Terrain.vert" />

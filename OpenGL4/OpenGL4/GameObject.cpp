@@ -34,6 +34,9 @@ GameObject::~GameObject()
         delete m_Collider;
     m_Collider = nullptr;
 
+    m_Animator = nullptr;
+    m_SkinnedMesh = nullptr;
+
     m_ActiveTextures.clear();
 }
 
@@ -126,6 +129,9 @@ void GameObject::Update()
     // If player provides Rotational input, rotate accordingly
     if (m_Input.w != 0)
         Rotate({ 0,1,0 }, m_Input.w * 100 * Statics::DeltaTime);
+
+    if (m_Animator)
+        m_Animator->UpdateAnimation(Statics::DeltaTime, m_Transform.transform);
 }
 
 void GameObject::Draw()
@@ -270,6 +276,9 @@ void GameObject::Draw()
                 SetSingleColorUniforms(m_ShaderID, { 1,0,1 });
             }
         }
+        else if (m_ShaderLocation.vertShader == "SkeletalAnimation.vert")
+        {
+        }
         
         if (Statics::StencilTest && m_StencilOutline)
         {
@@ -329,6 +338,23 @@ void GameObject::Draw()
             glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         }
     }
+    else if (m_SkinnedMesh)
+    {
+        glUseProgram(m_ShaderID);
+
+        if (m_ShaderLocation.vertShader == "SkeletalAnimation.vert")
+        {
+            SetSkinnedMeshUniforms();
+        }
+        if (m_ShaderLocation.fragShader == "SingleTexture.frag")
+        {
+            SetSingleTextureUniforms();
+        }
+
+        m_SkinnedMesh->Draw();
+
+        glUseProgram(0);
+    }
 }
 
 void GameObject::DrawShadows()
@@ -359,6 +385,16 @@ Mesh* GameObject::GetMesh()
         return m_Mesh;
     else
         return nullptr;
+}
+
+void GameObject::SetSkinnedMesh(SkinnedMesh* _skinnedMesh)
+{
+    m_SkinnedMesh = _skinnedMesh;
+}
+
+void GameObject::SetAnimator(Animator* _animator)
+{
+    m_Animator = _animator;
 }
 
 Transform GameObject::GetTransform() const
@@ -870,6 +906,18 @@ void GameObject::SetHeightmapShadowsUniforms()
 {
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
+}
+
+void GameObject::SetSkinnedMeshUniforms()
+{
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
+
+    if (m_Animator)
+    {
+        auto transforms = m_Animator->GetFinalBoneMatrices();
+        for (int i = 0; i < transforms.size(); ++i)
+            ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
+    }
 }
 
 void GameObject::SetShadowMapUniforms()

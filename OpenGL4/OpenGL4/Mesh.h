@@ -27,11 +27,6 @@ enum class SHAPE
 	TRIANGLE
 };
 
-struct aiNode;
-struct aiScene;
-struct aiMesh;
-struct aiMaterial;
-enum aiTextureType;
 class Mesh
 {
 public:
@@ -158,37 +153,7 @@ private:
 	/// <param name="_path"></param>
 	void LoadModelTinyOBJ(std::string _path);
 
-	/// <summary>
-	/// Load the specified model with ASSIMP loader
-	/// </summary>
-	/// <param name="_path"></param>
-	//void LoadModelASSIMP(std::string _path);
-
-	/// <summary>
-	/// Process the specified ASSIMP node
-	/// </summary>
-	/// <param name="_node"></param>
-	/// <param name="_scene"></param>
-	//void ProcessNode(aiNode* _node, const aiScene* _scene);
-
-	/// <summary>
-	/// Process the specified ASSIMP mesh
-	/// </summary>
-	/// <param name="_mesh"></param>
-	/// <param name="_scene"></param>
-	/// <returns></returns>
-	//Mesh* ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
-
-	/// <summary>
-	/// Load all the embedded textures of the ASSIMP model
-	/// </summary>
-	/// <param name="_mat"></param>
-	/// <param name="_type"></param>
-	/// <returns></returns>
-	//std::vector<Texture> LoadTextures(aiMaterial* _mat, aiTextureType _type);
-
-	std::vector<Texture> m_AssimpTextures{};
-	std::vector<Mesh*> m_AssimpMeshes{};
+	std::vector<Texture> m_Textures{};
 	std::vector<unsigned int> m_Indices{};
 	std::vector<Vertex> m_Vertices{};
 

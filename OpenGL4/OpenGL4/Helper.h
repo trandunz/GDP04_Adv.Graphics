@@ -18,6 +18,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <vector>
 #include <unordered_map>
 #include <map>
@@ -32,6 +36,7 @@ using KEYMAP = std::map<int, bool>;
 #define Forward glm::vec3{0.0f,0.0f,-1.0f}
 #define Right glm::vec3{1.0f,0.0f,0.0f}
 #define Up glm::vec3{0.0f,1.0f,0.0f}
+#define MAX_BONE_INFLUENCE 4
 
 /// <summary>
 /// Ray struct for physics raycasting
@@ -71,6 +76,10 @@ struct Vertex
 	glm::vec3 position{0,0,0};
 	glm::vec2 texCoords{0,0};
 	glm::vec3 normals{ 0,0,0 };
+	glm::vec3 Tangent{ 0,0,0 };
+	glm::vec3 Bitangent{ 0,0,0 };
+	int m_BoneIDs[MAX_BONE_INFLUENCE]{};
+	float m_Weights[MAX_BONE_INFLUENCE]{};
 };
 
 /// <summary>
@@ -225,4 +234,36 @@ inline void Print(float&& _float, bool _newLine = true)
 	std::cout << std::to_string(_float);
 	if (_newLine)
 		std::cout << std::endl;
+}
+
+inline glm::mat4 ConvertMatrixToGLMFormat(aiMatrix4x4 _matrix)
+{
+	glm::mat4 outputMatrix{};
+	outputMatrix[0][0] = _matrix.a1; 
+	outputMatrix[0][1] = _matrix.a2;
+	outputMatrix[0][2] = _matrix.a3; 
+	outputMatrix[0][3] = _matrix.a4;
+	outputMatrix[1][0] = _matrix.b1; 
+	outputMatrix[1][1] = _matrix.b2;
+	outputMatrix[1][2] = _matrix.b3; 
+	outputMatrix[1][3] = _matrix.b4;
+	outputMatrix[2][0] = _matrix.c1; 
+	outputMatrix[2][1] = _matrix.c2;
+	outputMatrix[2][2] = _matrix.c3; 
+	outputMatrix[2][3] = _matrix.c4;
+	outputMatrix[3][0] = _matrix.d1; 
+	outputMatrix[3][1] = _matrix.d2;
+	outputMatrix[3][2] = _matrix.d3; 
+	outputMatrix[3][3] = _matrix.d4;
+	return outputMatrix;
+}
+
+inline glm::vec3 ConvertVecToGLMFormat(aiVector3D _vector)
+{
+	return {_vector.x, _vector.y,_vector.z};
+}
+
+inline glm::quat ConvertQuatToGLMFormat(aiQuaternion _quat)
+{
+	return { _quat.x, _quat.y,_quat.z, _quat.w };
 }

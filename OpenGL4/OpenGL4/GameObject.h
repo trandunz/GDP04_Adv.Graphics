@@ -12,6 +12,8 @@
 
 #include "Statics.h"
 #include "StaticMesh.h"
+#include "SkinnedMesh.h"
+#include "Animator.h"
 
 struct Collider;
 class GameObject
@@ -75,6 +77,10 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	Mesh* GetMesh();
+
+	void SetSkinnedMesh(SkinnedMesh* _skinnedMesh);
+
+	void SetAnimator(Animator* _animator);
 
 	/// <summary>
 	/// Returns a copy of the transform
@@ -315,6 +321,9 @@ protected:
 	/// </summary>
 	void SetHeightmapShadowsUniforms();
 
+	void SetSkinnedMeshUniforms();
+
+
 	bool m_ShowNormals = false;
 	bool m_RimLighting = false;
 	bool m_StencilOutline = Statics::StencilTest;
@@ -329,5 +338,7 @@ protected:
 	Mesh* m_Mesh = nullptr;
 	Transform m_Transform{};
 	Collider* m_Collider{ nullptr };
+	SkinnedMesh* m_SkinnedMesh{ nullptr };
+	Animator* m_Animator{ nullptr };
 };
 

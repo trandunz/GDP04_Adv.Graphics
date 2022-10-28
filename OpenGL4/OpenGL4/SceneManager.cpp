@@ -11,6 +11,7 @@
 #include "SceneManager.h"
 #include "Scene_Assessment1.h"
 #include "Scene_Assessment2.h"
+#include "Scene_Assignment3.h"
 #include "Scene_Clothsim.h"
 
 Scene* SceneManager::CurrentScene = nullptr;
@@ -76,6 +77,11 @@ void SceneManager::ChangeToPendingScene()
 		case SCENES::ASSESSMENT2:
 		{
 			CurrentScene = new Scene_Assessment2();
+			break;
+		}
+		case SCENES::ASSESSMENT3:
+		{
+			CurrentScene = new Scene_Assignment3();
 			break;
 		}
 		case SCENES::CLOTHSIM:

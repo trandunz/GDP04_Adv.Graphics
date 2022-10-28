@@ -16,11 +16,6 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <TinyOBJ/tiny_obj_loader.h>
 
-// assimp-vc143-mtd.lib
-//#include <assimp/Importer.hpp>
-//#include <assimp/scene.h>
-//#include <assimp/postprocess.h>
-
 Mesh::Mesh(SHAPE _shape, GLenum _windingOrder)
 {
 	m_WindingOrder = _windingOrder;
@@ -51,7 +46,6 @@ Mesh::Mesh(unsigned int _numberOfSides, GLenum _windingOrder)
 Mesh::Mesh(std::string _objModel)
 {
 	LoadModelTinyOBJ(_objModel);
-	//LoadModelASSIMP(_objModel);
 
 	if (Statics::DSA)
 		CreateAndInitializeBuffersDSA(false);
@@ -63,7 +57,7 @@ Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<unsigned> _indices, std::v
 {
 	m_Vertices = _vertices;
 	m_Indices = _indices;
-	m_AssimpTextures = _textures;
+	m_Textures = _textures;
 
 	if (Statics::DSA)
 		CreateAndInitializeBuffersDSA(true);
@@ -73,15 +67,6 @@ Mesh::Mesh(std::vector<Vertex> _vertices, std::vector<unsigned> _indices, std::v
 
 Mesh::~Mesh()
 {
-	for (auto& mesh : m_AssimpMeshes)
-	{
-		if (mesh)
-		{
-			delete mesh;
-			mesh = nullptr;
-		}
-	}
-	m_AssimpMeshes.clear();
 	m_Indices.clear();
 	m_Vertices.clear();
 
@@ -101,52 +86,42 @@ Mesh::~Mesh()
 
 void Mesh::Draw()
 {
-	if (m_AssimpMeshes.size() > 0)
+	glBindVertexArray(m_VertexArrayID);
+
+	if (m_Shape == SHAPE::POINT)
 	{
-		for (auto& mesh : m_AssimpMeshes)
-		{
-			mesh->Draw();
-		}
+		if (m_Indices.size() > 0)
+			glDrawElements(GL_POINTS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+		else
+			glDrawArrays(GL_POINTS, 0, m_Vertices.size());
+	}
+	else if (m_Shape == SHAPE::PATCH_TRIANGLE ||
+		m_Shape == SHAPE::PATCH_TRIANGLE_QUAD)
+	{
+		glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
+	}
+	else if (m_Shape == SHAPE::PATCH_QUAD)
+	{
+		glPatchParameteri(GL_PATCH_VERTICES, 4);
+		glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
+		glPatchParameteri(GL_PATCH_VERTICES, 3);
+	}
+	else if (m_Shape == SHAPE::QUAD)
+	{
+		if (m_Indices.size() > 0)
+			glDrawElements(GL_QUADS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+		else
+			glDrawArrays(GL_QUADS, 0, m_Vertices.size());
 	}
 	else
 	{
-		glBindVertexArray(m_VertexArrayID);
-
-		if (m_Shape == SHAPE::POINT)
-		{
-			if (m_Indices.size() > 0)
-				glDrawElements(GL_POINTS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
-			else
-				glDrawArrays(GL_POINTS, 0, m_Vertices.size());
-		}
-		else if (m_Shape == SHAPE::PATCH_TRIANGLE ||
-			m_Shape == SHAPE::PATCH_TRIANGLE_QUAD)
-		{
-			glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
-		}
-		else if (m_Shape == SHAPE::PATCH_QUAD)
-		{
-			glPatchParameteri(GL_PATCH_VERTICES, 4);
-			glDrawArrays(GL_PATCHES, 0, m_Vertices.size());
-			glPatchParameteri(GL_PATCH_VERTICES, 3);
-		}
-		else if (m_Shape == SHAPE::QUAD)
-		{
-			if (m_Indices.size() > 0)
-				glDrawElements(GL_QUADS, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
-			else
-				glDrawArrays(GL_QUADS, 0, m_Vertices.size());
-		}
+		if (m_Indices.size() > 0)
+			glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
 		else
-		{
-			if (m_Indices.size() > 0)
-				glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
-			else
-				glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
-		}
-
-		glBindVertexArray(0);
+			glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
 	}
+
+	glBindVertexArray(0);
 }
 
 std::vector<Vertex>& Mesh::GetVertices()
@@ -580,6 +555,13 @@ void Mesh::CreateAndInitializeBuffersNONDSA(bool _ebo)
 	// Normals
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, normals)));
+	
+	glEnableVertexAttribArray(3);
+	glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
+
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
+
 	// Unbind
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -609,6 +591,14 @@ void Mesh::CreateAndInitializeBuffersDSA(bool _ebo)
 	glVertexArrayAttribBinding(m_VertexArrayID, 2, 0);
 	glVertexArrayAttribFormat(m_VertexArrayID, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normals));
 
+	glEnableVertexArrayAttrib(m_VertexArrayID, 3);
+	glVertexArrayAttribBinding(m_VertexArrayID, 3, 0);
+	glVertexArrayAttribIFormat(m_VertexArrayID, 3, 4, GL_INT, offsetof(Vertex, m_BoneIDs));
+	
+	glEnableVertexArrayAttrib(m_VertexArrayID, 4);
+	glVertexArrayAttribBinding(m_VertexArrayID, 4, 0);
+	glVertexArrayAttribFormat(m_VertexArrayID, 4, 4, GL_FLOAT, GL_FALSE, offsetof(Vertex, m_Weights));
+
 	// Attach Vertex Buffer To vertex array
 	glVertexArrayVertexBuffer(m_VertexArrayID, 0, m_VertexBufferID, 0, sizeof(Vertex));
 
@@ -616,7 +606,7 @@ void Mesh::CreateAndInitializeBuffersDSA(bool _ebo)
 	if (_ebo)
 	{
 		glCreateBuffers(1, &m_IndexBufferID);
-		glNamedBufferData(m_IndexBufferID, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
+		glNamedBufferData(m_IndexBufferID, m_Indices.size() * sizeof(unsigned), &m_Indices[0], GL_STATIC_DRAW);
 
 		// Attach index buffer to vertex array
 		glVertexArrayElementBuffer(m_VertexArrayID, m_IndexBufferID);
@@ -789,115 +779,3 @@ void Mesh::LoadModelTinyOBJ(std::string _path)
 		}
 	}
 }
-
-//void Mesh::LoadModelASSIMP(std::string _path)
-//{
-//	//Assimp::Importer importer;
-//	//const aiScene* scene = importer.ReadFile(_path, aiProcess_Triangulate | aiProcess_FlipUVs);
-//	//
-//	//if (!scene)
-//	//	Print("Failed to load model " + _path);
-//	//else if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-//	//	Print("Failed to load model " + _path);
-//	//else
-//	//{
-//	//	ProcessNode(scene->mRootNode, scene);
-//	//}
-//}
-//
-//void Mesh::ProcessNode(aiNode* _node, const aiScene* _scene)
-//{
-//	//for (unsigned i = 0; i < _node->mNumMeshes; i++)
-//	//{
-//	//	aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
-//	//	m_AssimpMeshes.push_back(ProcessMesh(mesh, _scene));
-//	//}
-//	//
-//	//for (unsigned i = 0; i < _node->mNumChildren; i++)
-//	//{
-//	//	ProcessNode(_node->mChildren[i], _scene);
-//	//}
-//}
-//
-//Mesh* Mesh::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
-//{
-//	std::vector<Vertex> vertices{};
-//	std::vector<unsigned> indices{};
-//	std::vector<Texture> textures{};
-//	//
-//	//// vertices
-//	//for (unsigned i = 0; i < _mesh->mNumVertices; i++)
-//	//{
-//	//	Vertex vertex{};
-//	//	if (_mesh->mVertices)
-//	//	{
-//	//		vertex.position = { _mesh->mVertices[i].x, _mesh->mVertices[i].y, _mesh->mVertices[i].z };
-//	//	}
-//	//	if (_mesh->mNormals)
-//	//	{
-//	//		vertex.normals = { _mesh->mNormals[i].x, _mesh->mNormals[i].y, _mesh->mNormals[i].z };
-//	//	}
-//	//	if (_mesh->mTextureCoords[0])
-//	//	{
-//	//		vertex.texCoords = { _mesh->mTextureCoords[0][i].x, _mesh->mTextureCoords[0][i].y };
-//	//	}
-//	//
-//	//	vertices.push_back(vertex);
-//	//}
-//	//
-//	//// indices
-//	//for (unsigned i = 0; i < _mesh->mNumFaces; i++)
-//	//{
-//	//	aiFace face = _mesh->mFaces[i];
-//	//	for (unsigned j = 0; j < face.mNumIndices; j++)
-//	//	{
-//	//		indices.push_back(face.mIndices[j]);
-//	//	}
-//	//}
-//	//
-//	//// material
-//	//if (_mesh->mMaterialIndex >= 0)
-//	//{
-//	//	aiMaterial* material = _scene->mMaterials[_mesh->mMaterialIndex];
-//	//
-//	//	// diffuse
-//	//	std::vector<Texture> diffuseMaps = LoadTextures(material, aiTextureType_DIFFUSE);
-//	//	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-//	//
-//	//	// specular
-//	//	std::vector<Texture> specularMaps = LoadTextures(material, aiTextureType_SPECULAR);
-//	//	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-//	//}
-//	//
-//	return new Mesh(vertices, indices, textures);
-//}
-
-//std::vector<Texture> Mesh::LoadTextures(aiMaterial* _mat, aiTextureType _type)
-//{
-//	std::vector<Texture> textures;
-//	//for (unsigned i = 0; i < _mat->GetTextureCount(_type); i++)
-//	//{
-//	//	aiString string{};
-//	//	_mat->GetTexture(_type, i, &string);
-//	//
-//	//	bool skipTexture{ false };
-//	//	for (unsigned j = 0; j < m_AssimpTextures.size(); j++)
-//	//	{
-//	//		if (std::strcmp(m_AssimpTextures[j].FilePath.data(), string.C_Str()) == 0)
-//	//		{
-//	//			textures.push_back(m_AssimpTextures[j]);
-//	//			skipTexture = true;
-//	//			break;
-//	//		}
-//	//	}
-//	//
-//	//	if (!skipTexture)
-//	//	{
-//	//		Texture texture = TextureLoader::LoadTexture(string.C_Str());
-//	//		textures.push_back(texture);
-//	//		m_AssimpTextures.push_back(texture);
-//	//	}
-//	//}
-//	//
-//	return textures;
-//}

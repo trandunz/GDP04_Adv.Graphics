@@ -168,6 +168,21 @@
     <ClCompile Include="DistanceJoint.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Scene_Assignment3.cpp">
+      <Filter>Source Files\SceneManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Bone.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneManager.h">
@@ -274,6 +289,21 @@
     </ClInclude>
     <ClInclude Include="DistanceJoint.h">
       <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Assignment3.h">
+      <Filter>Header Files\SceneManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Bone.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -420,6 +450,9 @@
     </None>
     <None Include="Resources\Shaders\Explode_ToShadowMap.geo">
       <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\SkeletalAnimation.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
     </None>
   </ItemGroup>
 </Project>
