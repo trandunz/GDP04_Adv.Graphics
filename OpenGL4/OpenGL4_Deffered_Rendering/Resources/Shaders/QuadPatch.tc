@@ -1,0 +1,41 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : QuadPatch.tc
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
+#version 460 core
+
+// specify number of control points per patch output
+// this value controls the size of the input and output arrays
+layout (vertices=4) out;
+
+// varying input from vertex shader
+in vec2 TexCoords[];
+// varying output to evaluation shader
+out vec2 TextureCoords[];
+
+uniform float InnerFidelity;
+uniform float OuterFidelity;
+
+void main()
+{
+    TextureCoords[gl_InvocationID] = TexCoords[gl_InvocationID];
+
+    if (gl_InvocationID == 0)
+    {
+        gl_TessLevelOuter[0] = InnerFidelity;
+        gl_TessLevelOuter[1] = InnerFidelity;
+        gl_TessLevelOuter[2] = InnerFidelity;
+        gl_TessLevelOuter[3] = InnerFidelity;
+
+        gl_TessLevelInner[0] = OuterFidelity;
+        gl_TessLevelInner[1] = OuterFidelity;
+    }
+
+    gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
+}
+	

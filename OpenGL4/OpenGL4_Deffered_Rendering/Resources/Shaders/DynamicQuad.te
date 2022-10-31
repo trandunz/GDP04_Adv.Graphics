@@ -1,0 +1,62 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : DynamicQuad.te
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
+#version 460 core
+#define MAX_FIDELITY 128
+
+layout (quads, equal_spacing, ccw) in;
+
+uniform mat4 PVMMatrix;
+uniform vec3 Points[MAX_FIDELITY];
+
+// received from Tessellation Control Shader - all texture coordinates for the patch vertices
+in vec2 TextureCoords[];
+
+out vec2 TexCoords;
+
+vec3 PositionFromArray(vec2 _texCoords);
+
+void main()
+{
+    float u = gl_TessCoord.x;
+    float v = gl_TessCoord.y;
+
+    vec2 t00 = TextureCoords[0];
+    vec2 t01 = TextureCoords[1];
+    vec2 t10 = TextureCoords[2];
+    vec2 t11 = TextureCoords[3];
+
+    vec2 t0 = (t01 - t00) * u + t00;
+    vec2 t1 = (t11 - t10) * u + t10;
+    vec2 texCoord = (t1 - t0) * v + t0;
+    TexCoords = texCoord;
+
+    vec4 p00 = gl_in[0].gl_Position;
+    vec4 p01 = gl_in[1].gl_Position;
+    vec4 p10 = gl_in[2].gl_Position;
+    vec4 p11 = gl_in[3].gl_Position;
+
+    vec4 p0 = (p01 - p00) * u + p00;
+    vec4 p1 = (p11 - p10) * u + p10;
+    vec4 p = (p1 - p0) * v + p0;
+
+    p += vec4(PositionFromArray(texCoord),1.0f);
+
+    gl_Position = PVMMatrix *  p;
+}
+
+vec3 PositionFromArray(vec2 _texCoords)
+{
+    int row = int(mix(0.0f, 10, _texCoords.y));
+    int columns = int(10);
+    int column = int(mix(0.0f, 10, _texCoords.x));
+
+    return Points[row * columns + column];
+}
+	

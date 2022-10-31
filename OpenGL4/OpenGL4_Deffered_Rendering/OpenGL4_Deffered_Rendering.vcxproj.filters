@@ -1,0 +1,464 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\Frag Shaders">
+      <UniqueIdentifier>{8decc71f-7c76-44bc-82a3-8e00771e472b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Vert Shader">
+      <UniqueIdentifier>{a876d30f-8863-4165-9359-8236ec94ac5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Geo Shaders">
+      <UniqueIdentifier>{333bc835-9614-4fe1-8eb0-944eeaabb739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SceneManagement">
+      <UniqueIdentifier>{d583308e-9bcb-47fa-bef2-a45f302e9e1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{1b1134a0-8a27-4ac9-a0dd-fc6059573e4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{5e3752c6-7ecd-42b1-9499-4fad099bcc50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SceneManagement">
+      <UniqueIdentifier>{a3d2d065-4a23-4b65-a1ca-3b0f11f20ff8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Loaders">
+      <UniqueIdentifier>{b35a0ed4-3a82-4e54-b885-ecb11fcb2b30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Loaders">
+      <UniqueIdentifier>{3bd5f2a2-5b47-4c3a-b7d4-56fb83b67d7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Statics">
+      <UniqueIdentifier>{dc6e91ae-71ae-4278-b3d2-3210ad6f91ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Singletons">
+      <UniqueIdentifier>{3bbb275d-f1b5-4377-b990-ff2fe063eacc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Statics">
+      <UniqueIdentifier>{de749123-62c8-483b-9904-c01b2a982d73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Singletons">
+      <UniqueIdentifier>{83e7d539-feb2-4f32-9fd6-36cb503e7267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ParticleSystem">
+      <UniqueIdentifier>{d9451a58-ad53-4570-8ab9-100c529c5e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ParticleSystem">
+      <UniqueIdentifier>{f0ff93af-24ef-46a0-98c5-1ba5720c7859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Tesselation Shaders">
+      <UniqueIdentifier>{c8a4c77c-bdbc-48d2-b1b3-a52cdba192db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\ImGui">
+      <UniqueIdentifier>{4349a4de-04b8-4030-b183-9effc8e6efaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Physics">
+      <UniqueIdentifier>{040ec156-3589-4a4c-9907-9d9ab61acfd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{c9e2cd69-ee00-4109-b08e-37bcef36f0b1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLabel.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Assessment1.cpp">
+      <Filter>Source Files\SceneManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Source Files\SceneManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="FontLoader.cpp">
+      <Filter>Source Files\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderLoader.cpp">
+      <Filter>Source Files\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Source Files\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Noise.cpp">
+      <Filter>Source Files\Statics</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMesh.cpp">
+      <Filter>Source Files\Statics</Filter>
+    </ClCompile>
+    <ClCompile Include="Statics.cpp">
+      <Filter>Source Files\Statics</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\Singletons</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Source Files\Singletons</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Assessment2.cpp">
+      <Filter>Source Files\SceneManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Clothsim.cpp">
+      <Filter>Source Files\SceneManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ImGUI\imgui_impl_glfw.cpp">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ImGUI\imgui_impl_opengl3.cpp">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ImGUI\imgui_tables.cpp">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ImGUI\imgui_widgets.cpp">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ImGUI\imgui.cpp">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ImGUI\imgui_demo.cpp">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ImGUI\imgui_draw.cpp">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Cloth.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="DistanceJoint.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Assignment3.cpp">
+      <Filter>Source Files\SceneManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Bone.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Header Files\SceneManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\SceneManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Assessment1.h">
+      <Filter>Header Files\SceneManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLabel.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FontLoader.h">
+      <Filter>Header Files\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderLoader.h">
+      <Filter>Header Files\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Header Files\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Statics.h">
+      <Filter>Header Files\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>Header Files\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="Noise.h">
+      <Filter>Header Files\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper.h">
+      <Filter>Header Files\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Header Files\Singletons</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\Singletons</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Assessment2.h">
+      <Filter>Header Files\SceneManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Clothsim.h">
+      <Filter>Header Files\SceneManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imgui_impl_glfw.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imgui_impl_opengl3.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imgui_internal.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imstb_rectpack.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imstb_textedit.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imstb_truetype.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imconfig.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imgui.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImGUI\imgui_impl_opengl3_loader.h">
+      <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Cloth.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceJoint.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Assignment3.h">
+      <Filter>Header Files\SceneManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Bone.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\BlinnFong3D.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Fog.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Reflection.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ReflectionMap.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\SingleTexture.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Skybox.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\TextLabel.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\UnlitColor.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Fog.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Normals3D.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\SingleTexture.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Skybox.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\TextLabel.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Outline.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Terrain.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\TerrainTextures.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Lit_Fog.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Fog_Skybox.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Fog_Skybox.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\UnlitColor_Fog.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Framebuffer.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Framebuffer.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Cloud.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Perlin_Moss.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\PositionOnly.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\PointToStar.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\SingleTexture_Geo.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShowNormals.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Explode.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Framebuffer_Rain.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Framebuffer_CA.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Framebuffer_CRT.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\TrianglePatch.tc">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\TrianglePatch.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\PositionPassthrough.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\TrianglePatch_LOD.tc">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\HeightMap.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowMap.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowMap.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\BlinnFong3D_Shadows.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Normals3D_Shadows.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\HeightMap_Shadows.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\HeightMap_ToShadowMap.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\QuadPatch.tc">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\DynamicQuad.te">
+      <Filter>Resource Files\Tesselation Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\DynamicQuad.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Explode_ToShadowMap.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\SkeletalAnimation.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\gBuffer.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\BlinnFong3D_Deferred.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
