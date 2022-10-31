@@ -132,7 +132,7 @@ public:
 	glm::vec3 m_Wind{};
 	GameObject* m_Plane{ nullptr };
 private:
-	size_t Index(int x, int y) const { return (size_t)(x + m_Size.x * y); }
+	size_t Index(int x, int y) const { return (size_t)(x + (m_Size.x * y)); }
 
 	void HandleGroundCollision();
 
@@ -183,7 +183,7 @@ private:
 	void HandlePushing(int _x, int _y);
 	void HandlePulling(int _x, int _y);
 
-	std::vector<ClothParticle> m_Particles{};
+	ClothParticle** m_Particles{nullptr};
 	std::vector<DistanceJoint*> m_DistanceJoints{};
 
 	std::vector<unsigned int> m_Indices{};

@@ -180,8 +180,9 @@ void Scene_Clothsim::HandleDebugTools()
 		ImGui::Combo("Mouse Mode", &m_SelectedMouseMode, &m_MouseModeItems[0], IM_ARRAYSIZE(m_MouseModeItems));
 		UpdateClothInteractionType();
 		ImGui::Text("Cloth Shape:");
-		ImGui::SliderFloat("Cloth Length", &m_ClothLength, 2.0f, 20.0f);
-		ImGui::SliderFloat("Cloth Width", &m_ClothWidth, 2.0f, 20.0f);
+		ImGui::SliderInt("Cloth Length", &m_ClothLength, 2.0f, 40.0f);
+		ImGui::SliderInt("Cloth Width", &m_ClothWidth, 2.0f, 40.0f);
+		m_HookCount = m_Cloth->GetHookCount();
 		ImGui::SliderInt("Number Of Hooks", &m_HookCount, 0, (int)m_ClothWidth);
 		ImGui::SliderFloat("Hook Distance", &m_HookDistance, 0.5f, 1.0f);
 		ImGui::SliderFloat("Cloth Stiffness", &m_Stiffness, 100.0f, 1000.0f);
