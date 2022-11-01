@@ -58,12 +58,16 @@ uniform sampler2D gNormals;
 uniform sampler2D gAlbedoSpec;
 uniform sampler2D gDepth;
 uniform vec3 CameraPos;
+uniform vec3 AmbientColor;
+uniform float Shininess;
+uniform float AmbientStrength;
 
 uniform PointLight PointLights[MAX_POINT_LIGHTS];
 uniform DirectionalLight DirectionalLights[MAX_DIRECTIONAL_LIGHTS];
 uniform int NumberOfPointLights;
 uniform int NumberOfDirectionalLights;
 
+vec3 CalculateAmbientLight();
 vec3 CalculatePointLight(PointLight _light);
 vec3 CalculateDirectionalLight(DirectionalLight _light);
 
@@ -82,7 +86,7 @@ void main()
     spec = texture(gAlbedoSpec, TexCoords).a;
     ReverseViewDir = normalize(CameraPos - worldPos);
 
-    vec3 combinedLighting = diffuse * 0.1f;
+    vec3 combinedLighting = CalculateAmbientLight();
     for (int i = 0; i < MAX_POINT_LIGHTS && i < NumberOfPointLights; i++)
     {
         combinedLighting += CalculatePointLight(PointLights[i]);
@@ -95,12 +99,25 @@ void main()
     FragColor = vec4(combinedLighting,1.0f);
 }
 
+vec3 CalculateAmbientLight()
+{
+    return AmbientStrength * AmbientColor * diffuse;
+}
+
 vec3 CalculatePointLight(PointLight _light)
 {
     vec3 lightDir = normalize(worldPos - _light.Position);
 
     float strength = max(dot(normal, -lightDir), 0.0f);
-    return strength * diffuse * _light.Color.rgb;
+    vec3 diffuseLight = strength * diffuse * _light.Color.rgb;
+
+    vec3 halfwayVector = normalize(-lightDir + ReverseViewDir);
+    float specularReflectivity = pow(max(dot(normal, halfwayVector), 0.0f), Shininess);
+    vec3 specularLight = _light.SpecularStrength * spec * specularReflectivity * _light.Color.rgb;
+
+    float distance = length(_light.Position - worldPos);
+    float attenuation = 1 + (_light.AttenuationLinear * distance) + (_light.AttenuationExponent * pow(distance, 2.0f));
+    return (diffuseLight + specularLight) / attenuation;
 }
 
 vec3 CalculateDirectionalLight(DirectionalLight _light)
@@ -108,5 +125,9 @@ vec3 CalculateDirectionalLight(DirectionalLight _light)
     float strength = max(dot(normal, -normalize(_light.Direction)), 0.0f);
     vec3 diffuseLight = strength * diffuse * _light.Color.rgb;
 
-    return diffuseLight;
+    vec3 halfwayVector = normalize(-normalize(_light.Direction) + ReverseViewDir);
+    float specularReflectivity = pow(max(dot(normal, halfwayVector), 0.0f), Shininess);
+    vec3 specularLight = _light.SpecularStrength * spec * specularReflectivity * _light.Color.rgb;
+
+    return diffuseLight + specularLight;
 }

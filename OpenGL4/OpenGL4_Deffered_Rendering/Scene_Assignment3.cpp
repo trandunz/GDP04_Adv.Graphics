@@ -111,6 +111,7 @@ void Scene_Assignment3::Draw()
 	LightManager::GetInstance().Draw();
 
 	glDisable(GL_BLEND);
+
 	// Swap Buffers
 	glfwSwapBuffers(Statics::RenderWindow);
 }

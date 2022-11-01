@@ -168,6 +168,9 @@ void FrameBuffer::Unbind()
 		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "gAlbedoSpec", 3);
 
 		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Shininess", 32.0f * 5);
+		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "AmbientStrength", 0.15f);
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "AmbientColor", { 1.0f,1.0f,1.0f });
 
 		// Set Point Light Uniforms From Light Manager
 		std::vector<PointLight>& pointLights = LightManager::GetInstance().GetPointLights();
