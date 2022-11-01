@@ -63,6 +63,7 @@ public:
 	glm::vec3 m_Wind{};
 	float m_ConstraintLength{};
 	Collider Collider{ {},0 };
+
 private:
 	float m_Mass{ 1.0f };
 	float m_Damping{ 0.99f };

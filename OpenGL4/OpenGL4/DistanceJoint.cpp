@@ -39,6 +39,11 @@ void DistanceJoint::Update()
 
     m_P1->ApplyForce(force1);
 	m_P2->ApplyForce(force2);
+
+	//if (glm::length(force1) >= m_MaxForce)
+	//{
+	//	Destroy = true;
+	//}
 }
 
 ClothParticle* DistanceJoint::GetP1()

@@ -56,13 +56,6 @@ void Scene_Clothsim::Start()
 	m_FloorPlane->SetActiveTextures({TextureLoader::LoadTexture("Grass.jpg")});
 	m_FloorPlane->SetScale({ 30,1,30 });
 
-	m_CollisionSphere = new GameObject({ 0,0,-10 });
-	m_CollisionSphere->SetMesh(StaticMesh::Sphere);
-	m_CollisionSphere->SetShader("SingleTexture.vert", "SingleTexture.frag");
-	m_CollisionSphere->SetActiveTextures({ TextureLoader::LoadTexture("Sand.jpg") });
-	m_CollisionSphere->SetScale({ 5,5,5 });
-	m_CollisionSphere->SetCollider(new Collider({ 0,-15,0 }, 2.5f));
-
 	m_Cloth = new Cloth((unsigned)m_ClothWidth, (unsigned)m_ClothLength, 1.0f, {-m_ClothWidth / 2,10,-30 });
 	m_Cloth->SetGround(*m_FloorPlane);
 }
@@ -89,7 +82,8 @@ void Scene_Clothsim::Update()
 		m_Cloth->SetWindDirection(m_WindDirection);
 		m_Cloth->SetWindStrength(m_WindStrength);
 		m_Cloth->SetDebugDraw(m_DebugDraw);
-		m_Cloth->CheckCollision(m_CollisionSphere->GetCollider());
+		if (m_CollisionSphere)
+			m_Cloth->CheckCollision(m_CollisionSphere->GetCollider());
 		m_Cloth->Update();
 	}	
 }
@@ -197,6 +191,7 @@ void Scene_Clothsim::HandleDebugTools()
 		}
 		ImGui::Text("Object Interation:");
 		ImGui::Combo("Selected Object: ", &m_SelectedCollision, &m_CollisionItems[0], IM_ARRAYSIZE(m_CollisionItems));
+		HandleObjectInteraction();
 		ImGui::Text("Wind:");
 		ImGui::SliderFloat("Wind Direction (x)", &m_WindDirection.x, 0.0f, 1.0f);
 		ImGui::SliderFloat("Wind Direction (y)", &m_WindDirection.y, 0.0f, 1.0f);
@@ -247,6 +242,39 @@ void Scene_Clothsim::UpdateClothInteractionType()
 	default:
 	{
 		m_Cloth->InteractionType = Cloth::INTERACTIONTYPE::UNASSIGNED;
+		break;
+	}
+	}
+}
+
+void Scene_Clothsim::HandleObjectInteraction()
+{
+	switch (m_SelectedCollision)
+	{
+	case 1:
+	{
+		if (!m_CollisionSphere)
+		{
+			m_CollisionSphere = new GameObject({ 0,0,-10 });
+			m_CollisionSphere->SetMesh(StaticMesh::Sphere);
+			m_CollisionSphere->SetShader("SingleTexture.vert", "SingleTexture.frag");
+			m_CollisionSphere->SetActiveTextures({ TextureLoader::LoadTexture("Sand.jpg") });
+			m_CollisionSphere->SetScale({ 5,5,5 });
+			m_CollisionSphere->SetCollider(new Collider({ 0,-15,0 }, 2.5f));
+		}
+		break;
+	}
+	case 2:
+	{
+		break;
+	}
+	default:
+	{
+		if (m_CollisionSphere)
+		{
+			delete m_CollisionSphere;
+			m_CollisionSphere = nullptr;
+		}
 		break;
 	}
 	}

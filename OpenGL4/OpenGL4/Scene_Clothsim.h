@@ -48,6 +48,8 @@ private:
 	void CleanupImGUI();
 
 	void UpdateClothInteractionType();
+	
+	void HandleObjectInteraction();
 
 	Cloth* m_Cloth{ nullptr };
 	GameObject* m_FloorPlane{ nullptr };

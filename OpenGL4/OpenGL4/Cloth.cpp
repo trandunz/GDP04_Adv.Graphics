@@ -56,7 +56,15 @@ void Cloth::Update()
 
 	for (auto& distanceJoint : m_DistanceJoints)
 	{
-		distanceJoint->Update();
+		if (distanceJoint)
+		{
+			distanceJoint->Update();
+			if (distanceJoint->Destroy)
+			{
+				delete distanceJoint;
+				distanceJoint = nullptr;
+			}
+		}
 	}
 }
 
@@ -205,9 +213,12 @@ void Cloth::SetElasticity(float _amount)
 {
 	for (auto& distanceJoint : m_DistanceJoints)
 	{
-		if (distanceJoint->m_Stiffness != _amount)
+		if (distanceJoint)
 		{
-			distanceJoint->m_Stiffness = _amount;
+			if (distanceJoint->m_Stiffness != _amount)
+			{
+				distanceJoint->m_Stiffness = _amount;
+			}
 		}
 	}
 }
@@ -236,7 +247,7 @@ void Cloth::CheckCollision(Collider* _collider)
 			collided = Physics::SphereVSSphere(m_Particles[y][x].Collider, *_collider, collisionDirection);
 			if (collided)
 			{
-				m_Particles[y][x].ApplyForce(collisionDirection * 100.0f);
+				m_Particles[y][x].Move(collisionDirection * 10.0f);
 			}
 		}
 	}

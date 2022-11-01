@@ -35,6 +35,8 @@ public:
 
 	float m_Stiffness{ 500.0f };
 	float m_Length{};
+	float m_MaxForce{ 100.0f };
+	bool Destroy{};
 private:
 
 	ClothParticle* m_P1{};
