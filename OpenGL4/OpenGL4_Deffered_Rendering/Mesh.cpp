@@ -321,10 +321,10 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 	}
 	case SHAPE::QUAD:
 	{
-		m_Vertices.emplace_back(Vertex{ { -0.5f,  -0.5f, 0.0f }, {0.0f,0.0f} });
-		m_Vertices.emplace_back(Vertex{ { 0.5f,  -0.5f, 0.0f }, {1.0f,0.0f} });
-		m_Vertices.emplace_back(Vertex{ { 0.5f,  0.5f, 0.0f }, {1.0f,1.0f} });
-		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
+		m_Vertices.emplace_back(Vertex{ { -0.5f,  -0.5f, 0.0f }, {0.0f,0.0f}, {0.0f, 0.0f, 1.0f} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f,  -0.5f, 0.0f }, {1.0f,0.0f}, {0.0f, 0.0f, 1.0f} });
+		m_Vertices.emplace_back(Vertex{ { 0.5f,  0.5f, 0.0f }, {1.0f,1.0f}, {0.0f, 0.0f, 1.0f} });
+		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f}, {0.0f, 0.0f, 1.0f} });
 		break;
 	}
 	default:
@@ -469,10 +469,10 @@ void Mesh::CreatePolygonVertices(unsigned int _numberOfSides)
 	// If Its Got 4 Sides, Create Generic Quad
 	if (_numberOfSides == 4)
 	{
-		m_Vertices.emplace_back(Vertex{ {-0.5f,  0.5f, 0.0f}, {0.0f,1.0f} }); // Top Left
-		m_Vertices.emplace_back(Vertex{ {-0.5f,  -0.5f, 0.0f}, {0.0f,0.0f} }); // Bottom Left
-		m_Vertices.emplace_back(Vertex{ {0.5f,  -0.5f, 0.0f}, {1.0f,0.0f} }); // Bottom Right
-		m_Vertices.emplace_back(Vertex{ {0.5f,  0.5f, 0.0f}, {1.0f,1.0f} }); // Top Right
+		m_Vertices.emplace_back(Vertex{ {-0.5f,  0.5f, 0.0f}, {0.0f,1.0f}, {0.0f,0.0f,1.0f} }); // Top Left
+		m_Vertices.emplace_back(Vertex{ {-0.5f,  -0.5f, 0.0f}, {0.0f,0.0f}, {0.0f,0.0f,1.0f} }); // Bottom Left
+		m_Vertices.emplace_back(Vertex{ {0.5f,  -0.5f, 0.0f}, {1.0f,0.0f}, {0.0f,0.0f,1.0f} }); // Bottom Right
+		m_Vertices.emplace_back(Vertex{ {0.5f,  0.5f, 0.0f}, {1.0f,1.0f}, {0.0f,0.0f,1.0f} }); // Top Right
 		return;
 	}
 

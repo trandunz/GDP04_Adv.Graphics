@@ -24,7 +24,7 @@ in vec3 Normals;
 struct PointLight
 {
     vec3 Position;
-    vec3 Color;
+    vec4 Color;
     float SpecularStrength;
 
     float AttenuationLinear;
@@ -34,7 +34,7 @@ struct PointLight
 struct DirectionalLight
 {
     vec3 Direction;
-    vec3 Color;
+    vec4 Color;
     float SpecularStrength;
 };
 

@@ -164,6 +164,7 @@
     <ClCompile Include="FontLoader.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="gBuffer.cpp" />
     <ClCompile Include="include\ImGUI\imgui.cpp" />
     <ClCompile Include="include\ImGUI\imgui_demo.cpp" />
     <ClCompile Include="include\ImGUI\imgui_draw.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="FontLoader.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="gBuffer.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="include\ImGUI\imconfig.h" />
     <ClInclude Include="include\ImGUI\imgui.h" />

@@ -13,10 +13,10 @@
 layout (location = 0) out vec4 FragColor;
 
 // Outside Variables Passed In As 'Uniforms'
-uniform vec3 Color;
+uniform vec4 Color;
 
 // Main function that gets called per vertex fragment.
 void main()
 {
-    FragColor = vec4(Color,1.0f);
+    FragColor = Color;
 }

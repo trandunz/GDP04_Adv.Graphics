@@ -16,6 +16,7 @@
 #include "SceneManager.h"
 #include "ShadowMap.h"
 #include "FrameBuffer.h"
+#include "gBuffer.h"
 
 GameObject::GameObject(glm::vec3 _position)
 {
@@ -384,6 +385,7 @@ void GameObject::DrawToGBuffer()
     ShaderLoader::SetUniformMatrix4fv(std::move(m_GShader), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
     ShaderLoader::SetUniformMatrix4fv(std::move(m_GShader), "ModelMatrix", m_Transform.transform);
     SetgBufferUniforms();
+
     if (m_SkinnedMesh)
         m_SkinnedMesh->Draw();
     else if (m_Mesh)
@@ -734,15 +736,15 @@ void GameObject::SetBlinnFong3DUniforms()
 void GameObject::SetBlinnFong3DDeferredUniforms()
 {
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, FrameBuffer::GetInstance().GetPositionTexture().ID);
+    glBindTexture(GL_TEXTURE_2D, gBuffer::GetInstance().GetPositionTexture().ID);
     ShaderLoader::SetUniform1i(std::move(m_ShaderID), "gPosition", 2);
 
     glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, FrameBuffer::GetInstance().GetNormalsTexture().ID);
+    glBindTexture(GL_TEXTURE_2D, gBuffer::GetInstance().GetNormalsTexture().ID);
     ShaderLoader::SetUniform1i(std::move(m_ShaderID), "gNormals", 3);
 
     glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, FrameBuffer::GetInstance().GetAlbedoTexture().ID);
+    glBindTexture(GL_TEXTURE_2D, gBuffer::GetInstance().GetAlbedoTexture().ID);
     ShaderLoader::SetUniform1i(std::move(m_ShaderID), "gAlbedoSpec", 4);
 }
 

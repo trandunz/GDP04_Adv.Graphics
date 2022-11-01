@@ -36,7 +36,7 @@ public:
 	/// Seets the shader of tthe frame buffer
 	/// </summary>
 	/// <param name="_location"></param>
-	void SetShader(ShaderProgramLocation _location);
+	void SetShader(std::string _vert, std::string _frag);
 
 	/// <summary>
 	/// Enabled rain effect
@@ -54,11 +54,6 @@ public:
 	/// Disables all effects
 	/// </summary>
 	void DisableAllEffects();
-
-	Texture GetPositionTexture();
-	Texture GetNormalsTexture();
-	Texture GetAlbedoTexture();
-	Texture GetDepthTexture();
 private:
 	FrameBuffer();
 	~FrameBuffer();
@@ -73,13 +68,8 @@ private:
 	GLuint m_CRTShaderID{};
 	GLuint m_ShaderID{};
 
-	Texture m_PositionTexture{};
-	Texture m_NormalTexture{};
-	Texture m_AlbedoTexture{};
-	Texture m_DepthTexture{};
-
 	bool m_EnableRain{ false };
-	bool m_EnableCA { false };
+	bool m_EnableCA{ false };
 	bool m_EnableCRT{ false };
 };
 

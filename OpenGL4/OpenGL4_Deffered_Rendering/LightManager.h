@@ -22,7 +22,7 @@
 struct PointLight
 {
     glm::vec3 Position{0,0,0};
-    glm::vec3 Color{1.0f,1.0f,1.0f};
+    glm::vec4 Color{1.0f,1.0f,1.0f, 1.0f};
     float SpecularStrength = 1.0f;
 
     float AttenuationLinear = 0.00045f;
@@ -38,7 +38,7 @@ struct PointLight
 struct DirectionalLight
 {
     glm::vec3 Direction{0,1,0};
-    glm::vec3 Color{ 1.0f,1.0f,1.0f };
+    glm::vec4 Color{ 1.0f,1.0f,1.0f, 1.0f };
     float SpecularStrength = 1.0f;
 };
 

@@ -85,9 +85,9 @@ Mesh* SkinnedMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
         if (mesh->HasNormals())
         {
-            vertex.normals.x = mesh->mNormals[i].x;
-            vertex.normals.y = mesh->mNormals[i].y;
-            vertex.normals.z = mesh->mNormals[i].z;
+            vertex.normals.x = -mesh->mNormals[i].x;
+            vertex.normals.y = -mesh->mNormals[i].y;
+            vertex.normals.z = -mesh->mNormals[i].z;
         }
 
         if (mesh->HasTextureCoords(0))
