@@ -24,7 +24,8 @@ enum class SHAPE
 	PATCH_QUAD,
 	PLANE,
 	QUAD,
-	TRIANGLE
+	TRIANGLE,
+	LINE
 };
 
 class Mesh

@@ -36,5 +36,6 @@ public:
 	static Mesh* Pyramid;
 	static Mesh* Quad;
 	static Mesh* Triangle;
+	static Mesh* Line;
 };
 

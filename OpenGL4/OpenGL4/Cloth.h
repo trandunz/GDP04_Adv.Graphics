@@ -184,7 +184,7 @@ private:
 	void HandlePushing(int _x, int _y);
 	void HandlePulling(int _x, int _y);
 
-	ClothParticle** m_Particles{nullptr};
+	ClothParticle*** m_Particles{nullptr};
 	std::vector<DistanceJoint*> m_DistanceJoints{};
 
 	std::vector<unsigned int> m_Indices{};

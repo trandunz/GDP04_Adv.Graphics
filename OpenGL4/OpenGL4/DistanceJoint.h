@@ -9,6 +9,7 @@
 // Mail : william.inman@mds.ac.nz
 
 #pragma once
+#include "Statics.h"
 class ClothParticle;
 class DistanceJoint
 {
@@ -30,6 +31,8 @@ public:
 	/// </summary>
 	void Update();
 
+	void Draw();
+
 	ClothParticle* GetP1();
 	ClothParticle* GetP2();
 
@@ -38,8 +41,8 @@ public:
 	float m_MaxForce{ 100.0f };
 	bool Destroy{};
 private:
-
-	ClothParticle* m_P1{};
-	ClothParticle* m_P2{};
+	GLuint m_ShaderID{};
+	ClothParticle* m_P1{ nullptr };
+	ClothParticle* m_P2{ nullptr };
 };
 

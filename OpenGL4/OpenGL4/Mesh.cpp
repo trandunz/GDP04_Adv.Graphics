@@ -113,6 +113,13 @@ void Mesh::Draw()
 		else
 			glDrawArrays(GL_QUADS, 0, m_Vertices.size());
 	}
+	else if (m_Shape == SHAPE::LINE)
+	{
+		if (m_Indices.size() > 0)
+			glDrawElements(GL_LINES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+		else
+			glDrawArrays(GL_LINES, 0, m_Vertices.size());
+	}
 	else
 	{
 		if (m_Indices.size() > 0)
@@ -274,6 +281,12 @@ void Mesh::CreateShapeVertices(SHAPE _shape)
 		m_Vertices.emplace_back(Vertex{});
 		break;
 	}
+	case SHAPE::LINE:
+	{
+		m_Vertices.emplace_back(Vertex{});
+		m_Vertices.emplace_back(Vertex{});
+		break;
+	}
 	case SHAPE::TRIANGLE:
 	{
 		m_Vertices.emplace_back(Vertex{ { -0.5f,  0.5f, 0.0f }, {0.0f,1.0f} });
@@ -405,6 +418,12 @@ void Mesh::CreateShapeIndices(SHAPE _shape)
 	case SHAPE::POINT:
 	{
 		m_Indices.emplace_back(0);
+		break;
+	}
+	case SHAPE::LINE:
+	{
+		m_Indices.emplace_back(0);
+		m_Indices.emplace_back(1);
 		break;
 	}
 	case SHAPE::PATCH_TRIANGLE:

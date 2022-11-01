@@ -454,5 +454,8 @@
     <None Include="Resources\Shaders\SkeletalAnimation.vert">
       <Filter>Resource Files\Vert Shader</Filter>
     </None>
+    <None Include="Resources\Shaders\DynamicLine.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

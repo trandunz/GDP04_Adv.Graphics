@@ -23,6 +23,7 @@ Mesh* StaticMesh::Patch_Quad{ nullptr };
 Mesh* StaticMesh::Plane{ nullptr };
 Mesh* StaticMesh::Quad{ nullptr };
 Mesh* StaticMesh::Triangle { nullptr };
+Mesh* StaticMesh::Line{ nullptr };
 
 void StaticMesh::Init()
 {
@@ -40,6 +41,7 @@ void StaticMesh::Init()
 	Patch_Quad = new Mesh(SHAPE::PATCH_QUAD);
 	Quad = new Mesh(SHAPE::QUAD);
 	Triangle = new Mesh(SHAPE::TRIANGLE);
+	Line = new Mesh(SHAPE::LINE);
 }
 
 void StaticMesh::Cleanup()
@@ -108,5 +110,10 @@ void StaticMesh::Cleanup()
 	{
 		delete Triangle;
 		Triangle = nullptr;
+	}
+	if (Line != nullptr)
+	{
+		delete Line;
+		Line = nullptr;
 	}
 }

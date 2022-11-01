@@ -239,6 +239,7 @@
     <None Include="Resources\Shaders\BlinnFong3D_Reflection.frag" />
     <None Include="Resources\Shaders\BlinnFong3D_Shadows.frag" />
     <None Include="Resources\Shaders\Cloud.frag" />
+    <None Include="Resources\Shaders\DynamicLine.geo" />
     <None Include="Resources\Shaders\DynamicQuad.geo" />
     <None Include="Resources\Shaders\DynamicQuad.te" />
     <None Include="Resources\Shaders\Explode.geo" />
