@@ -66,7 +66,7 @@ private:
 	float m_Stiffness = 500.0f;
 	int m_SelectedMouseMode{};
 	int m_SelectedCollision{};
-	const char* m_MouseModeItems[5]{ "Pull", "Push", "Tear", "Fire", "Pin" };
+	const char* m_MouseModeItems[5]{ "Pull", "Push", "Tear", "Fire", "Grab" };
 	const char* m_CollisionItems[4]{ "No Object", "Sphere", "Capsule", "Pyramid" };
 	glm::vec3 m_WindDirection{};
 	float m_WindStrength{ 0.0f };

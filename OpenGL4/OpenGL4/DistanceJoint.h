@@ -31,14 +31,14 @@ public:
 	/// </summary>
 	void Update();
 
-	void Draw();
+	void Draw(glm::vec3 _colour = {1,1,1});
 
 	ClothParticle* GetP1();
 	ClothParticle* GetP2();
 
 	float m_Stiffness{ 500.0f };
 	float m_Length{};
-	float m_MaxForce{ 100.0f };
+	float m_MaxForce{ 175.0f };
 	bool Destroy{};
 private:
 	GLuint m_ShaderID{};

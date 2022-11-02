@@ -42,7 +42,17 @@ void Cloth::Update()
 {
 	HandleGroundCollision();
 	HandleSelfCollision();
-	//HandleMouseInteraction();
+	HandleMouseInteraction();
+
+	if (m_PointIsGrabbed)
+	{
+		if (m_Particles[m_GrabbedPoint.y][m_GrabbedPoint.x])
+		{
+			Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+			glm::vec3 newPos = cursorRay.origin + (glm::normalize(cursorRay.direction) * m_GrabDistance);
+			m_Particles[m_GrabbedPoint.y][m_GrabbedPoint.x]->SetPosition(newPos);
+		}
+	}
 
 	for (int y = 0; y < m_Size.y; y++)
 	{
@@ -50,6 +60,11 @@ void Cloth::Update()
 		{
 			if (m_Particles[y][x])
 			{
+				if (m_Particles[y][x])
+				{
+					m_Particles[y][x]->CheckForSingularJoints();
+				}
+
 				auto mass = m_Particles[y][x]->GetMass();
 				m_Particles[y][x]->ApplyForce({ 0,-9.81f * mass, 0.0f });
 				m_Particles[y][x]->Update();
@@ -61,12 +76,9 @@ void Cloth::Update()
 	{
 		if (distanceJoint)
 		{
-			distanceJoint->Update();
-			if (distanceJoint->Destroy)
+			if (!distanceJoint->Destroy)
 			{
-
-				delete distanceJoint;
-				distanceJoint = nullptr;
+				distanceJoint->Update();
 			}
 		}
 	}
@@ -83,57 +95,135 @@ void Cloth::Draw()
 				for (int x = 0; x < m_Size.x; x++)
 				{
 					if (m_Particles[y][x])
+					{
 						m_Particles[y][x]->Draw();
+						for (auto& joint : m_Particles[y][x]->m_AttachedJoints)
+						{
+							if (!joint->Destroy)
+								joint->Draw();
+						}
+						for (auto& joint : m_Particles[y][x]->m_BendJoints)
+						{
+							if (!joint->Destroy)
+								joint->Draw({1,0,0});
+						}
+						for (auto& joint : m_Particles[y][x]->m_DiagnalJoints)
+						{
+							if (!joint->Destroy)
+								joint->Draw({ 0,1,0 });
+						}
+						for (auto& joint : m_Particles[y][x]->m_BackwardDiagnals)
+						{
+							if (!joint->Destroy)
+								joint->Draw({ 0,0,1 });
+						}
+					}
+						
 				}
 			}
 		}
 
-		//glUseProgram(m_ShaderID);
-		//ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
-		//
-		//glBindTexture(GL_TEXTURE_2D, m_Texture.ID);
-		//glActiveTexture(0);
-		//ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
-		//ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 1);
-		//
-		//for (int y = 0; y < m_Size.y - 1; y++)
-		//{
-		//	for (int x = 0; x < m_Size.x - 1; x++)
-		//	{
-		//		if (m_Particles[y][x])
-		//			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_Particles[y][x]->GetPosition());
-		//		if (m_Particles[y + 1][x])
-		//			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_Particles[y + 1][x]->GetPosition());
-		//		if (m_Particles[y + 1][x + 1])
-		//			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[2]", m_Particles[y + 1][x + 1]->GetPosition());
-		//		
-		//		ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", (x / m_Size.x), 1.0f - (y / m_Size.y));
-		//		ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", (x / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
-		//		ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", ((x + 1) / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
-		//		StaticMesh::Triangle->Draw();
-		//
-		//		if (m_Particles[y + 1][x + 1])
-		//			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_Particles[y + 1][x + 1]->GetPosition());
-		//		if (m_Particles[y][x + 1])
-		//			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_Particles[y][x + 1]->GetPosition());
-		//		if (m_Particles[y][x])
-		//			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[2]", m_Particles[y][x]->GetPosition());
-		//		
-		//		ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", ((x + 1) / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
-		//		ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", ((x + 1) / m_Size.x), 1.0f - (y / m_Size.y));
-		//		ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", (x / m_Size.x), 1.0f - (y / m_Size.y));
-		//		StaticMesh::Triangle->Draw();
-		//	}
-		//}
-		//glUseProgram(0);
-
-		for (auto& distanceJoint : m_DistanceJoints)
+		glUseProgram(m_ShaderID);
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
+		
+		glBindTexture(GL_TEXTURE_2D, m_Texture.ID);
+		glActiveTexture(0);
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 1);
+		
+		for (int y = 0; y < m_Size.y - 1; y++)
 		{
-			if (distanceJoint)
+			for (int x = 0; x < m_Size.x - 1; x++)
 			{
-				distanceJoint->Draw();
+				bool render = true;
+				if (m_Particles[y][x]->AllJointsBroken()
+					|| glm::length(m_Particles[y][x]->GetPosition() - m_Particles[y + 1][x]->GetPosition()) > m_Spacing * 3
+					|| glm::length(m_Particles[y][x]->GetPosition() - m_Particles[y + 1][x + 1]->GetPosition()) > m_Spacing * 3)
+				{
+					render = false;
+					m_Particles[y + 1][x]->CleanupBendJoints();
+					m_Particles[y + 1][x + 1]->CleanupBendJoints();
+					m_Particles[y + 1][x]->CleanupDiagnalJoints();
+					m_Particles[y + 1][x + 1]->CleanupDiagnalJoints();
+				}
+				if (m_Particles[y + 1][x]->AllJointsBroken()
+					|| glm::length(m_Particles[y + 1][x]->GetPosition() - m_Particles[y][x]->GetPosition()) > m_Spacing * 3
+					|| glm::length(m_Particles[y + 1][x]->GetPosition() - m_Particles[y + 1][x + 1]->GetPosition()) > m_Spacing * 3)
+				{
+					render = false;
+					m_Particles[y + 1][x + 1]->CleanupBendJoints();
+					m_Particles[y][x]->CleanupBendJoints();
+					m_Particles[y + 1][x + 1]->CleanupDiagnalJoints();
+					m_Particles[y][x]->CleanupDiagnalJoints();
+				}
+				if (m_Particles[y + 1][x + 1]->AllJointsBroken()
+					|| glm::length(m_Particles[y + 1][x + 1]->GetPosition() - m_Particles[y][x]->GetPosition()) > m_Spacing * 3
+					|| glm::length(m_Particles[y + 1][x + 1]->GetPosition() - m_Particles[y + 1][x]->GetPosition()) > m_Spacing * 3)
+				{
+					render = false;
+					m_Particles[y + 1][x]->CleanupBendJoints();
+					m_Particles[y][x]->CleanupBendJoints();
+					m_Particles[y + 1][x]->CleanupDiagnalJoints();
+					m_Particles[y][x]->CleanupDiagnalJoints();
+				}
+		
+				if (render)
+				{
+					ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_Particles[y][x]->GetPosition());
+					ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_Particles[y + 1][x]->GetPosition());
+					ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[2]", m_Particles[y + 1][x + 1]->GetPosition());
+					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", (x / m_Size.x), 1.0f - (y / m_Size.y));
+					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", (x / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
+					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", ((x + 1) / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
+					StaticMesh::Triangle->Draw();
+				}
+			
+				render = true;
+				if (m_Particles[y][x]->AllJointsBroken() 
+					|| glm::length(m_Particles[y][x]->GetPosition() - m_Particles[y][x + 1]->GetPosition()) > m_Spacing * 3
+					|| glm::length(m_Particles[y][x]->GetPosition() - m_Particles[y + 1][x + 1]->GetPosition()) > m_Spacing * 3)
+				{
+					render = false;
+					m_Particles[y + 1][x + 1]->CleanupBendJoints();
+					m_Particles[y][x + 1]->CleanupBendJoints();
+					m_Particles[y + 1][x + 1]->CleanupDiagnalJoints();
+					m_Particles[y][x + 1]->CleanupDiagnalJoints();
+				}
+				if (m_Particles[y][x + 1]->AllJointsBroken()
+					|| glm::length(m_Particles[y][x + 1]->GetPosition() - m_Particles[y][x]->GetPosition()) > m_Spacing * 3
+					|| glm::length(m_Particles[y][x + 1]->GetPosition() - m_Particles[y + 1][x + 1]->GetPosition()) > m_Spacing * 3)
+				{
+					render = false;
+					m_Particles[y][x]->CleanupBendJoints();
+					m_Particles[y + 1][x + 1]->CleanupBendJoints();
+					m_Particles[y][x]->CleanupDiagnalJoints();
+					m_Particles[y + 1][x + 1]->CleanupDiagnalJoints();
+				}
+				if (m_Particles[y + 1][x + 1]->AllJointsBroken()
+					|| glm::length(m_Particles[y + 1][x + 1]->GetPosition() - m_Particles[y][x]->GetPosition()) > m_Spacing * 3
+					|| glm::length(m_Particles[y + 1][x + 1]->GetPosition() - m_Particles[y][x + 1]->GetPosition()) > m_Spacing * 3)
+				{
+					render = false;
+					m_Particles[y][x + 1]->CleanupBendJoints();
+					m_Particles[y][x]->CleanupBendJoints();
+					m_Particles[y][x + 1]->CleanupDiagnalJoints();
+					m_Particles[y][x]->CleanupDiagnalJoints();
+				}
+				
+				if (render)
+				{
+					ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_Particles[y + 1][x + 1]->GetPosition());
+					ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_Particles[y][x + 1]->GetPosition());
+					ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[2]", m_Particles[y][x]->GetPosition());
+		
+					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", ((x + 1) / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
+					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", ((x + 1) / m_Size.x), 1.0f - (y / m_Size.y));
+					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", (x / m_Size.x), 1.0f - (y / m_Size.y));
+					StaticMesh::Triangle->Draw();
+				}
 			}
 		}
+		glUseProgram(0);
 	}
 }
 
@@ -297,7 +387,7 @@ void Cloth::HandleGroundCollision()
 					collided = m_Particles[y][x]->GetPosition().y < m_Plane->GetTransform().translation.y;
 					if (collided)
 					{
-						m_Particles[y][x]->Move(Up * 10.0f);
+						m_Particles[y][x]->Move(Up * 100.0f);
 						m_Particles[y][x]->Move(Forward);
 					}
 				}
@@ -467,6 +557,8 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 		for (int x = (int)_startIndexX; x< (int)_width - 1; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(m_Particles[y][x], m_Particles[y][x + 1], m_Spacing));
+			m_Particles[y][x]->m_AttachedJoints.push_back(m_DistanceJoints.back());
+			m_Particles[y][x + 1]->m_AttachedJoints.push_back(m_DistanceJoints.back());
 		}
 	}
 	for (int y = (int)_startIndexY; y < (int)_height - 1; y++)
@@ -474,6 +566,8 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 		for (int x = (int)_startIndexX; x < (int)_width; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(m_Particles[y][x], m_Particles[y + 1][x], m_Spacing));
+			m_Particles[y][x]->m_AttachedJoints.push_back(m_DistanceJoints.back());
+			m_Particles[y + 1][x]->m_AttachedJoints.push_back(m_DistanceJoints.back());
 		}
 	}
 	for (int y = (int)_startIndexY + 1; y < (int)_height; y++)
@@ -481,6 +575,9 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 		for (int x = (int)_startIndexX; x < (int)_width - 1; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(m_Particles[y][x], m_Particles[y - 1][x + 1], sqrtf(((m_Spacing * m_Spacing) * 2))));
+			m_Particles[y][x]->m_DiagnalJoints.push_back(m_DistanceJoints.back());
+			m_Particles[y - 1][x + 1]->m_DiagnalJoints.push_back(m_DistanceJoints.back());
+
 		}
 	}
 	for (int y = (int)_startIndexY; y < (int)_height - 1; y++)
@@ -488,6 +585,8 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 		for (int x = (int)_startIndexX; x < (int)_width - 1; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(m_Particles[y][x], m_Particles[y + 1][x + 1], sqrtf(((m_Spacing * m_Spacing) * 2))));
+			m_Particles[y][x]->m_BackwardDiagnals.push_back(m_DistanceJoints.back());
+			m_Particles[y + 1][x + 1]->m_BackwardDiagnals.push_back(m_DistanceJoints.back());
 		}
 	}
 	for (int y = (int)_startIndexY + 1; y < (int)_height; y++)
@@ -495,6 +594,8 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 		for (int x = (int)_startIndexX + 1; x < (int)_width; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(m_Particles[y][x], m_Particles[y - 1][x - 1], sqrtf(((m_Spacing * m_Spacing) * 2))));
+			m_Particles[y][x]->m_BackwardDiagnals.push_back(m_DistanceJoints.back());
+			m_Particles[y - 1][x - 1]->m_BackwardDiagnals.push_back(m_DistanceJoints.back());
 		}
 	}
 	for (int y = (int)_startIndexY; y < (int)_height - 1; y++)
@@ -502,6 +603,8 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 		for (int x = (int)_startIndexX + 1; x < (int)_width; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(m_Particles[y][x], m_Particles[y + 1][x - 1], sqrtf(((m_Spacing * m_Spacing) * 2))));
+			m_Particles[y][x]->m_DiagnalJoints.push_back(m_DistanceJoints.back());
+			m_Particles[y + 1][x - 1]->m_DiagnalJoints.push_back(m_DistanceJoints.back());
 		}
 	}
 
@@ -510,6 +613,8 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 		for (int x = (int)_startIndexX; x < (int)_width; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(m_Particles[y][x], m_Particles[y + 2][x], m_Spacing * 2));
+			m_Particles[y][x]->m_BendJoints.push_back(m_DistanceJoints.back());
+			m_Particles[y + 2][x]->m_BendJoints.push_back(m_DistanceJoints.back());
 		}
 	}
 	for (int y = (int)_startIndexY; y < (int)_height; y++)
@@ -517,6 +622,8 @@ void Cloth::CreateConstraints(unsigned _startIndexX, unsigned _startIndexY, unsi
 		for (int x = (int)_startIndexX; x < (int)_width - 2; x++)
 		{
 			m_DistanceJoints.emplace_back(new DistanceJoint(m_Particles[y][x], m_Particles[y][x + 2], m_Spacing * 2));
+			m_Particles[y][x]->m_BendJoints.push_back(m_DistanceJoints.back());
+			m_Particles[y][x + 2]->m_BendJoints.push_back(m_DistanceJoints.back());
 		}
 	}
 
@@ -538,6 +645,11 @@ void Cloth::HandleMouseInteraction()
 			case INTERACTIONTYPE::PUSH:
 			{
 				HandlePushing(x, y);
+				break;
+			}
+			case INTERACTIONTYPE::GRAB:
+			{
+				HandleGrab(x, y);
 				break;
 			}
 			default:
@@ -627,6 +739,63 @@ void Cloth::HandlePulling(int _x, int _y)
 				m_Particles[_y][_x + 1]->ApplyForce(-cursorRay.direction * 1000.0f);
 				m_Particles[_y + 1][_x + 1]->ApplyForce(-cursorRay.direction * 1000.0f);
 			}
+		}
+	}
+}
+
+void Cloth::HandleGrab(int _x, int _y)
+{
+	if (m_Particles[_y][_x])
+	{
+		int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
+		if (state == GLFW_PRESS)
+		{
+			Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+
+			if (!m_PointIsGrabbed)
+			{
+				Transform triangleCenterTransform = m_Particles[_y][_x]->GetTransform();
+				glm::vec3 particleAPos = m_Particles[_y][_x]->GetPosition();
+				glm::vec3 particleBPos = m_Particles[_y + 1][_x]->GetPosition();
+				glm::vec3 particleCPos = m_Particles[_y + 1][_x + 1]->GetPosition();
+				triangleCenterTransform.translation = { ((particleAPos.x + particleBPos.x + particleCPos.x) / 3.0f),
+									((particleAPos.y + particleBPos.y + particleCPos.y) / 3.0f),
+									((particleAPos.z + particleBPos.z + particleCPos.z) / 3.0f) };
+				UpdateModelValueOfTransform(triangleCenterTransform);
+
+				glm::vec3 hitPos{};
+				if (Physics::IntersectMesh(StaticMesh::Triangle, triangleCenterTransform, cursorRay, hitPos))
+				{
+					m_PointIsGrabbed = true;
+					m_GrabbedPoint = { _x ,  _y + 1 };
+					m_StartGrabPosition = hitPos;
+					m_GrabDistance = cursorRay.distance;
+				}
+			}
+
+			if (!m_PointIsGrabbed)
+			{
+				Transform triangleCenterTransform = m_Particles[_y][_x]->GetTransform();
+				glm::vec3 particleAPos = m_Particles[_y][_x]->GetPosition();
+				glm::vec3 particleBPos = m_Particles[_y][_x + 1]->GetPosition();
+				glm::vec3 particleCPos = m_Particles[_y + 1][_x + 1]->GetPosition();
+				triangleCenterTransform.translation = { ((particleAPos.x + particleBPos.x + particleCPos.x) / 3.0f),
+									((particleAPos.y + particleBPos.y + particleCPos.y) / 3.0f),
+									((particleAPos.z + particleBPos.z + particleCPos.z) / 3.0f) };
+				UpdateModelValueOfTransform(triangleCenterTransform);
+				glm::vec3 hitPos{};
+				if (Physics::IntersectMesh(StaticMesh::Triangle, triangleCenterTransform, cursorRay, hitPos))
+				{
+					m_PointIsGrabbed = true;
+					m_GrabbedPoint = { _x + 1 ,  _y };
+					m_StartGrabPosition = hitPos;
+					m_GrabDistance = cursorRay.distance;
+				}
+			}
+		}
+		else
+		{
+			m_PointIsGrabbed = false;
 		}
 	}
 }
@@ -728,6 +897,104 @@ bool ClothParticle::IsPinned()
 float ClothParticle::GetMass()
 {
 	return m_Mass;
+}
+
+bool ClothParticle::AllJointsBroken()
+{
+	for (auto& joint : m_AttachedJoints)
+	{
+		if (joint->Destroy == false)
+		{
+			return false;
+		}
+	}
+
+	CleanupBendJoints();
+	CleanupDiagnalJoints();
+	return true;
+}
+
+void ClothParticle::CleanupAllJoints()
+{
+	for (auto& joint : m_AttachedJoints)
+	{
+		joint->Destroy = true;
+	}
+
+	CleanupBendJoints();
+	CleanupDiagnalJoints();
+}
+
+void ClothParticle::CleanupBendJoints()
+{
+	for (auto& joint : m_BendJoints)
+	{
+		joint->Destroy = true;
+	}
+}
+
+void ClothParticle::CleanupDiagnalJoints()
+{
+	for (auto& joint : m_DiagnalJoints)
+	{
+		joint->Destroy = true;
+	}
+	for (auto& joint : m_BackwardDiagnals)
+	{
+		joint->Destroy = true;
+	}
+}
+
+void ClothParticle::CheckForSingularJoints()
+{
+	CheckForSingularJoint(m_AttachedJoints);
+	CheckForSingularJoint(m_BendJoints);
+	CheckForSingularJoint(m_DiagnalJoints);
+	CheckForSingularJoint(m_BackwardDiagnals);
+
+	
+}
+
+void ClothParticle::CheckForSingularJoint(std::vector< DistanceJoint*>& _joints, int _count)
+{
+	int jointCount = 0;
+	for (auto& joint : _joints)
+	{
+		if (joint->Destroy == false)
+		{
+			jointCount++;
+		}
+	}
+	if (jointCount <= _count)
+	{
+		for (auto& joint : _joints)
+		{
+			joint->Destroy = true;
+		}
+	}
+}
+
+void ClothParticle::CheckForOnlyHorizontal()
+{
+	if (GetJointCount(m_BendJoints) <= 0
+		&& GetJointCount(m_DiagnalJoints) <= 0
+		&& GetJointCount(m_BackwardDiagnals) <= 0)
+	{
+		CheckForSingularJoint(m_AttachedJoints, 2);
+	}
+}
+
+int ClothParticle::GetJointCount(std::vector<DistanceJoint*>& _joints)
+{
+	int jointCount = 0;
+	for (auto& joint : _joints)
+	{
+		if (joint->Destroy == false)
+		{
+			jointCount++;
+		}
+	}
+	return jointCount;
 }
 
 glm::vec3 ClothParticle::GetPosition() const

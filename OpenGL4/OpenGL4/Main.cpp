@@ -140,7 +140,7 @@ void InitGLFW()
 
 	glfwMakeContextCurrent(Statics::RenderWindow);
 
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 
 	glfwSetKeyCallback(Statics::RenderWindow, KeyCallback);
 	glfwSetCursorPosCallback(Statics::RenderWindow, CursorCallback);

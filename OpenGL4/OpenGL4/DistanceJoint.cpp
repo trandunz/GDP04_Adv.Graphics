@@ -22,7 +22,7 @@ DistanceJoint::DistanceJoint(ClothParticle* _p1, ClothParticle* _p2, float _leng
 	m_P2->m_ConstraintLength = _length;
 	m_Length = _length;
 
-	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "DynamicLine.geo", "SingleTexture.frag");
+	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "DynamicLine.geo", "UnlitColor.frag");
 }
 
 DistanceJoint::~DistanceJoint()
@@ -53,12 +53,14 @@ void DistanceJoint::Update()
 	}
 }
 
-void DistanceJoint::Draw()
+void DistanceJoint::Draw(glm::vec3 _colour)
 {
 	glUseProgram(m_ShaderID);
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix()); 
 	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_P1->GetPosition());
 	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_P2->GetPosition());
+	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_P2->GetPosition());
+	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Color", _colour);
 	StaticMesh::Line->Draw();
 	glUseProgram(0);
 }

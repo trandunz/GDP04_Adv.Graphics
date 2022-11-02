@@ -239,6 +239,19 @@ void Scene_Clothsim::UpdateClothInteractionType()
 		m_Cloth->InteractionType = Cloth::INTERACTIONTYPE::PUSH;
 		break;
 	}
+	case 2:
+	{
+		break;
+	}
+	case 3:
+	{
+		break;
+	}
+	case 4:
+	{
+		m_Cloth->InteractionType = Cloth::INTERACTIONTYPE::GRAB;
+		break;
+	}
 	default:
 	{
 		m_Cloth->InteractionType = Cloth::INTERACTIONTYPE::UNASSIGNED;

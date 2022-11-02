@@ -43,8 +43,9 @@ using KEYMAP = std::map<int, bool>;
 /// </summary>
 struct Ray
 {
-	glm::vec3 origin;
-	glm::vec3 direction;
+	glm::vec3 origin{};
+	glm::vec3 direction{};
+	float distance{};
 };
 
 /// <summary>

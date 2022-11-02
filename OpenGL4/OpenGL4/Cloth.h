@@ -60,10 +60,22 @@ public:
 	bool IsPinned();
 	float GetMass();
 
+	bool AllJointsBroken();
+	void CleanupAllJoints();
+	void CleanupBendJoints();
+	void CleanupDiagnalJoints();
+	void CheckForSingularJoints();
+	void CheckForSingularJoint(std::vector< DistanceJoint*>& _joints, int _count = 1);
+	void CheckForOnlyHorizontal();
+	int GetJointCount(std::vector< DistanceJoint*>& _joints);
+
 	glm::vec3 m_Wind{};
 	float m_ConstraintLength{};
 	Collider Collider{ {},0 };
-
+	std::vector< DistanceJoint*> m_AttachedJoints{ };
+	std::vector< DistanceJoint*> m_BendJoints{ };
+	std::vector< DistanceJoint*> m_DiagnalJoints{ };
+	std::vector< DistanceJoint*> m_BackwardDiagnals{ };
 private:
 	float m_Mass{ 1.0f };
 	float m_Damping{ 0.99f };
@@ -72,6 +84,7 @@ private:
 	bool m_IsPinned{ false };
 	glm::vec3 m_PreviousPosition{};
 	glm::vec3 m_StartPosition{};
+	
 public:
 	glm::vec3 GetPosition() const;
 };
@@ -83,7 +96,8 @@ public:
 	{
 		UNASSIGNED = 0,
 		PULL,
-		PUSH
+		PUSH,
+		GRAB
 	};
 
 	/// <summary>
@@ -183,6 +197,12 @@ private:
 	void HandleMouseInteraction();
 	void HandlePushing(int _x, int _y);
 	void HandlePulling(int _x, int _y);
+	void HandleGrab(int _x, int _y);
+
+	bool m_PointIsGrabbed{};
+	float m_GrabDistance{};
+	glm::vec3 m_StartGrabPosition{};
+	glm::ivec2 m_GrabbedPoint{};
 
 	ClothParticle*** m_Particles{nullptr};
 	std::vector<DistanceJoint*> m_DistanceJoints{};

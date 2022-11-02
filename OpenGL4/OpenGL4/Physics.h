@@ -72,6 +72,7 @@ public:
 	static bool SphereVSSphere(Collider& _sphere, Collider& _otherSphere, glm::vec3& _resolutionDirection);
 
 	static bool IntersectMesh(Mesh* _mesh, Transform _meshTransform, Ray _ray);
+	static bool IntersectMesh(Mesh* _mesh, Transform _meshTransform, Ray& _ray, glm::vec3& _hitPoint);
 private:
 	/// <summary>
 	/// Returns an interpolated value between 0 and the dot product of the cross product of (_b - _a, _p1 - _a) and (_b - _a, _p2 - _a)
