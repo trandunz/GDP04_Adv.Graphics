@@ -136,7 +136,7 @@ void GameObject::Update()
 
 void GameObject::Draw()
 {
-    if (m_Mesh)
+    if (m_Mesh || m_SkinnedMesh)
     {
         if (m_ShowNormals)
         {
@@ -147,7 +147,10 @@ void GameObject::Draw()
             SetNormals3DVertUniforms(m_NormalsShaderID);
 
             // Draw the mesh
-            m_Mesh->Draw();
+            if (m_Mesh)
+                m_Mesh->Draw();
+            else if (m_SkinnedMesh)
+                m_SkinnedMesh->Draw(m_NormalsShaderID);
 
             // Unbind shader
             glUseProgram(0);
@@ -276,8 +279,17 @@ void GameObject::Draw()
                 SetSingleColorUniforms(m_ShaderID, { 1,0,1 });
             }
         }
-        else if (m_ShaderLocation.vertShader == "SkeletalAnimation.vert")
+        if (m_ShaderLocation.vertShader == "SkeletalAnimation.vert")
         {
+            SetSkinnedMeshUniforms();
+        }
+        if (m_ShaderLocation.fragShader == "SingleTexture.frag")
+        {
+            SetSingleTextureUniforms();
+        }
+        if (m_ShaderLocation.fragShader == "UnlitColor.frag")
+        {
+            SetSingleColorUniforms(m_ShaderID, { 1,0,1 });
         }
         
         if (Statics::StencilTest && m_StencilOutline)
@@ -293,7 +305,10 @@ void GameObject::Draw()
         }
 
         // Draw the mesh
-        m_Mesh->Draw();
+        if (m_Mesh)
+            m_Mesh->Draw();
+        else if (m_SkinnedMesh)
+            m_SkinnedMesh->Draw(m_ShaderID);
         
         // Unbind
         glUseProgram(0);
@@ -326,7 +341,10 @@ void GameObject::Draw()
             }
             
             // Draw Stencil Mesh
-            m_Mesh->Draw();
+            if (m_Mesh)
+                m_Mesh->Draw();
+            else if (m_SkinnedMesh)
+                m_SkinnedMesh->Draw(m_StencilShaderID);
             
             glStencilMask(0x00); // Disable writing to stencil mask 
             glDisable(GL_STENCIL_TEST); // Disable stencil test
@@ -337,23 +355,6 @@ void GameObject::Draw()
             glBindTexture(GL_TEXTURE_2D, 0);
             glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         }
-    }
-    else if (m_SkinnedMesh)
-    {
-        glUseProgram(m_ShaderID);
-
-        if (m_ShaderLocation.vertShader == "SkeletalAnimation.vert")
-        {
-            SetSkinnedMeshUniforms();
-        }
-        if (m_ShaderLocation.fragShader == "SingleTexture.frag")
-        {
-            SetSingleTextureUniforms();
-        }
-
-        m_SkinnedMesh->Draw();
-
-        glUseProgram(0);
     }
 }
 
@@ -781,6 +782,11 @@ Collider* GameObject::GetCollider()
     return m_Collider;
 }
 
+glm::vec4 GameObject::GetInput()
+{
+    return m_Input;
+}
+
 void GameObject::SetNormals3DVertUniforms(GLuint _shaderID)
 {
     // Projection * View * Model Matrix
@@ -910,13 +916,27 @@ void GameObject::SetHeightmapShadowsUniforms()
 
 void GameObject::SetSkinnedMeshUniforms()
 {
-    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
-
-    if (m_Animator)
+    if (m_SkinnedMesh)
     {
-        auto transforms = m_Animator->GetFinalBoneMatrices();
-        for (int i = 0; i < transforms.size(); ++i)
-            ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
+        ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
+        ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "ModelMatrix", m_Transform.transform);
+
+        for (unsigned int i = 0; i < ARRAY_SIZE(m_SkinnedMesh->BoneLocation); i++)
+        {
+            char name[128];
+            memset(name, 0, sizeof(name));
+            sprintf_s(name, "jointTransforms[%d]", i);
+            m_SkinnedMesh->BoneLocation[i] = glGetUniformLocation(m_ShaderID, name);
+        }
+
+        std::vector<Matrix4f> transforms;
+        m_SkinnedMesh->BoneTransforms(Statics::DeltaTime, transforms);
+
+        for (int i = 0; i < transforms.size(); i++)
+        {
+            Matrix4f Transform = transforms[i];
+            glUniformMatrix4fv(m_SkinnedMesh->BoneLocation[i], 1, GL_TRUE, (const GLfloat*)(Transform));
+        }
     }
 }
 

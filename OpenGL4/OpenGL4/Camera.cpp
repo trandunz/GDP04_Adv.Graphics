@@ -71,6 +71,16 @@ void Camera::MoveBackward()
     m_Position +=  -m_Front * m_MoveSpeed * Statics::DeltaTime;
 }
 
+void Camera::SetYaw(float _yaw)
+{
+    m_Yaw = _yaw;
+}
+
+void Camera::SetPitch(float _pitch)
+{
+    m_Pitch = _pitch;
+}
+
 void Camera::UpdateRotationVectors()
 {
     // Set thee new front vector

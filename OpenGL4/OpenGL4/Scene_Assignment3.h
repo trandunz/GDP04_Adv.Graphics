@@ -18,12 +18,17 @@ public:
 	virtual void Draw() override;
 
 private:
+	void AlignPlayerWithInput();
+
 	glm::vec2 m_CursorPos{};
 
 	SkinnedMesh* m_AnimatedModel{ nullptr };
 	Animator* m_Animator{ nullptr };
 	Animation* m_DanceAnim{ nullptr };
 
+	bool m_CharacterMoving{};
+
 	GameObject* m_AssimpObject{ nullptr };
+	GameObject* m_Plane{ nullptr };
 };
 

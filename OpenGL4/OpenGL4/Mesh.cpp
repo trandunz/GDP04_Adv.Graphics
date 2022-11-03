@@ -488,10 +488,10 @@ void Mesh::CreatePolygonVertices(unsigned int _numberOfSides)
 	// If Its Got 4 Sides, Create Generic Quad
 	if (_numberOfSides == 4)
 	{
-		m_Vertices.emplace_back(Vertex{ {-0.5f,  0.5f, 0.0f}, {0.0f,1.0f} }); // Top Left
-		m_Vertices.emplace_back(Vertex{ {-0.5f,  -0.5f, 0.0f}, {0.0f,0.0f} }); // Bottom Left
-		m_Vertices.emplace_back(Vertex{ {0.5f,  -0.5f, 0.0f}, {1.0f,0.0f} }); // Bottom Right
-		m_Vertices.emplace_back(Vertex{ {0.5f,  0.5f, 0.0f}, {1.0f,1.0f} }); // Top Right
+		m_Vertices.emplace_back(Vertex{ {-0.5f,  0.5f, 0.0f}, {0.0f,1.0f}, {0.0f,0.0f,1.0f} }); // Top Left
+		m_Vertices.emplace_back(Vertex{ {-0.5f,  -0.5f, 0.0f}, {0.0f,0.0f}, {0.0f,0.0f,1.0f} }); // Bottom Left
+		m_Vertices.emplace_back(Vertex{ {0.5f,  -0.5f, 0.0f}, {1.0f,0.0f}, {0.0f,0.0f,1.0f} }); // Bottom Right
+		m_Vertices.emplace_back(Vertex{ {0.5f,  0.5f, 0.0f}, {1.0f,1.0f}, {0.0f,0.0f,1.0f} }); // Top Right
 		return;
 	}
 
@@ -574,12 +574,6 @@ void Mesh::CreateAndInitializeBuffersNONDSA(bool _ebo)
 	// Normals
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, normals)));
-	
-	glEnableVertexAttribArray(3);
-	glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
-
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
 
 	// Unbind
 	glBindVertexArray(0);
@@ -610,13 +604,6 @@ void Mesh::CreateAndInitializeBuffersDSA(bool _ebo)
 	glVertexArrayAttribBinding(m_VertexArrayID, 2, 0);
 	glVertexArrayAttribFormat(m_VertexArrayID, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normals));
 
-	glEnableVertexArrayAttrib(m_VertexArrayID, 3);
-	glVertexArrayAttribBinding(m_VertexArrayID, 3, 0);
-	glVertexArrayAttribIFormat(m_VertexArrayID, 3, 4, GL_INT, offsetof(Vertex, m_BoneIDs));
-	
-	glEnableVertexArrayAttrib(m_VertexArrayID, 4);
-	glVertexArrayAttribBinding(m_VertexArrayID, 4, 0);
-	glVertexArrayAttribFormat(m_VertexArrayID, 4, 4, GL_FLOAT, GL_FALSE, offsetof(Vertex, m_Weights));
 
 	// Attach Vertex Buffer To vertex array
 	glVertexArrayVertexBuffer(m_VertexArrayID, 0, m_VertexBufferID, 0, sizeof(Vertex));

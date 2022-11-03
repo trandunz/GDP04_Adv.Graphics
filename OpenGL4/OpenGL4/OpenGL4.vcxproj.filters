@@ -183,6 +183,9 @@
     <ClCompile Include="Animator.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix4f.cpp">
+      <Filter>Source Files\Statics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneManager.h">
@@ -304,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4f.h">
+      <Filter>Header Files\Statics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

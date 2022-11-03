@@ -155,6 +155,9 @@ public:
     /// </summary>
     /// <returns></returns>
     void MoveBackward();
+
+    void SetYaw(float _yaw);
+    void SetPitch(float _pitch);
 private:
 
     /// <summary>

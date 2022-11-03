@@ -36,7 +36,7 @@ using KEYMAP = std::map<int, bool>;
 #define Forward glm::vec3{0.0f,0.0f,-1.0f}
 #define Right glm::vec3{1.0f,0.0f,0.0f}
 #define Up glm::vec3{0.0f,1.0f,0.0f}
-#define MAX_BONE_INFLUENCE 4
+#define NUM_BONES_PER_VERTEX 16
 
 /// <summary>
 /// Ray struct for physics raycasting
@@ -77,10 +77,6 @@ struct Vertex
 	glm::vec3 position{0,0,0};
 	glm::vec2 texCoords{0,0};
 	glm::vec3 normals{ 0,0,0 };
-	glm::vec3 Tangent{ 0,0,0 };
-	glm::vec3 Bitangent{ 0,0,0 };
-	int m_BoneIDs[MAX_BONE_INFLUENCE]{};
-	float m_Weights[MAX_BONE_INFLUENCE]{};
 };
 
 /// <summary>

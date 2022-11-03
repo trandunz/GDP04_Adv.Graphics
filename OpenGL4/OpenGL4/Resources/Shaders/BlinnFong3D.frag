@@ -24,7 +24,7 @@ in vec3 Normals;
 struct PointLight
 {
     vec3 Position;
-    vec4 Color;
+    vec3 Color;
     float SpecularStrength;
 
     float AttenuationLinear;
@@ -34,7 +34,7 @@ struct PointLight
 struct DirectionalLight
 {
     vec3 Direction;
-    vec4 Color;
+    vec3 Color;
     float SpecularStrength;
 };
 
@@ -151,11 +151,11 @@ vec3 CalculatePointLight(PointLight _pointLight)
     vec3 lightDir = normalize(Position - _pointLight.Position);
 
     float strength = max(dot(Normals, -lightDir), 0.0f);
-    vec3 diffuseLight = strength * _pointLight.Color;
+    vec3 diffuseLight = strength * _pointLight.Color.rgb;
 
     vec3 halfwayVector = normalize(-lightDir + ReverseViewDir);
     float specularReflectivity = pow(max(dot(Normals, halfwayVector), 0.0f), Shininess);
-    vec3 specularLight = _pointLight.SpecularStrength * specularReflectivity * _pointLight.Color;
+    vec3 specularLight = _pointLight.SpecularStrength * specularReflectivity * _pointLight.Color.rgb;
 
     float distance = length(_pointLight.Position - Position);
     float attenuation = 1 + (_pointLight.AttenuationLinear * distance) + (_pointLight.AttenuationExponent * pow(distance, 2.0f));
@@ -166,11 +166,11 @@ vec3 CalculatePointLight(PointLight _pointLight)
 vec3 CalculateDirectionalLight(DirectionalLight _directionalLight)
 {
     float strength = max(dot(Normals, -normalize(_directionalLight.Direction)), 0.0f);
-    vec3 diffuseLight = strength * _directionalLight.Color;
+    vec3 diffuseLight = strength * _directionalLight.Color.rgb;
 
     vec3 halfwayVector = normalize(-normalize(_directionalLight.Direction) + ReverseViewDir);
     float specularReflectivity = pow(max(dot(Normals, halfwayVector), 0.0f), Shininess);
-    vec3 specularLight = _directionalLight.SpecularStrength * specularReflectivity * _directionalLight.Color;
+    vec3 specularLight = _directionalLight.SpecularStrength * specularReflectivity * _directionalLight.Color.rgb;
 
     return diffuseLight + specularLight;
 }

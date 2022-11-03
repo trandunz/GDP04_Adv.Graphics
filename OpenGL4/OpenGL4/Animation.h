@@ -24,7 +24,7 @@ public:
         m_Duration = animation->mDuration;
         m_TicksPerSecond = animation->mTicksPerSecond;
         ReadHeirarchyData(m_RootNode, scene->mRootNode);
-        ReadMissingBones(animation, *model);
+        //ReadMissingBones(animation, *model);
     }
 
     ~Animation()
@@ -56,30 +56,30 @@ public:
     }
 
 private:
-    void ReadMissingBones(const aiAnimation * animation, SkinnedMesh& model )
-    {
-        int size = animation->mNumChannels;
-
-        auto& boneInfoMap = model.GetBoneInfoMap();
-        int& boneCount = model.GetBoneCounter();
-
-        //reading channels(bones engaged in an animation and their keyframes)
-        for (int i = 0; i < size; i++)
-        {
-            auto channel = animation->mChannels[i];
-            std::string boneName = channel->mNodeName.data;
-
-            if (boneInfoMap.find(boneName) == boneInfoMap.end())
-            {
-                boneInfoMap[boneName].id = boneCount;
-                boneCount++;
-            }
-            m_Bones.push_back(Bone(channel->mNodeName.data,
-                boneInfoMap[channel->mNodeName.data].id, channel));
-        }
-
-        m_BoneInfoMap = boneInfoMap;
-    }
+    //void ReadMissingBones(const aiAnimation * animation, SkinnedMesh& model )
+    //{
+    //    int size = animation->mNumChannels;
+    //
+    //    auto& boneInfoMap = model.GetBoneInfoMap();
+    //    int& boneCount = model.GetBoneCounter();
+    //
+    //    //reading channels(bones engaged in an animation and their keyframes)
+    //    for (int i = 0; i < size; i++)
+    //    {
+    //        auto channel = animation->mChannels[i];
+    //        std::string boneName = channel->mNodeName.data;
+    //
+    //        if (boneInfoMap.find(boneName) == boneInfoMap.end())
+    //        {
+    //            boneInfoMap[boneName].id = boneCount;
+    //            boneCount++;
+    //        }
+    //        m_Bones.push_back(Bone(channel->mNodeName.data,
+    //            boneInfoMap[channel->mNodeName.data].id, channel));
+    //    }
+    //
+    //    m_BoneInfoMap = boneInfoMap;
+    //}
 
     void ReadHeirarchyData(AssimpNodeData & dest, const aiNode * src)
     {

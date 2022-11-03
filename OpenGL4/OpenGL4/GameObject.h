@@ -232,6 +232,8 @@ public:
 	void SetCollider(Collider* _collider);
 	Collider* GetCollider();
 
+	glm::vec4 GetInput();
+
 protected:
 
 	/// <summary>
@@ -334,7 +336,7 @@ protected:
 	GLuint m_ShadowMapShaderID{ 0 };
 	ShaderProgramLocation m_ShaderLocation{};
 	glm::vec4 m_Input{};
-	float m_MovementSpeed = 10.0f;
+	float m_MovementSpeed = 5.0f;
 	Mesh* m_Mesh = nullptr;
 	Transform m_Transform{};
 	Collider* m_Collider{ nullptr };

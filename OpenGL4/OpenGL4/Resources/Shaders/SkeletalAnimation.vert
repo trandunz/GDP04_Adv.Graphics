@@ -17,33 +17,32 @@ layout (location = 3) in ivec4 l_boneIDs;
 layout (location = 4) in vec4 l_weights;
 
 uniform mat4 PVMatrix;
+uniform mat4 ModelMatrix;
 	
-const int MAX_BONES = 100;
-const int MAX_BONE_INFLUENCE = 4;
-uniform mat4 finalBonesMatrices[MAX_BONES];
+const int MAX_JOINTS = 100;
+const int MAX_WEIGHTS = 16;
+
+uniform mat4 jointTransforms[MAX_JOINTS];
 	
 out vec2 TexCoords;
+out vec3 Normals;
+out vec3 Position;
 	
 void main()
 {
-    //vec4 totalLocalPosition = vec4(0.0);
-	//vec4 totalNormal = vec4(0.0);
-	//for(int i = 0; i < MAX_BONE_INFLUENCE; i++)
-	//{
-	//	vec4 posePosition = finalBonesMatrices[l_boneIDs[i]] * vec4(l_position, 1.0);
-	//	totalLocalPosition += posePosition * l_weights[i];
-	//	vec4 worldNormal = finalBonesMatrices[l_boneIDs[i]] * vec4(l_normals, 0.0);
-	//	totalNormal += worldNormal * l_weights[i];
-	//}
-	//gl_Position = PVMMatrix * totalLocalPosition;
-
-	mat4 BoneTransform = finalBonesMatrices[l_boneIDs[0]] * l_weights[0];
-    BoneTransform += finalBonesMatrices[l_boneIDs[1]] * l_weights[1];
-    BoneTransform += finalBonesMatrices[l_boneIDs[2]] * l_weights[2];
-    BoneTransform += finalBonesMatrices[l_boneIDs[3]] * l_weights[3];
-
-    vec4 PosL = BoneTransform * vec4(l_position, 1.0);
-    gl_Position = PVMatrix * PosL;
-
 	TexCoords = l_texCoords;
+	Position = vec3(ModelMatrix * vec4(l_position, 1.0f));
+	Normals = mat3(transpose(inverse(ModelMatrix))) * l_normals;
+
+    vec4 totalLocalPosition = vec4(0.0f);
+	vec4 totalNormal = vec4(0.0f);
+	for(int i = 0; i < MAX_WEIGHTS; i++)
+	{
+		vec4 posePosition = jointTransforms[l_boneIDs[i]] * vec4(l_position, 1.0);
+		totalLocalPosition += posePosition * l_weights[i];
+		vec4 worldNormal = jointTransforms[l_boneIDs[i]] * vec4(l_normals, 0.0);
+		totalNormal += worldNormal * l_weights[i];
+	}
+
+	gl_Position = PVMatrix * ModelMatrix * totalLocalPosition;
 }
