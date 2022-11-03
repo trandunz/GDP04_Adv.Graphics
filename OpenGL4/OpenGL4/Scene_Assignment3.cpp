@@ -21,6 +21,22 @@ Scene_Assignment3::~Scene_Assignment3()
 	if (m_AssimpObject)
 		delete m_AssimpObject;
 	m_AssimpObject = nullptr;
+
+	if (m_ParticleSystem)
+		delete m_ParticleSystem;
+	m_ParticleSystem = nullptr;
+
+	if (m_Bonfire)
+		delete m_Bonfire;
+	m_Bonfire = nullptr;
+
+	if (m_BonfireModel)
+		delete m_BonfireModel;
+	m_BonfireModel = nullptr;
+
+	if (m_SmokeSystem)
+		delete m_SmokeSystem;
+	m_SmokeSystem = nullptr;
 }
 
 void Scene_Assignment3::Start()
@@ -41,20 +57,42 @@ void Scene_Assignment3::Start()
 
 	m_AnimatedModel = new SkinnedMesh("Resources/Models/Dude/Dude.dae");
 	m_AnimatedModel->SetCurrentAnimation(0, 30);
+
+	m_BonfireModel = new SkinnedMesh("Resources/Models/Bonfire/Bonfire.fbx");
 	
-	m_AssimpObject = new GameObject({ 0,-25, 0 });
+	m_AssimpObject = new GameObject({ 0,-25, -10 });
 	m_AssimpObject->SetSkinnedMesh(m_AnimatedModel);
 	m_AssimpObject->SetShader("SkeletalAnimation.vert", "BlinnFong3D.frag");
 
-	m_Plane = new GameObject({ 0,-25, 0 });
+	m_Plane = new GameObject({ 0,-25, -10});
 	m_Plane->SetMesh(StaticMesh::Triangle_Quad);
 	m_Plane->SetShader("Normals3D.vert", "BlinnFong3D.frag");
 	m_Plane->SetActiveTextures({TextureLoader::LoadTexture("Grass.jpg")});
 	m_Plane->Rotate({ 1,0,0 }, -90);
 	m_Plane->Scale({ 20,20,1 });
 
-	Statics::SceneCamera.SetPitch(-90);
+	m_Bonfire = new GameObject({ 0,-25, -15 });
+	m_Bonfire->SetSkinnedMesh(m_BonfireModel);
+	m_Bonfire->SetShader("Normals3D.vert", "BlinnFong3D.frag");
+	m_Bonfire->SetActiveTextures({ TextureLoader::LoadTexture("Bonfire.jpg") });
+	m_Bonfire->Rotate({ 1,0,0 }, 90);
+
+	Statics::SceneCamera.SetPitch(-110);
 	Statics::SceneCamera.SetYaw(90);
+
+	m_ParticleSystem = new ParticleSystem({0,-25,-15 }, 0.2f);
+	m_ParticleSystem->SetShader("PointToQuad.vert", "PointToQuad.geo", "SingleTexture_Coloured.frag");
+	m_ParticleSystem->SetParticleTexture(TextureLoader::LoadTexture("Flame.png"));
+	m_ParticleSystem->SetGravity(false);
+	m_ParticleSystem->SetLifetime(0.1f);
+	m_ParticleSystem->SetAlphaOverLifetime(1);
+
+	m_SmokeSystem = new ParticleSystem({ 0,-23.5f,-15 }, 0.1f);
+	m_SmokeSystem->SetShader("PointToQuad.vert", "PointToQuad.geo", "SingleTexture_Coloured.frag");
+	m_SmokeSystem->SetParticleTexture(TextureLoader::LoadTexture("Smoke.png"));
+	m_SmokeSystem->SetGravity(false);
+	m_SmokeSystem->SetLifetime(3.0f);
+	m_SmokeSystem->SetAlphaOverLifetime(1);
 }
 
 void Scene_Assignment3::Update()
@@ -66,7 +104,17 @@ void Scene_Assignment3::Update()
 		Statics::SceneCamera.Movement();
 	}
 
-	if (m_AssimpObject && Statics::ActiveCursor)
+	if (m_ParticleSystem)
+	{
+		m_ParticleSystem->Update();
+	}
+
+	if (m_SmokeSystem)
+	{
+		m_SmokeSystem->Update();
+	}
+
+	if (m_AssimpObject)
 	{
 		m_AssimpObject->Movement_WASDEQ();
 		
@@ -120,6 +168,15 @@ void Scene_Assignment3::Draw()
 
 	if (m_Plane)
 		m_Plane->Draw();
+
+	if (m_Bonfire)
+		m_Bonfire->Draw();
+
+	if (m_SmokeSystem)
+		m_SmokeSystem->Draw();
+
+	if (m_ParticleSystem)
+		m_ParticleSystem->Draw();
 
 	FrameBuffer::GetInstance().Unbind();
 	glfwSwapBuffers(Statics::RenderWindow);

@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "Skybox.h"
+#include "ParticleSystem.h"
 
 class Scene_Assignment3 :
     public Scene
@@ -23,12 +24,17 @@ private:
 	glm::vec2 m_CursorPos{};
 
 	SkinnedMesh* m_AnimatedModel{ nullptr };
+	SkinnedMesh* m_BonfireModel{ nullptr };
 	Animator* m_Animator{ nullptr };
 	Animation* m_DanceAnim{ nullptr };
 
 	bool m_CharacterMoving{};
 
+	ParticleSystem* m_ParticleSystem{ nullptr };
+	ParticleSystem* m_SmokeSystem{ nullptr };
+
 	GameObject* m_AssimpObject{ nullptr };
 	GameObject* m_Plane{ nullptr };
+	GameObject* m_Bonfire{ nullptr };
 };
 

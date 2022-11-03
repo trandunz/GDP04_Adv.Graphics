@@ -37,6 +37,13 @@ public:
 	/// <param name="_geo"></param>
 	/// <param name="_frag"></param>
 	void SetShader(std::string _vert, std::string _geo, std::string _frag);
+
+	/// <summary>
+	/// Set the shader of the particles
+	/// </summary>
+	/// <param name="_vert"></param>
+	/// <param name="_frag"></param>
+	void SetShader(std::string _vert, std::string _frag);
 	
 	/// <summary>
 	/// Pause the particle system
@@ -60,13 +67,24 @@ public:
 	/// </summary>
 	void Draw();
 
+	void SetParticleVelocity(glm::vec3 _velocity);
+
+	void SetGravity(bool _gravity);
+
+	void SetLifetime(float _lifetime);
+
+	void SetAlphaOverLifetime(float _alpha);
 private:
 	Texture m_Texture{};
 	std::vector<Particle> m_Particles{};
 	glm::vec3 m_EmissionPosition{};
+	glm::vec3 m_Velocity{};
 	float m_EmissionRate{};
 	float m_EmissionTimer{};
+	float m_Lifetime{0.7f};
+	glm::vec4 m_ColorOverLifetime{1,1,1,1};
 
+	bool m_Gravity{ true };
 	bool m_Paused{ false };
 
 	GLuint m_ShaderID{};

@@ -263,6 +263,8 @@
     <None Include="Resources\Shaders\Normals3D_Shadows.vert" />
     <None Include="Resources\Shaders\Outline.vert" />
     <None Include="Resources\Shaders\Perlin_Moss.frag" />
+    <None Include="Resources\Shaders\PointToQuad.geo" />
+    <None Include="Resources\Shaders\PointToQuad.vert" />
     <None Include="Resources\Shaders\PointToStar.geo" />
     <None Include="Resources\Shaders\PositionOnly.vert" />
     <None Include="Resources\Shaders\PositionPassthrough.vert" />
@@ -274,6 +276,7 @@
     <None Include="Resources\Shaders\ShowNormals.geo" />
     <None Include="Resources\Shaders\SingleTexture.frag" />
     <None Include="Resources\Shaders\SingleTexture.vert" />
+    <None Include="Resources\Shaders\SingleTexture_Coloured.frag" />
     <None Include="Resources\Shaders\SingleTexture_Geo.frag" />
     <None Include="Resources\Shaders\SkeletalAnimation.vert" />
     <None Include="Resources\Shaders\Skybox.frag" />

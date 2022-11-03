@@ -463,5 +463,14 @@
     <None Include="Resources\Shaders\DynamicLine.geo">
       <Filter>Resource Files\Geo Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\PointToQuad.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\PointToQuad.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\SingleTexture_Coloured.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
