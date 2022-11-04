@@ -29,6 +29,8 @@ public:
     /// <returns></returns>
     static GLuint CreateShader(std::string _vertexShader, std::string _fragmentShader);
 
+    static GLuint CreateShader(std::string _computeShader);
+
     /// <summary>
     /// Creates A Given Shader Program With The Specified Vertex Shader, Geometry Shader And Fragment Shader Paths And Returns Its ID.
     /// </summary>

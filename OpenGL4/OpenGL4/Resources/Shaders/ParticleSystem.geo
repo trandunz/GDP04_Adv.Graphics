@@ -20,38 +20,38 @@ uniform vec3 vQuad1, vQuad2;
 in VS_GS_VERTEX
 {
 	in vec3 AttribPosition;
-	in mat4 PVMMatrix;
+	in mat4 PVMatrix;
 	in float LifeTime;
 }gs_in[];
 
 void main()
 {
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition + (-vQuad1 + vQuad2)),1.0f);
+	gl_Position = gs_in[0].PVMatrix * vec4((gs_in[0].AttribPosition + (-vQuad1 + vQuad2)),1.0f);
 	TexCoords = vec2(0.0f, 1.0f);
 	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition + (-vQuad1 - vQuad2)),1.0f);
+	gl_Position = gs_in[0].PVMatrix * vec4((gs_in[0].AttribPosition + (-vQuad1 - vQuad2)),1.0f);
 	TexCoords = vec2(0.0f, 0.0f);
 	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 - vQuad2)),1.0f);
+	gl_Position = gs_in[0].PVMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 - vQuad2)),1.0f);
 	TexCoords = vec2(1.0f, 0.0f);
 	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition +  (-vQuad1 + vQuad2)),1.0f);
+	gl_Position = gs_in[0].PVMatrix * vec4((gs_in[0].AttribPosition +  (-vQuad1 + vQuad2)),1.0f);
 	TexCoords = vec2(0.0f, 1.0f);
 	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 - vQuad2)),1.0f);
+	gl_Position = gs_in[0].PVMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 - vQuad2)),1.0f);
 	TexCoords = vec2(1.0f, 0.0f);
 	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 + vQuad2)),1.0f);
+	gl_Position = gs_in[0].PVMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 + vQuad2)),1.0f);
 	TexCoords = vec2(1.0f, 1.0f);
 	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();

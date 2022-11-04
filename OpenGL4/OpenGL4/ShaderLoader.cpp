@@ -88,6 +88,62 @@ GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _fragme
     return program;
 }
 
+GLuint ShaderLoader::CreateShader(std::string _computeShader)
+{
+    for (auto& shader : m_ShaderPrograms)
+    {
+        if (shader.first.computeShader == _computeShader)
+        {
+            return shader.second;
+        }
+    }
+
+    // Create A Default Program
+    GLuint program = glCreateProgram();
+
+    // Create Shaders And Store There ID's Locally
+    GLuint computeShader = CompileShader(GL_COMPUTE_SHADER, PassFileToString(_computeShader), _computeShader);
+
+    // Attach Shaders To Program
+    if (IsDebug)
+    {
+        Print("Attaching Shaders");
+    }
+    glAttachShader(program, computeShader);
+
+    // Link And Validate
+    if (IsDebug)
+    {
+        Print("Linking program");
+    }
+    glLinkProgram(program);
+    glValidateProgram(program);
+
+    // Debug Output With Error Specific Message
+    int result = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, &result);
+    if (result == GL_FALSE)
+    {
+        int length = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+        char* message = (char*)_malloca(length * sizeof(char));
+        glGetProgramInfoLog(program, length, &length, message);
+        std::string debugOutput = "Failed to Compile Shader Program ";
+        if (message != 0)
+            debugOutput += message;
+        Print(debugOutput);
+        glDeleteProgram(program);
+        _freea(message);
+        return result;
+    }
+
+    // Push The New Shader Program To Vector
+    m_ShaderPrograms.push_back(std::make_pair(ShaderProgramLocation{ "", "", "","","", _computeShader }, program));
+
+    // Return Program ID
+    return program;
+}
+
 GLuint ShaderLoader::CreateShader(std::string _vertexShader, std::string _geoShader, std::string _fragmentShader)
 {
     for (auto& shader : m_ShaderPrograms)

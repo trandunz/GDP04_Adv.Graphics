@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Skybox.h"
 #include "ParticleSystem.h"
+#include "C_Particle_System.h"
 
 class Scene_Assignment3 :
     public Scene
@@ -32,6 +33,7 @@ private:
 
 	ParticleSystem* m_ParticleSystem{ nullptr };
 	ParticleSystem* m_SmokeSystem{ nullptr };
+	C_Particle_System* m_FountainSystem{ nullptr };
 
 	GameObject* m_AssimpObject{ nullptr };
 	GameObject* m_Plane{ nullptr };

@@ -58,6 +58,7 @@ struct ShaderProgramLocation
 	std::string tcShader = "";
 	std::string teShader = "";
 	std::string fragShader = "";
+	std::string computeShader = "";
 };
 
 /// <summary>

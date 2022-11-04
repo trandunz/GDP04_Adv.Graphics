@@ -37,6 +37,10 @@ Scene_Assignment3::~Scene_Assignment3()
 	if (m_SmokeSystem)
 		delete m_SmokeSystem;
 	m_SmokeSystem = nullptr;
+
+	if (m_FountainSystem)
+		delete m_FountainSystem;
+	m_FountainSystem = nullptr;
 }
 
 void Scene_Assignment3::Start()
@@ -93,6 +97,8 @@ void Scene_Assignment3::Start()
 	m_SmokeSystem->SetGravity(false);
 	m_SmokeSystem->SetLifetime(3.0f);
 	m_SmokeSystem->SetAlphaOverLifetime(1);
+
+	m_FountainSystem = new C_Particle_System({ 0,-25,-5 }, 0.1f);
 }
 
 void Scene_Assignment3::Update()
@@ -100,7 +106,7 @@ void Scene_Assignment3::Update()
 	m_ElapsedTime += Statics::DeltaTime;
 	if (!Statics::ActiveCursor)
 	{
-		//Statics::SceneCamera.Movement_Capture();
+		Statics::SceneCamera.Movement_Capture();
 		Statics::SceneCamera.Movement();
 	}
 
@@ -112,6 +118,11 @@ void Scene_Assignment3::Update()
 	if (m_SmokeSystem)
 	{
 		m_SmokeSystem->Update();
+	}
+
+	if (m_FountainSystem)
+	{
+		m_FountainSystem->Update();
 	}
 
 	if (m_AssimpObject)
@@ -148,8 +159,8 @@ void Scene_Assignment3::KeyEvents()
 
 void Scene_Assignment3::CursorMoveEvent(double& xpos, double& ypos)
 {
-	//if (!Statics::ActiveCursor)
-	//	Statics::SceneCamera.MouseLook({ xpos, ypos });
+	if (!Statics::ActiveCursor)
+		Statics::SceneCamera.MouseLook({ xpos, ypos });
 }
 
 void Scene_Assignment3::CursorClickEvent(int button, int action, int mods)
@@ -177,6 +188,9 @@ void Scene_Assignment3::Draw()
 
 	if (m_ParticleSystem)
 		m_ParticleSystem->Draw();
+
+	if (m_FountainSystem)
+		m_FountainSystem->Draw();
 
 	FrameBuffer::GetInstance().Unbind();
 	glfwSwapBuffers(Statics::RenderWindow);

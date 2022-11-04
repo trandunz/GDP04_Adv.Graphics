@@ -70,6 +70,9 @@
     <Filter Include="Source Files\Physics">
       <UniqueIdentifier>{c9e2cd69-ee00-4109-b08e-37bcef36f0b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Compute Shaders">
+      <UniqueIdentifier>{ce4d9b4e-d117-4138-a84d-8df91eecf6c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -185,6 +188,9 @@
     </ClCompile>
     <ClCompile Include="Matrix4f.cpp">
       <Filter>Source Files\Statics</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Particle_System.cpp">
+      <Filter>Source Files\ParticleSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -310,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="Matrix4f.h">
       <Filter>Header Files\Statics</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Particle_System.h">
+      <Filter>Header Files\ParticleSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -471,6 +480,18 @@
     </None>
     <None Include="Resources\Shaders\SingleTexture_Coloured.frag">
       <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ParticleSystem.frag">
+      <Filter>Resource Files\Frag Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ParticleSystem.vert">
+      <Filter>Resource Files\Vert Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\ParticleSystem.comp">
+      <Filter>Resource Files\Compute Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\ParticleSystem.geo">
+      <Filter>Resource Files\Geo Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

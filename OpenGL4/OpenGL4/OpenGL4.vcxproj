@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -159,6 +159,7 @@
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cloth.cpp" />
+    <ClCompile Include="C_Particle_System.cpp" />
     <ClCompile Include="DistanceJoint.cpp" />
     <ClCompile Include="FontLoader.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cloth.h" />
+    <ClInclude Include="C_Particle_System.h" />
     <ClInclude Include="DistanceJoint.h" />
     <ClInclude Include="FontLoader.h" />
     <ClInclude Include="FrameBuffer.h" />
@@ -262,6 +264,10 @@
     <None Include="Resources\Shaders\Normals3D.vert" />
     <None Include="Resources\Shaders\Normals3D_Shadows.vert" />
     <None Include="Resources\Shaders\Outline.vert" />
+    <None Include="Resources\Shaders\ParticleSystem.comp" />
+    <None Include="Resources\Shaders\ParticleSystem.frag" />
+    <None Include="Resources\Shaders\ParticleSystem.geo" />
+    <None Include="Resources\Shaders\ParticleSystem.vert" />
     <None Include="Resources\Shaders\Perlin_Moss.frag" />
     <None Include="Resources\Shaders\PointToQuad.geo" />
     <None Include="Resources\Shaders\PointToQuad.vert" />
