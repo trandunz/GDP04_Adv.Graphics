@@ -11,14 +11,16 @@
 #include "C_Particle_System.h"
 #include "StaticMesh.h"
 #include "ShaderLoader.h"
+#include "TextureLoader.h"
 
 C_Particle_System::C_Particle_System(glm::vec3 _emissionPos, float _emissionRate)
 {
 	m_EmissionPosition = _emissionPos;
 	m_Transform.translation = m_EmissionPosition;
+	m_Transform.scale = { 0.3f,0.3f,0.3f };
 	UpdateModelValueOfTransform(m_Transform);
 
-	m_ShaderID = ShaderLoader::CreateShader("ParticleSystem.vert", "ParticleSystem.frag");
+	m_ShaderID = ShaderLoader::CreateShader("ParticleSystem.vert", "ParticleSystem.geo", "SingleTexture_Coloured.frag");
 	m_ComputeID = ShaderLoader::CreateShader("ParticleSystem.comp");
 	m_InitialPosition.resize(NUM_PARTICLES);
 	m_InitialVelocity.resize(NUM_PARTICLES);
@@ -35,6 +37,8 @@ C_Particle_System::C_Particle_System(glm::vec3 _emissionPos, float _emissionRate
 		};
 		m_InitialVelocity[i] = glm::vec4(velocity, RandomFloat() + 0.125f);
 	}
+
+	m_Texture = TextureLoader::LoadTexture("Flame.png");
 
 	InitBuffers();
 }
@@ -80,9 +84,32 @@ void C_Particle_System::Draw()
 
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
 
-	ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "ColorOverLifetime", { 0.0f, 0.48f, 0.58f, 0 });
+	ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "ColorOverLifetime", { 1, 1, 1, 0 });
+
+	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_Texture.ID);
+	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
+
+	glm::vec3 vQuad1, vQuad2;
+	glm::vec3 camFront = Statics::SceneCamera.GetFront();
+	camFront = glm::normalize(camFront);
+	vQuad1 = glm::cross(camFront, Statics::SceneCamera.GetUp());
+	vQuad1 = glm::normalize(vQuad1);
+	vQuad2 = glm::cross(camFront, vQuad1);
+	vQuad2 = glm::normalize(vQuad2);
+	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "vQuad1", vQuad1);
+	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "vQuad2", vQuad2);
+
+	ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "Color", { 1, 1, 1, 1 });
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(GL_FALSE);
 
 	glDrawArrays(GL_POINTS, 0, NUM_PARTICLES);
+
+	glDepthMask(GL_TRUE);
 
 	glDisableVertexAttribArray(0);
 	glUseProgram(0);

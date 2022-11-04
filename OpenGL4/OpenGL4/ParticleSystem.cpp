@@ -12,11 +12,13 @@
 #include "StaticMesh.h"
 #include "ShaderLoader.h"
 
+
 ParticleSystem::ParticleSystem(glm::vec3 _emissionPos, float _emissionRate)
 {
 	m_EmissionPosition = _emissionPos;
 	m_EmissionRate = _emissionRate;
 	m_EmissionTimer = m_EmissionRate;
+
 }
 
 ParticleSystem::~ParticleSystem()

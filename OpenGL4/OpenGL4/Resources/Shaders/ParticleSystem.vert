@@ -19,14 +19,14 @@ out float LifeTime;
 out VS_GS_VERTEX
 {
 	out vec3 AttribPosition;
-	out mat4 PVMatrix;
+	out mat4 PVMMatrix;
 	out float LifeTime;
 }vs_out;
 
 // Main function that gets called per vertex.
 void main()
 {
-	vs_out.PVMatrix = PVMMatrix;
+	vs_out.PVMMatrix = PVMMatrix;
 	vs_out.AttribPosition = l_position.xyz;
 	vs_out.LifeTime = l_position.w;
 	gl_Position = PVMMatrix * vec4(l_position.xyz,1.0f);
