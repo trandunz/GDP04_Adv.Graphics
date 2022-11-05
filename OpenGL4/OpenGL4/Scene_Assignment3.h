@@ -26,6 +26,7 @@ private:
 
 	SkinnedMesh* m_AnimatedModel{ nullptr };
 	SkinnedMesh* m_BonfireModel{ nullptr };
+	SkinnedMesh* m_FountainModel{ nullptr };
 	Animator* m_Animator{ nullptr };
 	Animation* m_DanceAnim{ nullptr };
 
@@ -34,7 +35,9 @@ private:
 	ParticleSystem* m_ParticleSystem{ nullptr };
 	ParticleSystem* m_SmokeSystem{ nullptr };
 	C_Particle_System* m_FountainSystem{ nullptr };
+	C_Particle_System* m_SnowSystem{ nullptr };
 
+	GameObject* m_Fountain{ nullptr };
 	GameObject* m_AssimpObject{ nullptr };
 	GameObject* m_Plane{ nullptr };
 	GameObject* m_Bonfire{ nullptr };

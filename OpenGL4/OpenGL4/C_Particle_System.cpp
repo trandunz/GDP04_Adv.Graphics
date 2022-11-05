@@ -17,30 +17,13 @@ C_Particle_System::C_Particle_System(glm::vec3 _emissionPos, float _emissionRate
 {
 	m_EmissionPosition = _emissionPos;
 	m_Transform.translation = m_EmissionPosition;
-	m_Transform.scale = { 0.3f,0.3f,0.3f };
+	m_Transform.scale = { 0.01f,0.01f,0.01f };
 	UpdateModelValueOfTransform(m_Transform);
 
 	m_ShaderID = ShaderLoader::CreateShader("ParticleSystem.vert", "ParticleSystem.geo", "SingleTexture_Coloured.frag");
 	m_ComputeID = ShaderLoader::CreateShader("ParticleSystem.comp");
 	m_InitialPosition.resize(NUM_PARTICLES);
 	m_InitialVelocity.resize(NUM_PARTICLES);
-
-	for (int i = 0; i < NUM_PARTICLES; i++)
-	{
-		m_InitialPosition[i] = glm::vec4(m_EmissionPosition, RandomFloat() + 0.125f);
-		srand(i);
-		glm::vec3 velocity =
-		{
-			0.25f * cosf(m_InitialPosition.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f,
-			4.0f + 0.25f * RandomFloat() - 0.125f,
-			0.25f * sinf(m_InitialPosition.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f
-		};
-		m_InitialVelocity[i] = glm::vec4(velocity, RandomFloat() + 0.125f);
-	}
-
-	m_Texture = TextureLoader::LoadTexture("Flame.png");
-
-	InitBuffers();
 }
 
 C_Particle_System::~C_Particle_System()
@@ -49,9 +32,32 @@ C_Particle_System::~C_Particle_System()
 	m_InitialVelocity.clear();
 }
 
+void C_Particle_System::Init()
+{
+	for (int i = 0; i < NUM_PARTICLES; i++)
+	{
+		srand(i);
+		m_InitialPosition[i] = glm::vec4(m_EmissionPosition + EmissionOffset, RandomFloat() * m_Lifetime);
+		glm::vec3 velocity =
+		{
+			0.25f * cosf(m_InitialPosition.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f,
+			YVelocity + 0.25f * RandomFloat() - 0.125f,
+			0.25f * sinf(m_InitialPosition.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f
+		};
+		m_InitialVelocity[i] = glm::vec4(velocity, RandomFloat() * m_Lifetime);
+	}
+
+	InitBuffers();
+}
+
 void C_Particle_System::SetParticleTexture(Texture _texture)
 {
 	m_Texture = _texture;
+}
+
+void C_Particle_System::SetGravity(float _strength)
+{
+	m_Gravity = _strength;
 }
 
 void C_Particle_System::Update()
@@ -66,6 +72,10 @@ void C_Particle_System::Draw()
 	glUseProgram(m_ComputeID);
 
 	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "DeltaTime", Statics::DeltaTime);
+
+	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "Lifetime", m_Lifetime);
+
+	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "Gravity", m_Gravity);
 
 	glDispatchCompute(NUM_PARTICLES / 128, 1, 1);
 

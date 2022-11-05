@@ -41,6 +41,14 @@ Scene_Assignment3::~Scene_Assignment3()
 	if (m_FountainSystem)
 		delete m_FountainSystem;
 	m_FountainSystem = nullptr;
+
+	if (m_FountainModel)
+		delete m_FountainModel;
+	m_FountainModel = nullptr;
+
+	if (m_Fountain)
+		delete m_Fountain;
+	m_Fountain = nullptr;
 }
 
 void Scene_Assignment3::Start()
@@ -61,6 +69,8 @@ void Scene_Assignment3::Start()
 
 	m_AnimatedModel = new SkinnedMesh("Resources/Models/Dude/Dude.dae");
 	m_AnimatedModel->SetCurrentAnimation(0, 30);
+
+	m_FountainModel = new SkinnedMesh("Resources/Models/Fountain/Fountain.fbx");
 
 	m_BonfireModel = new SkinnedMesh("Resources/Models/Bonfire/Bonfire.fbx");
 	
@@ -98,7 +108,23 @@ void Scene_Assignment3::Start()
 	m_SmokeSystem->SetLifetime(3.0f);
 	m_SmokeSystem->SetAlphaOverLifetime(1);
 
-	m_FountainSystem = new C_Particle_System({ 0,-25,-5 }, 0.1f);
+	//m_FountainSystem = new C_Particle_System({ 0,-23.7f,-5 }, 0.1f);
+	//m_FountainSystem->SetParticleTexture(TextureLoader::LoadTexture("Water.png"));
+	//m_FountainSystem->Init();
+
+	m_SnowSystem = new C_Particle_System({ 0,0,-10 }, 0.1f);
+	m_SnowSystem->SetParticleTexture(TextureLoader::LoadTexture("Snowflake.png"));
+	m_SnowSystem->SetGravity(1);
+	m_SnowSystem->YVelocity = 0;
+	m_SnowSystem->m_Lifetime = 10;
+	m_SnowSystem->EmissionOffset = { rand() * 1000, 0, rand() * 1000 };
+	m_SnowSystem->Init();
+
+	m_Fountain = new GameObject({ 0,-25,-5 });
+	m_Fountain->SetSkinnedMesh(m_FountainModel);
+	m_Fountain->SetShader("Normals3D.vert", "BlinnFong3D.frag");
+	m_Fountain->SetActiveTextures({ TextureLoader::LoadTexture("lambert1_Base_Color.png") });
+	m_Fountain->SetScale({ 0.1f,0.1f,0.1f });
 }
 
 void Scene_Assignment3::Update()
@@ -124,6 +150,12 @@ void Scene_Assignment3::Update()
 	{
 		m_FountainSystem->Update();
 	}
+
+	if (m_SnowSystem)
+	{
+		m_SnowSystem->Update();
+	}
+		
 
 	if (m_AssimpObject)
 	{
@@ -183,6 +215,9 @@ void Scene_Assignment3::Draw()
 	if (m_Bonfire)
 		m_Bonfire->Draw();
 
+	if (m_Fountain)
+		m_Fountain->Draw();
+
 	if (m_SmokeSystem)
 		m_SmokeSystem->Draw();
 
@@ -191,6 +226,9 @@ void Scene_Assignment3::Draw()
 
 	if (m_FountainSystem)
 		m_FountainSystem->Draw();
+
+	if (m_SnowSystem)
+		m_SnowSystem->Draw();
 
 	FrameBuffer::GetInstance().Unbind();
 	glfwSwapBuffers(Statics::RenderWindow);

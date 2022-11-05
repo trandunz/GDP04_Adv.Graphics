@@ -1,7 +1,7 @@
 #pragma once
 #include "Particle.h"
 
-#define NUM_PARTICLES 128
+#define NUM_PARTICLES 128 * 100
 
 class C_Particle_System
 {
@@ -17,11 +17,15 @@ public:
 	/// </summary>
 	~C_Particle_System();
 
+	void Init();
+
 	/// <summary>
 	/// Set the particles texture
 	/// </summary>
 	/// <param name="_texture"></param>
 	void SetParticleTexture(Texture _texture);
+
+	void SetGravity(float _strength);
 
 	/// <summary>
 	/// Updates all the particles
@@ -33,6 +37,10 @@ public:
 	void Draw();
 
 	void InitBuffers();
+
+	glm::vec3 EmissionOffset{};
+	float YVelocity{ 2.0f };
+	float m_Lifetime{ 1.0f };
 private:
 	Texture m_Texture{};
 	Transform m_Transform{};
@@ -44,6 +52,7 @@ private:
 	float m_EmissionRate{};
 	float m_EmissionTimer{};
 	float m_ElapsedTime{};
+	float m_Gravity{ 9.81f };
 
 	GLuint m_ShaderID{};
 	GLuint m_ComputeID{};

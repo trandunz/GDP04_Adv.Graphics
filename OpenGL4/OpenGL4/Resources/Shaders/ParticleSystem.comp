@@ -18,16 +18,18 @@ layout(std430, binding = 1) buffer velocityBuffer{vec4 velocity[]; };
 layout(std430, binding = 2) buffer initVelocityBuffer{vec4 initVelocity[]; };
 
 uniform float DeltaTime;
+uniform float Gravity;
+uniform float Lifetime;
 
 // Main function that gets called per vertex fragment.
 void main()
 {
 	uint i = gl_GlobalInvocationID.x;
 
-	vec3 gravity = vec3(0.0f, -9.81f, 0.0f);
+	vec3 gravity = vec3(0.0f, -Gravity, 0.0f);
 	velocity[i].xyz += gravity * DeltaTime;
 
-	position[i].xyz += velocity[i].xyz * DeltaTime;
+	position[i].xyz += velocity[i].xyz;
 	position[i].w -= DeltaTime;
 
 	if (position[i].w <= 0.0f)
