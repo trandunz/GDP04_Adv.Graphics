@@ -49,6 +49,13 @@ Scene_Assignment3::~Scene_Assignment3()
 	if (m_Fountain)
 		delete m_Fountain;
 	m_Fountain = nullptr;
+
+	for (auto& firework : m_Fireworks)
+	{
+		if (firework)
+			delete firework;
+		firework = nullptr;
+	}
 }
 
 void Scene_Assignment3::Start()
@@ -108,9 +115,9 @@ void Scene_Assignment3::Start()
 	m_SmokeSystem->SetLifetime(3.0f);
 	m_SmokeSystem->SetAlphaOverLifetime(1);
 
-	//m_FountainSystem = new C_Particle_System({ 0,-23.7f,-5 }, 0.1f);
-	//m_FountainSystem->SetParticleTexture(TextureLoader::LoadTexture("Water.png"));
-	//m_FountainSystem->Init();
+	m_FountainSystem = new C_Particle_System({ 0,-23.7f,-5 }, 0.1f);
+	m_FountainSystem->SetParticleTexture(TextureLoader::LoadTexture("Water.png"));
+	m_FountainSystem->Init();
 
 	m_SnowSystem = new C_Particle_System({ 0,0,-10 }, 0.1f);
 	m_SnowSystem->SetParticleTexture(TextureLoader::LoadTexture("Snowflake.png"));
@@ -125,6 +132,8 @@ void Scene_Assignment3::Start()
 	m_Fountain->SetShader("Normals3D.vert", "BlinnFong3D.frag");
 	m_Fountain->SetActiveTextures({ TextureLoader::LoadTexture("lambert1_Base_Color.png") });
 	m_Fountain->SetScale({ 0.1f,0.1f,0.1f });
+
+
 }
 
 void Scene_Assignment3::Update()
@@ -154,6 +163,11 @@ void Scene_Assignment3::Update()
 	if (m_SnowSystem)
 	{
 		m_SnowSystem->Update();
+	}
+
+	for (auto& firework : m_Fireworks)
+	{
+		firework->Update();
 	}
 		
 
@@ -187,6 +201,17 @@ void Scene_Assignment3::Update()
 
 void Scene_Assignment3::KeyEvents()
 {
+	for (auto& key : Statics::Keymap)
+	{
+		if(key.second)
+		{
+			if (key.first == GLFW_KEY_P)
+			{
+				m_Fireworks.emplace_back(new Firework({ 0,-25, -10 }));
+				key.second = false;
+			}
+		}
+	}
 }
 
 void Scene_Assignment3::CursorMoveEvent(double& xpos, double& ypos)
@@ -229,6 +254,11 @@ void Scene_Assignment3::Draw()
 
 	if (m_SnowSystem)
 		m_SnowSystem->Draw();
+
+	for (auto& firework : m_Fireworks)
+	{
+		firework->Draw();
+	}
 
 	FrameBuffer::GetInstance().Unbind();
 	glfwSwapBuffers(Statics::RenderWindow);

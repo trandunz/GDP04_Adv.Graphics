@@ -65,12 +65,15 @@ void ParticleSystem::Update()
 		if (m_EmissionTimer >= m_EmissionRate)
 		{
 			m_EmissionTimer = 0.0f;
-			m_Velocity =
+			if (!m_UseManualVelocity)
 			{
-				0.25f * cosf(m_Particles.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f,
-				4.0f + 0.25f * RandomFloat() - 0.125f,
-				0.25f * sinf(m_Particles.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f
-			};
+				m_Velocity =
+				{
+					0.25f * cosf(m_Particles.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f,
+					4.0f + 0.25f * RandomFloat() - 0.125f,
+					0.25f * sinf(m_Particles.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f
+				};
+			}
 			m_Particles.emplace_back(Particle(m_EmissionPosition, m_Velocity, m_Lifetime, m_Gravity));
 			m_Particles.back().m_ColorOverLifetime = m_ColorOverLifetime;
 		}
@@ -115,6 +118,7 @@ void ParticleSystem::Draw()
 void ParticleSystem::SetParticleVelocity(glm::vec3 _velocity)
 {
 	m_Velocity = _velocity;
+	m_UseManualVelocity = true;
 }
 
 void ParticleSystem::SetGravity(bool _gravity)
@@ -134,4 +138,8 @@ void ParticleSystem::SetLifetime(float _lifetime)
 void ParticleSystem::SetAlphaOverLifetime(float _alpha)
 {
 	m_ColorOverLifetime.w = _alpha;
+}
+
+void ParticleSystem::Burst(int _count)
+{
 }

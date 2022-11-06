@@ -75,11 +75,14 @@ public:
 
 	void SetAlphaOverLifetime(float _alpha);
 
+	void Burst(int _count);
+
 	glm::vec3 m_EmissionPosition{};
 private:
 	Texture m_Texture{};
 	std::vector<Particle> m_Particles{};
 
+	bool m_UseManualVelocity{};
 	glm::vec3 m_Velocity{};
 	float m_EmissionRate{};
 	float m_EmissionTimer{};

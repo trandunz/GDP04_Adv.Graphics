@@ -161,6 +161,7 @@
     <ClCompile Include="Cloth.cpp" />
     <ClCompile Include="C_Particle_System.cpp" />
     <ClCompile Include="DistanceJoint.cpp" />
+    <ClCompile Include="Firework.cpp" />
     <ClCompile Include="FontLoader.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="Cloth.h" />
     <ClInclude Include="C_Particle_System.h" />
     <ClInclude Include="DistanceJoint.h" />
+    <ClInclude Include="Firework.h" />
     <ClInclude Include="FontLoader.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="GameObject.h" />

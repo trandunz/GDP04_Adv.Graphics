@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "Skybox.h"
-#include "ParticleSystem.h"
+#include "Firework.h"
 #include "C_Particle_System.h"
 
 class Scene_Assignment3 :
@@ -36,6 +36,8 @@ private:
 	ParticleSystem* m_SmokeSystem{ nullptr };
 	C_Particle_System* m_FountainSystem{ nullptr };
 	C_Particle_System* m_SnowSystem{ nullptr };
+
+	std::vector< Firework*> m_Fireworks{};
 
 	GameObject* m_Fountain{ nullptr };
 	GameObject* m_AssimpObject{ nullptr };
