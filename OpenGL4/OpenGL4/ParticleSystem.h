@@ -74,10 +74,12 @@ public:
 	void SetLifetime(float _lifetime);
 
 	void SetAlphaOverLifetime(float _alpha);
+
+	glm::vec3 m_EmissionPosition{};
 private:
 	Texture m_Texture{};
 	std::vector<Particle> m_Particles{};
-	glm::vec3 m_EmissionPosition{};
+
 	glm::vec3 m_Velocity{};
 	float m_EmissionRate{};
 	float m_EmissionTimer{};

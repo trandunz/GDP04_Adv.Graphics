@@ -26,7 +26,7 @@ Cloth::Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos
 	CreateParticles(0,0, (unsigned)m_Size.x, (unsigned)m_Size.y);
 	CreateConstraints(0,0, (unsigned)m_Size.x, (unsigned)m_Size.y);
 	
-	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "DynamicQuad.geo", "SingleTexture.frag");
+	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "DynamicQuad.geo", "SingleTexture_Coloured.frag");
 
 	m_Texture = TextureLoader::LoadTexture("coollizard.png");
 }
@@ -60,6 +60,55 @@ void Cloth::Update()
 		{
 			if (m_Particles[y][x])
 			{
+				srand((int)time(NULL) * x * y + RandomFloat());
+				if (m_Particles[y][x]->IsBurning && m_Particles[y][x]->Health < m_Particles[y][x]->MaxHealth - (rand() % 3))
+				{
+					if (y > 0 && x > 0 && x < m_Size.x - 1 && y < m_Size.y - 1)
+					{
+						int randomChance = rand() % 6;
+						if (randomChance == 5)
+						{
+							m_Particles[y - 1][x + 1]->IsBurning = true;
+							m_Particles[y - 1][x - 1]->IsBurning = true;
+							m_Particles[y + 1][x + 1]->IsBurning = true;
+							m_Particles[y][x + 1]->IsBurning = true;
+							m_Particles[y + 1][x]->IsBurning = true;
+							m_Particles[y + 1][x - 1]->IsBurning = true;
+						}
+						else if (randomChance == 4)
+						{
+							m_Particles[y - 1][x + 1]->IsBurning = true;
+							m_Particles[y - 1][x - 1]->IsBurning = true;
+							m_Particles[y + 1][x + 1]->IsBurning = true;
+							m_Particles[y][x + 1]->IsBurning = true;
+							m_Particles[y + 1][x]->IsBurning = true;
+						}
+						else if (randomChance == 3)
+						{
+							m_Particles[y - 1][x + 1]->IsBurning = true;
+							m_Particles[y - 1][x - 1]->IsBurning = true;
+							m_Particles[y + 1][x + 1]->IsBurning = true;
+							m_Particles[y][x + 1]->IsBurning = true;
+						}
+						else if (randomChance == 2)
+						{
+							m_Particles[y - 1][x + 1]->IsBurning = true;
+							m_Particles[y - 1][x - 1]->IsBurning = true;
+							m_Particles[y + 1][x + 1]->IsBurning = true;
+						}
+						else if (randomChance == 1)
+						{
+							m_Particles[y - 1][x + 1]->IsBurning = true;
+							m_Particles[y - 1][x - 1]->IsBurning = true;
+						}
+						else if (randomChance == 0)
+						{
+							m_Particles[y - 1][x + 1]->IsBurning = true;
+						}
+					}
+				}
+				
+
 				if (m_Particles[y][x])
 				{
 					m_Particles[y][x]->CheckForSingularJoints();
@@ -136,9 +185,7 @@ void Cloth::Draw()
 			for (int x = 0; x < m_Size.x - 1; x++)
 			{
 				bool render = true;
-				if (m_Particles[y][x]->AllJointsBroken()
-					|| glm::length(m_Particles[y][x]->GetPosition() - m_Particles[y + 1][x]->GetPosition()) > m_Spacing * 3
-					|| glm::length(m_Particles[y][x]->GetPosition() - m_Particles[y + 1][x + 1]->GetPosition()) > m_Spacing * 3)
+				if (m_Particles[y][x]->AllJointsBroken())
 				{
 					render = false;
 					m_Particles[y + 1][x]->CleanupBendJoints();
@@ -146,9 +193,7 @@ void Cloth::Draw()
 					m_Particles[y + 1][x]->CleanupDiagnalJoints();
 					m_Particles[y + 1][x + 1]->CleanupDiagnalJoints();
 				}
-				if (m_Particles[y + 1][x]->AllJointsBroken()
-					|| glm::length(m_Particles[y + 1][x]->GetPosition() - m_Particles[y][x]->GetPosition()) > m_Spacing * 3
-					|| glm::length(m_Particles[y + 1][x]->GetPosition() - m_Particles[y + 1][x + 1]->GetPosition()) > m_Spacing * 3)
+				if (m_Particles[y + 1][x]->AllJointsBroken())
 				{
 					render = false;
 					m_Particles[y + 1][x + 1]->CleanupBendJoints();
@@ -156,9 +201,7 @@ void Cloth::Draw()
 					m_Particles[y + 1][x + 1]->CleanupDiagnalJoints();
 					m_Particles[y][x]->CleanupDiagnalJoints();
 				}
-				if (m_Particles[y + 1][x + 1]->AllJointsBroken()
-					|| glm::length(m_Particles[y + 1][x + 1]->GetPosition() - m_Particles[y][x]->GetPosition()) > m_Spacing * 3
-					|| glm::length(m_Particles[y + 1][x + 1]->GetPosition() - m_Particles[y + 1][x]->GetPosition()) > m_Spacing * 3)
+				if (m_Particles[y + 1][x + 1]->AllJointsBroken())
 				{
 					render = false;
 					m_Particles[y + 1][x]->CleanupBendJoints();
@@ -175,13 +218,13 @@ void Cloth::Draw()
 					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", (x / m_Size.x), 1.0f - (y / m_Size.y));
 					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", (x / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
 					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", ((x + 1) / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
+					
+					ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "Color", { m_Particles[y + 1][x]->Health / m_Particles[y + 1][x]->MaxHealth,m_Particles[y + 1][x]->Health / m_Particles[y + 1][x]->MaxHealth,m_Particles[y + 1][x]->Health / m_Particles[y + 1][x]->MaxHealth,1.0f });
 					StaticMesh::Triangle->Draw();
 				}
 			
 				render = true;
-				if (m_Particles[y][x]->AllJointsBroken() 
-					|| glm::length(m_Particles[y][x]->GetPosition() - m_Particles[y][x + 1]->GetPosition()) > m_Spacing * 3
-					|| glm::length(m_Particles[y][x]->GetPosition() - m_Particles[y + 1][x + 1]->GetPosition()) > m_Spacing * 3)
+				if (m_Particles[y][x]->AllJointsBroken())
 				{
 					render = false;
 					m_Particles[y + 1][x + 1]->CleanupBendJoints();
@@ -189,9 +232,7 @@ void Cloth::Draw()
 					m_Particles[y + 1][x + 1]->CleanupDiagnalJoints();
 					m_Particles[y][x + 1]->CleanupDiagnalJoints();
 				}
-				if (m_Particles[y][x + 1]->AllJointsBroken()
-					|| glm::length(m_Particles[y][x + 1]->GetPosition() - m_Particles[y][x]->GetPosition()) > m_Spacing * 3
-					|| glm::length(m_Particles[y][x + 1]->GetPosition() - m_Particles[y + 1][x + 1]->GetPosition()) > m_Spacing * 3)
+				if (m_Particles[y][x + 1]->AllJointsBroken())
 				{
 					render = false;
 					m_Particles[y][x]->CleanupBendJoints();
@@ -199,9 +240,7 @@ void Cloth::Draw()
 					m_Particles[y][x]->CleanupDiagnalJoints();
 					m_Particles[y + 1][x + 1]->CleanupDiagnalJoints();
 				}
-				if (m_Particles[y + 1][x + 1]->AllJointsBroken()
-					|| glm::length(m_Particles[y + 1][x + 1]->GetPosition() - m_Particles[y][x]->GetPosition()) > m_Spacing * 3
-					|| glm::length(m_Particles[y + 1][x + 1]->GetPosition() - m_Particles[y][x + 1]->GetPosition()) > m_Spacing * 3)
+				if (m_Particles[y + 1][x + 1]->AllJointsBroken())
 				{
 					render = false;
 					m_Particles[y][x + 1]->CleanupBendJoints();
@@ -219,11 +258,30 @@ void Cloth::Draw()
 					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[0]", ((x + 1) / m_Size.x), 1.0f - ((y + 1) / m_Size.y));
 					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[1]", ((x + 1) / m_Size.x), 1.0f - (y / m_Size.y));
 					ShaderLoader::SetUniform2f(std::move(m_ShaderID), "UniformTexCoords[2]", (x / m_Size.x), 1.0f - (y / m_Size.y));
+					
+					ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "Color", { m_Particles[y][x + 1]->Health / m_Particles[y][x + 1]->MaxHealth,m_Particles[y][x + 1]->Health / m_Particles[y][x + 1]->MaxHealth,m_Particles[y][x + 1]->Health / m_Particles[y][x + 1]->MaxHealth,1.0f });
 					StaticMesh::Triangle->Draw();
 				}
 			}
 		}
 		glUseProgram(0);
+
+		for (int y = 0; y < m_Size.y; y++)
+		{
+			for (int x = 0; x < m_Size.x; x++)
+			{
+				if (m_Particles[y][x])
+				{
+					if (m_Particles[y][x]->IsBurning)
+					{
+						if (m_Particles[y][x]->m_FireSystem)
+						{
+							m_Particles[y][x]->m_FireSystem->Draw();
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -387,8 +445,9 @@ void Cloth::HandleGroundCollision()
 					collided = m_Particles[y][x]->GetPosition().y < m_Plane->GetTransform().translation.y;
 					if (collided)
 					{
-						m_Particles[y][x]->Move(Up * 100.0f);
-						m_Particles[y][x]->Move(Forward);
+						glm::vec3 newPos = m_Particles[y][x]->GetTransform().translation;
+						newPos.y = m_Plane->GetTransform().translation.y + Statics::DeltaTime;
+						m_Particles[y][x]->SetTranslation(newPos);
 					}
 				}
 			}
@@ -652,6 +711,11 @@ void Cloth::HandleMouseInteraction()
 				HandleGrab(x, y);
 				break;
 			}
+			case INTERACTIONTYPE::BURN:
+			{
+				ApplyBurn(x, y);
+				break;
+			}
 			default:
 				break;
 			}
@@ -800,6 +864,47 @@ void Cloth::HandleGrab(int _x, int _y)
 	}
 }
 
+void Cloth::ApplyBurn(int _x, int _y)
+{
+	if (m_Particles[_y][_x])
+	{
+		int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
+		if (state == GLFW_PRESS)
+		{
+			Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+
+			Transform triangleCenterTransform = m_Particles[_y][_x]->GetTransform();
+			glm::vec3 particleAPos = m_Particles[_y][_x]->GetPosition();
+			glm::vec3 particleBPos = m_Particles[_y + 1][_x]->GetPosition();
+			glm::vec3 particleCPos = m_Particles[_y + 1][_x + 1]->GetPosition();
+			triangleCenterTransform.translation = { ((particleAPos.x + particleBPos.x + particleCPos.x) / 3.0f),
+								((particleAPos.y + particleBPos.y + particleCPos.y) / 3.0f),
+								((particleAPos.z + particleBPos.z + particleCPos.z) / 3.0f) };
+			UpdateModelValueOfTransform(triangleCenterTransform);
+
+			glm::vec3 hitPos{};
+			if (Physics::IntersectMesh(StaticMesh::Triangle, triangleCenterTransform, cursorRay, hitPos))
+			{
+				m_Particles[_y][_x]->IsBurning = true;
+			}
+
+			triangleCenterTransform = m_Particles[_y][_x]->GetTransform();
+			particleAPos = m_Particles[_y][_x]->GetPosition();
+			particleBPos = m_Particles[_y][_x + 1]->GetPosition();
+			particleCPos = m_Particles[_y + 1][_x + 1]->GetPosition();
+			triangleCenterTransform.translation = { ((particleAPos.x + particleBPos.x + particleCPos.x) / 3.0f),
+								((particleAPos.y + particleBPos.y + particleCPos.y) / 3.0f),
+								((particleAPos.z + particleBPos.z + particleCPos.z) / 3.0f) };
+			UpdateModelValueOfTransform(triangleCenterTransform);
+			hitPos = {};
+			if (Physics::IntersectMesh(StaticMesh::Triangle, triangleCenterTransform, cursorRay, hitPos))
+			{
+				m_Particles[_y][_x]->IsBurning = true;
+			}
+		}
+	}
+}
+
 ClothParticle::ClothParticle(glm::vec3 _startPos)
 {
 	m_Transform.translation = _startPos;
@@ -811,14 +916,39 @@ ClothParticle::ClothParticle(glm::vec3 _startPos)
 	SetScale({ 0.5f,0.5f,0.5f });
 
 	Collider.Radius = 0.25f;
+
+	m_FireSystem = new ParticleSystem(m_Transform.translation, 0.1f);
+	m_FireSystem->SetShader("PointToQuad.vert", "PointToQuad.geo", "SingleTexture_Coloured.frag");
+	m_FireSystem->SetParticleTexture(TextureLoader::LoadTexture("Flame.png"));
+	m_FireSystem->SetGravity(false);
+	m_FireSystem->SetLifetime(0.5f);
+	m_FireSystem->SetAlphaOverLifetime(1);
+	m_FireSystem->Pause();
 }
 
 ClothParticle::~ClothParticle()
 {
+	if (m_FireSystem)
+		delete m_FireSystem;
+	m_FireSystem = nullptr;
 }
 
 void ClothParticle::Update()
 {
+	if (Health <= 0)
+	{
+		CleanupAllJoints();
+		m_IsPinned = false;
+		m_FireSystem->Stop();
+	}
+	if (IsBurning && Health > 0)
+	{
+		m_FireSystem->m_EmissionPosition = m_Transform.translation;
+		m_FireSystem->Update();
+		Health -= Statics::DeltaTime;
+		m_FireSystem->Play();
+	}
+
 	if (!m_IsPinned)
 	{
 		ApplyForce(m_Wind);

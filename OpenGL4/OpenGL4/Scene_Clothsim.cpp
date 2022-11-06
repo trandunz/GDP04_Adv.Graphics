@@ -245,6 +245,7 @@ void Scene_Clothsim::UpdateClothInteractionType()
 	}
 	case 3:
 	{
+		m_Cloth->InteractionType = Cloth::INTERACTIONTYPE::BURN;
 		break;
 	}
 	case 4:

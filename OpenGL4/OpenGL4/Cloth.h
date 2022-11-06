@@ -11,6 +11,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Physics.h"
+#include "ParticleSystem.h"
 
 class DistanceJoint;
 class ClothParticle : public GameObject
@@ -69,6 +70,9 @@ public:
 	void CheckForOnlyHorizontal();
 	int GetJointCount(std::vector< DistanceJoint*>& _joints);
 
+	bool IsBurning{ false };
+	float MaxHealth{ 10.0f };
+	float Health{ 10.0f };
 	glm::vec3 m_Wind{};
 	float m_ConstraintLength{};
 	Collider Collider{ {},0 };
@@ -76,7 +80,9 @@ public:
 	std::vector< DistanceJoint*> m_BendJoints{ };
 	std::vector< DistanceJoint*> m_DiagnalJoints{ };
 	std::vector< DistanceJoint*> m_BackwardDiagnals{ };
+	ParticleSystem* m_FireSystem{ nullptr };
 private:
+
 	float m_Mass{ 1.0f };
 	float m_Damping{ 0.99f };
 	glm::vec3 m_Acceleration{};
@@ -97,7 +103,9 @@ public:
 		UNASSIGNED = 0,
 		PULL,
 		PUSH,
-		GRAB
+		GRAB,
+		BURN,
+		TEAR
 	};
 
 	/// <summary>
@@ -198,6 +206,7 @@ private:
 	void HandlePushing(int _x, int _y);
 	void HandlePulling(int _x, int _y);
 	void HandleGrab(int _x, int _y);
+	void ApplyBurn(int _x, int _y);
 
 	bool m_PointIsGrabbed{};
 	float m_GrabDistance{};
