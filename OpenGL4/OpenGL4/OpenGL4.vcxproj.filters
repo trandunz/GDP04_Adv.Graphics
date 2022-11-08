@@ -177,15 +177,6 @@
     <ClCompile Include="SkinnedMesh.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Bone.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Animator.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Matrix4f.cpp">
       <Filter>Source Files\Statics</Filter>
     </ClCompile>
@@ -306,15 +297,6 @@
       <Filter>Header Files\SceneManagement</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedMesh.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Bone.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Animator.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Matrix4f.h">

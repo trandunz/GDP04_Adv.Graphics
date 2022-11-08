@@ -57,6 +57,7 @@ private:
 	glm::vec2 m_CursorPos{};
 	void* m_Io{ nullptr };
 	
+	bool m_RealisticWind = true;
 	bool m_DebugDraw = false;
 	bool m_WireFrame = false;
 	int m_ClothLength = 20;

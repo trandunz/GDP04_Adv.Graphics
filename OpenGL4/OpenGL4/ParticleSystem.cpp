@@ -142,4 +142,25 @@ void ParticleSystem::SetAlphaOverLifetime(float _alpha)
 
 void ParticleSystem::Burst(int _count)
 {
+	if (m_EmissionTimer >= m_EmissionRate)
+	{
+		for (int i = 0; i < _count; i++)
+		{
+			if (!m_UseManualVelocity)
+			{
+				m_Velocity =
+				{
+					0.25f * cosf(m_Particles.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f,
+					4.0f + 0.25f * RandomFloat() - 0.125f,
+					0.25f * sinf(m_Particles.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f
+				};
+			}
+			m_Particles.emplace_back(Particle(m_EmissionPosition, m_Velocity, m_Lifetime, m_Gravity));
+			m_Particles.back().m_ColorOverLifetime = m_ColorOverLifetime;
+		}
+	}
+	else
+	{
+		m_EmissionTimer += Statics::DeltaTime;
+	}
 }

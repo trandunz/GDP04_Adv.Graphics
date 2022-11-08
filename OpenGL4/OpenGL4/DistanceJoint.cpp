@@ -18,8 +18,8 @@ DistanceJoint::DistanceJoint(ClothParticle* _p1, ClothParticle* _p2, float _leng
 {
 	m_P1 = _p1;
 	m_P2 = _p2;
-	m_P1->m_ConstraintLength = _length;
-	m_P2->m_ConstraintLength = _length;
+	m_P1->ConstraintLength = _length;
+	m_P2->ConstraintLength = _length;
 	m_Length = _length;
 
 	m_ShaderID = ShaderLoader::CreateShader("Normals3D.vert", "DynamicLine.geo", "UnlitColor.frag");
@@ -35,17 +35,24 @@ void DistanceJoint::Update()
 {
 	if (m_P1 && m_P2)
 	{
+		// get thee vector bwteeen the two particles
 		glm::vec3 delta = m_P1->GetPosition() - m_P2->GetPosition();
+		// get the length of the vector
 		float deltaLength = glm::length(delta);
+		// get the difference between deltaLength and the resting distance
 		float difference = (m_Length - deltaLength) / deltaLength;
 		auto im1 = 1 / m_P1->GetMass();
 		auto im2 = 1 / m_P2->GetMass();
+		// calculate a force for the first particle
 		auto force1 = delta * (im1 / (im1 + im2)) * m_Stiffness * difference;
+		// calculate a force for the second particle in the oppiosite direction
 		auto force2 = -delta * (im2 / (im1 + im2)) * m_Stiffness * difference;
 
+		// apply the forces
 		m_P1->ApplyForce(force1);
 		m_P2->ApplyForce(force2);
 
+		// of the force was too large then break the joint
 		if (glm::length(force1) >= m_MaxForce)
 		{
 			Destroy = true;

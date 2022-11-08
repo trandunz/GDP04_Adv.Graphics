@@ -38,7 +38,7 @@ public:
 
 	float m_Stiffness{ 500.0f };
 	float m_Length{};
-	float m_MaxForce{ 225.0f };
+	float m_MaxForce{ 1000.0f };
 	bool Destroy{};
 private:
 	GLuint m_ShaderID{};

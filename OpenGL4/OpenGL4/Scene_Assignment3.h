@@ -27,8 +27,6 @@ private:
 	SkinnedMesh* m_AnimatedModel{ nullptr };
 	SkinnedMesh* m_BonfireModel{ nullptr };
 	SkinnedMesh* m_FountainModel{ nullptr };
-	Animator* m_Animator{ nullptr };
-	Animation* m_DanceAnim{ nullptr };
 
 	bool m_CharacterMoving{};
 

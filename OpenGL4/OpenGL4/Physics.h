@@ -68,10 +68,39 @@ public:
 	/// <returns></returns>
 	static bool PointInTriangle(glm::vec3 _px, glm::vec3 _p0, glm::vec3 _p1, glm::vec3 _p2);
 
+	/// <summary>
+	/// Cehcks for collision between two sphere colliders
+	/// </summary>
+	/// <param name="_sphere"></param>
+	/// <param name="_otherSphere"></param>
+	/// <returns></returns>
 	static bool SphereVSSphere(Collider& _sphere, Collider& _otherSphere);
+
+	/// <summary>
+	/// Checks for collision between two sphere colliders and stores the distance bettween the two inside of resolutionDirection
+	/// </summary>
+	/// <param name="_sphere"></param>
+	/// <param name="_otherSphere"></param>
+	/// <param name="_resolutionDirection"></param>
+	/// <returns></returns>
 	static bool SphereVSSphere(Collider& _sphere, Collider& _otherSphere, glm::vec3& _resolutionDirection);
 
+	/// <summary>
+	/// Checks for ray mesh intersection
+	/// </summary>
+	/// <param name="_mesh"></param>
+	/// <param name="_meshTransform"></param>
+	/// <param name="_ray"></param>
+	/// <returns></returns>
 	static bool IntersectMesh(Mesh* _mesh, Transform _meshTransform, Ray _ray);
+	/// <summary>
+	/// Check for ray mesh intersection and store the hit position in _hitPoint
+	/// </summary>
+	/// <param name="_mesh"></param>
+	/// <param name="_meshTransform"></param>
+	/// <param name="_ray"></param>
+	/// <param name="_hitPoint"></param>
+	/// <returns></returns>
 	static bool IntersectMesh(Mesh* _mesh, Transform _meshTransform, Ray& _ray, glm::vec3& _hitPoint);
 private:
 	/// <summary>

@@ -16,8 +16,8 @@ DistanceJoint::DistanceJoint(ClothParticle* _p1, ClothParticle* _p2, float _leng
 {
 	m_P1 = _p1;
 	m_P2 = _p2;
-	m_P1->m_ConstraintLength = _length;
-	m_P2->m_ConstraintLength = _length;
+	m_P1->ConstraintLength = _length;
+	m_P2->ConstraintLength = _length;
 	m_Length = _length;
 }
 

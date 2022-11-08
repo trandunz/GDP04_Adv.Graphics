@@ -81,10 +81,11 @@ void Scene_Clothsim::Update()
 		m_Cloth->SetRingSpacing(m_HookDistance);
 		m_Cloth->SetWindDirection(m_WindDirection);
 		m_Cloth->SetWindStrength(m_WindStrength);
+		m_Cloth->SetRealisticWind(m_RealisticWind);
 		m_Cloth->SetDebugDraw(m_DebugDraw);
+		m_Cloth->Update();
 		if (m_CollisionSphere)
 			m_Cloth->CheckCollision(m_CollisionSphere->GetCollider());
-		m_Cloth->Update();
 	}	
 }
 
@@ -166,6 +167,7 @@ void Scene_Clothsim::HandleDebugTools()
 			delete m_Cloth;
 			m_Cloth = nullptr;
 			m_Cloth = new Cloth((unsigned)m_ClothWidth, (unsigned)m_ClothLength, 1.0f, { -m_ClothWidth / 2,10,-30 });
+			m_Cloth->SetGround(*m_FloorPlane);
 		}
 
 		ImGui::Text("General Controls:");
@@ -193,6 +195,9 @@ void Scene_Clothsim::HandleDebugTools()
 		ImGui::Combo("Selected Object: ", &m_SelectedCollision, &m_CollisionItems[0], IM_ARRAYSIZE(m_CollisionItems));
 		HandleObjectInteraction();
 		ImGui::Text("Wind:");
+		ImGui::Checkbox("Realistic Wind", &m_RealisticWind);
+		if (!m_RealisticWind)
+			m_Cloth->ResetWind(m_RealisticWind);
 		ImGui::SliderFloat("Wind Direction (x)", &m_WindDirection.x, 0.0f, 1.0f);
 		ImGui::SliderFloat("Wind Direction (y)", &m_WindDirection.y, 0.0f, 1.0f);
 		ImGui::SliderFloat("Wind Direction (z)", &m_WindDirection.z, 0.0f, 1.0f);
@@ -241,6 +246,7 @@ void Scene_Clothsim::UpdateClothInteractionType()
 	}
 	case 2:
 	{
+		m_Cloth->InteractionType = Cloth::INTERACTIONTYPE::TEAR;
 		break;
 	}
 	case 3:

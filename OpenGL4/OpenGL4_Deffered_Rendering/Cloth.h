@@ -60,8 +60,8 @@ public:
 	bool IsPinned();
 	float GetMass();
 
-	glm::vec3 m_Wind{};
-	float m_ConstraintLength{};
+	glm::vec3 Wind{};
+	float ConstraintLength{};
 	Collider Collider{ {},0 };
 private:
 	float m_Mass{ 1.0f };
@@ -127,10 +127,10 @@ public:
 	void CheckCollision(Collider* _collider);
 
 	INTERACTIONTYPE InteractionType{};
-	float m_RingSpacing{ 1.0f };
-	bool m_DebugDraw{ false };
-	glm::vec3 m_Wind{};
-	GameObject* m_Plane{ nullptr };
+	float RingSpacing{ 1.0f };
+	bool DebugDraw{ false };
+	glm::vec3 Wind{};
+	GameObject* Plane{ nullptr };
 private:
 	size_t Index(int x, int y) const { return (size_t)(x + m_Size.x * y); }
 

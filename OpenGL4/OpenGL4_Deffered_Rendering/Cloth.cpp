@@ -20,7 +20,7 @@ Cloth::Cloth(unsigned width, unsigned height, float spacing, glm::vec3 _startPos
 	m_Transform.translation = _startPos;
 	m_Spacing = spacing;
 	m_HookCount = width;
-	m_RingSpacing = spacing;
+	RingSpacing = spacing;
 	UpdateModelValueOfTransform(m_Transform);
 
 	CreateParticles(0,0, (unsigned)m_Size.x, (unsigned)m_Size.y);
@@ -41,7 +41,7 @@ Cloth::~Cloth()
 	m_Particles.clear();
 	m_DistanceJoints.clear();
 
-	m_Plane = nullptr;
+	Plane = nullptr;
 }
 
 void Cloth::Update()
@@ -70,7 +70,7 @@ void Cloth::Draw()
 {
 	if (m_Particles.size() > 0)
 	{
-		if (m_DebugDraw)
+		if (DebugDraw)
 		{
 			for (auto& particle : m_Particles)
 			{
@@ -128,7 +128,7 @@ int Cloth::GetHookCount()
 
 void Cloth::SetGround(GameObject& _ground)
 {
-	m_Plane = &_ground;
+	Plane = &_ground;
 }
 
 void Cloth::SetHookCount(unsigned _amount)
@@ -158,43 +158,43 @@ void Cloth::SetHeight(unsigned _amount)
 
 void Cloth::SetRingSpacing(float _spacing)
 {
-	if (_spacing != m_RingSpacing)
+	if (_spacing != RingSpacing)
 	{
-		m_RingSpacing = _spacing;
+		RingSpacing = _spacing;
 		UpdateRingSpacing();
 	}
 }
 
 void Cloth::SetWindDirection(glm::vec3 _direction)
 {
-	if (m_Wind != _direction)
+	if (Wind != _direction)
 	{
-		m_Wind = _direction;
+		Wind = _direction;
 
 		for (auto& particle : m_Particles)
 		{
-			particle.m_Wind = m_Wind;
+			particle.Wind = Wind;
 		}
 	}
 }
 
 void Cloth::SetWindStrength(float _strength)
 {
-	if (glm::length(m_Wind) != _strength)
+	if (glm::length(Wind) != _strength)
 	{
-		m_Wind = glm::normalize(m_Wind) * _strength;
+		Wind = glm::normalize(Wind) * _strength;
 		for (auto& particle : m_Particles)
 		{
-			particle.m_Wind = m_Wind;
+			particle.Wind = Wind;
 		}
 	}
 }
 
 void Cloth::SetDebugDraw(bool _drawPoints)
 {
-	if (m_DebugDraw != _drawPoints)
+	if (DebugDraw != _drawPoints)
 	{
-		m_DebugDraw = _drawPoints;
+		DebugDraw = _drawPoints;
 	}
 }
 
@@ -238,12 +238,12 @@ void Cloth::CheckCollision(Collider* _collider)
 
 void Cloth::HandleGroundCollision()
 {
-	if (m_Plane)
+	if (Plane)
 	{
 		bool collided{};
 		for (auto& particle : m_Particles)
 		{
-			collided = particle.GetPosition().y < m_Plane->GetTransform().translation.y;
+			collided = particle.GetPosition().y < Plane->GetTransform().translation.y;
 			if (collided)
 			{
 				particle.ApplyForce(Up * 100.0f);
@@ -335,7 +335,7 @@ void Cloth::UpdateRingSpacing()
 			if (m_Particles[Index(0, x)].IsPinned())
 			{
 				auto newPos = m_Transform.translation;
-				newPos.x += (x * m_RingSpacing);
+				newPos.x += (x * RingSpacing);
 				m_Particles[Index(0, x)].SetPosition(newPos);
 				m_Particles[Index(0, x)].SetStartPos(newPos);
 			}
@@ -546,7 +546,7 @@ void ClothParticle::Update()
 {
 	if (!m_IsPinned)
 	{
-		ApplyForce(m_Wind);
+		ApplyForce(Wind);
 		ApplyForce(-m_Velocity * m_Damping);
 
 		auto position = m_Transform.translation;
