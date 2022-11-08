@@ -42,8 +42,6 @@ void Scene_Assignment3::Start()
 	FrameBuffer::GetInstance().SetShader("Framebuffer.vert","BlinnFong3D_Deferred.frag");
 
 	m_AnimatedModel = new SkinnedMesh("Resources/Models/Dude/Dude.dae");
-	m_DanceAnim = new Animation("Resources/Models/Dude/Dude.dae", m_AnimatedModel);
-	m_Animator = new Animator(m_DanceAnim);
 	
 	m_AssimpObject = new GameObject({ 0,-10,-10});
 	m_AssimpObject->SetSkinnedMesh(m_AnimatedModel);

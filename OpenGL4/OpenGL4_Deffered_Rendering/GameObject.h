@@ -13,7 +13,6 @@
 #include "Statics.h"
 #include "StaticMesh.h"
 #include "SkinnedMesh.h"
-#include "Animator.h"
 
 struct Collider;
 class GameObject
@@ -81,8 +80,6 @@ public:
 	Mesh* GetMesh();
 
 	void SetSkinnedMesh(SkinnedMesh* _skinnedMesh);
-
-	void SetAnimator(Animator* _animator);
 
 	/// <summary>
 	/// Returns a copy of the transform
@@ -345,6 +342,5 @@ protected:
 	Transform m_Transform{};
 	Collider* m_Collider{ nullptr };
 	SkinnedMesh* m_SkinnedMesh{ nullptr };
-	Animator* m_Animator{ nullptr };
 };
 

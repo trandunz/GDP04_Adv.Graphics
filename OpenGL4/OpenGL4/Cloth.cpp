@@ -452,7 +452,7 @@ void Cloth::UpdateRingSpacing()
 void Cloth::CreateParticles(unsigned _startIndexX, unsigned _startIndexY, unsigned _width, unsigned _height)
 {
 	m_Particles = new ClothParticle** [_height];
-	for (int i = 0; i < _height; i++)
+	for (int i = 0; i < (int)_height; i++)
 		m_Particles[i] = new ClothParticle*[_width];
 
 	for (int y = (int)_startIndexY; y < (int)_height; y++)
@@ -751,7 +751,7 @@ void Cloth::HandleGrabbedPoint()
 void Cloth::HandleFireSpread(int _x, int _y)
 {
 	// some random ish seed
-	srand((int)time(NULL) * _x * _y + RandomFloat());
+	srand((unsigned)((int)time(NULL) * _x * _y + RandomFloat()));
 
 	// if the particle is burning and its health is less than its max health - a random range betwween 0 and 3
 	if (m_Particles[_y][_x]->IsBurning && m_Particles[_y][_x]->Health < m_Particles[_y][_x]->MaxHealth - (rand() % 3))

@@ -268,6 +268,6 @@ inline glm::quat ConvertQuatToGLMFormat(aiQuaternion _quat)
 
 inline float RandomFloat() 
 {
-	float r = (float)rand() / (double)RAND_MAX;
+	float r = (float)rand() / (float)RAND_MAX;
 	return r;
 }

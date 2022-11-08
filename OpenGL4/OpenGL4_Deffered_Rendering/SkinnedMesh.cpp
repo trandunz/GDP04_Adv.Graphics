@@ -155,7 +155,7 @@ void SkinnedMesh::SetVertexBoneDataToDefault(Vertex& vertex)
 
 void SkinnedMesh::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
 {
-    for (int i = 0; i < mesh->mNumBones; i++)
+    for (int i = 0; i < (int)mesh->mNumBones; i++)
     {
         int boneIndex = 0;
         std::string boneName = mesh->mBones[i]->mName.data;

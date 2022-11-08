@@ -923,7 +923,7 @@ void GameObject::SetSkinnedMeshUniforms()
         std::vector<Matrix4f> transforms;
         m_SkinnedMesh->BoneTransforms(Statics::DeltaTime, transforms);
 
-        for (int i = 0; i < transforms.size(); i++)
+        for (int i = 0; i < (int)transforms.size(); i++)
         {
             Matrix4f Transform = transforms[i];
             glUniformMatrix4fv(m_SkinnedMesh->BoneLocation[i], 1, GL_TRUE, (const GLfloat*)(Transform));

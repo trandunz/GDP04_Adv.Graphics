@@ -21,8 +21,6 @@ private:
 	glm::vec2 m_CursorPos{};
 
 	SkinnedMesh* m_AnimatedModel{ nullptr };
-	Animator* m_Animator{ nullptr };
-	Animation* m_DanceAnim{ nullptr };
 
 	GameObject* m_PlaneObject{ nullptr };
 	GameObject* m_AssimpObject{ nullptr };

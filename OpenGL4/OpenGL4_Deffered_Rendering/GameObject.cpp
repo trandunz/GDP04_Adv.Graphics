@@ -37,7 +37,6 @@ GameObject::~GameObject()
         delete m_Collider;
     m_Collider = nullptr;
 
-    m_Animator = nullptr;
     m_SkinnedMesh = nullptr;
 
     m_ActiveTextures.clear();
@@ -132,9 +131,6 @@ void GameObject::Update()
     // If player provides Rotational input, rotate accordingly
     if (m_Input.w != 0)
         Rotate({ 0,1,0 }, m_Input.w * 100 * Statics::DeltaTime);
-
-    if (m_Animator)
-        m_Animator->UpdateAnimation(Statics::DeltaTime, m_Transform.transform);
 }
 
 void GameObject::Draw()
@@ -409,11 +405,6 @@ Mesh* GameObject::GetMesh()
 void GameObject::SetSkinnedMesh(SkinnedMesh* _skinnedMesh)
 {
     m_SkinnedMesh = _skinnedMesh;
-}
-
-void GameObject::SetAnimator(Animator* _animator)
-{
-    m_Animator = _animator;
 }
 
 Transform GameObject::GetTransform() const
@@ -945,13 +936,6 @@ void GameObject::SetHeightmapShadowsUniforms()
 void GameObject::SetSkinnedMeshUniforms()
 {
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
-
-    if (m_Animator)
-    {
-        auto transforms = m_Animator->GetFinalBoneMatrices();
-        for (int i = 0; i < transforms.size(); ++i)
-            ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
-    }
 }
 
 void GameObject::SetgBufferUniforms()

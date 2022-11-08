@@ -29,7 +29,7 @@ SkinnedMesh::SkinnedMesh(std::string _path)
 	{
 		m_AnimStartFrame = 0;
 		m_AnimEndFrame = 1;
-		m_AnimFPS = m_Scene->mAnimations[0]->mChannels[0]->mNumPositionKeys / m_Scene->mAnimations[0]->mDuration;
+		m_AnimFPS = (int)(m_Scene->mAnimations[0]->mChannels[0]->mNumPositionKeys / m_Scene->mAnimations[0]->mDuration);
 
 		m_AnimStartTime = m_AnimStartFrame / float(m_AnimFPS);
 		m_AnimEndTime = m_AnimEndFrame / float(m_AnimFPS);
@@ -117,7 +117,7 @@ void SkinnedMesh::BoneTransforms(float timeInSeconds, std::vector<Matrix4f>& tra
 
 	transforms.resize(m_NumBones);
 
-	for (GLuint i = 0; i < m_NumBones; i++) 
+	for (GLuint i = 0; i < (unsigned)m_NumBones; i++)
 	{
 		transforms[i] = m_BoneTransformInfo[i].FinalTransformation;
 	}
@@ -190,7 +190,7 @@ void SkinnedMesh::InitMesh(GLuint meshIndex, const aiMesh* paiMesh, std::vector<
 
 void SkinnedMesh::LoadPerVertexBoneData(int meshIndex, const aiMesh* pMesh, std::vector<PerVertexBoneData>& bones)
 {
-	for (int i = 0; i < pMesh->mNumBones; i++) 
+	for (int i = 0; i < (int)pMesh->mNumBones; i++)
 	{
 		int BoneIndex = 0;
 
@@ -213,7 +213,7 @@ void SkinnedMesh::LoadPerVertexBoneData(int meshIndex, const aiMesh* pMesh, std:
 			BoneIndex = m_BoneNameToIDMap[BoneName];
 		}
 
-		for (int j = 0; j < pMesh->mBones[i]->mNumWeights; j++) 
+		for (int j = 0; j < (int)pMesh->mBones[i]->mNumWeights; j++)
 		{
 
 			int VertexID = m_Entries[meshIndex].BaseVertex + pMesh->mBones[i]->mWeights[j].mVertexId;
