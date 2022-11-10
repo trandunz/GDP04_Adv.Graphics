@@ -1,7 +1,7 @@
 #pragma once
 #include "Particle.h"
 
-#define NUM_PARTICLES 128 * 100
+#define NUM_PARTICLES 128 * 1000
 
 class C_Particle_System
 {

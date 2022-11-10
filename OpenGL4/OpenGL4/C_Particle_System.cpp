@@ -70,6 +70,9 @@ void C_Particle_System::Draw()
 
 	// Compute
 	glUseProgram(m_ComputeID);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_PositionBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_VelocityBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_InitialVelocityBuffer);
 
 	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "DeltaTime", Statics::DeltaTime);
 
@@ -125,6 +128,7 @@ void C_Particle_System::Draw()
 	glUseProgram(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	glBindVertexArray(0);
 }

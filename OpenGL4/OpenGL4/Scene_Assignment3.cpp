@@ -124,7 +124,7 @@ void Scene_Assignment3::Start()
 	m_SnowSystem->SetGravity(1);
 	m_SnowSystem->YVelocity = 0;
 	m_SnowSystem->m_Lifetime = 10;
-	m_SnowSystem->EmissionOffset = { rand() * 1000, 0, rand() * 1000 };
+	m_SnowSystem->EmissionOffset = { rand() % 100, 0, rand() % 100 };
 	m_SnowSystem->Init();
 
 	m_Fountain = new GameObject({ 0,-25,-5 });
