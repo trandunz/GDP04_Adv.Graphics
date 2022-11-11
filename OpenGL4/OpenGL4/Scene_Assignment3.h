@@ -35,7 +35,7 @@ private:
 	C_Particle_System* m_FountainSystem{ nullptr };
 	C_Particle_System* m_SnowSystem{ nullptr };
 
-	std::vector< Firework*> m_Fireworks{};
+	//std::vector< Firework*> m_Fireworks{};
 
 	GameObject* m_Fountain{ nullptr };
 	GameObject* m_AssimpObject{ nullptr };

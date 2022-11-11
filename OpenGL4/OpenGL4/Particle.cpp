@@ -12,12 +12,17 @@
 #include "StaticMesh.h"
 #include "ShaderLoader.h"
 
-Particle::Particle(glm::vec3 _pos, glm::vec3 _velocity, float _lifeTime, bool _gravity)
+Particle::Particle(glm::vec3 _pos, glm::vec3 _velocity, float _lifeTime, bool _gravity, bool _looping, glm::vec3 _color)
 {
 	m_StartPos = _pos;
 	m_StartVelocity = _velocity;
 	m_LifeTime = _lifeTime;
+	Looping = _looping;
 	Gravity = _gravity;
+	m_Color.x = _color.x;
+	m_Color.y = _color.y;
+	m_Color.z = _color.z;
+	m_ColorOverLifetime = { m_Color.x, m_Color.y, m_Color.z, 1.0f };
 
 	ResetToInitialValues();
 }
@@ -28,7 +33,7 @@ Particle::~Particle()
 
 void Particle::Update()
 {
-	if (m_ElapsedTime <= 0)
+	if (m_ElapsedTime <= 0 && Looping)
 	{
 		ResetToInitialValues();
 	}
@@ -45,18 +50,14 @@ void Particle::Update()
 	}
 }
 
-void Particle::Draw(GLuint _shader)
+void Particle::SetColorOverLifetime(glm::vec4 _color)
 {
-	if (m_ElapsedTime > 0)
-	{
-		// Projection * View * Model Matrix
-		ShaderLoader::SetUniformMatrix4fv(std::move(_shader), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+	m_ColorOverLifetime = _color;
+}
 
-		m_Color = glm::mix({ 1,1,1,0 }, m_ColorOverLifetime, m_ElapsedTime / m_LifeTime);
-		ShaderLoader::SetUniform4fv(std::move(_shader), "Color", m_Color);
-
-		StaticMesh::Point->Draw();
-	}
+void Particle::SetAlphaOverLifetime(float _alpha)
+{
+	m_ColorOverLifetime.w = _alpha;
 }
 
 void Particle::ResetToInitialValues()

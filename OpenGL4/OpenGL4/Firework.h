@@ -16,6 +16,7 @@ private:
 	glm::vec3 m_InitialPosition{};
 	float m_ExplosionHeight{ 10.0f };
 	float m_MoveSpeed{ 10.0f };
+	bool m_HasExploded{};
 	ParticleSystem* m_TrailSystem{ nullptr };
 	ParticleSystem* m_ExplosionSystem{ nullptr };
 };

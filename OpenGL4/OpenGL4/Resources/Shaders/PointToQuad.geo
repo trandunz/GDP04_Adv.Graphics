@@ -13,46 +13,39 @@ layout (points) in;
 layout (triangle_strip, max_vertices = 6) out;
 
 out vec2 TexCoords;
-out float LifeTime;
+out mat4 PVMMatrix;
 
 uniform vec3 vQuad1, vQuad2;
 
-in VS_GS_VERTEX
-{
-	in vec3 AttribPosition;
-	in mat4 PVMMatrix;
-	in float LifeTime;
-}gs_in[];
-
 void main()
 {
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition + (-vQuad1 + vQuad2)),1.0f);
+	vec3 point = gl_in[0].gl_Position.xyz + (-vQuad1 + vQuad2);
+	gl_Position = PVMMatrix * vec4(point,1.0f);
 	TexCoords = vec2(0.0f, 1.0f);
-	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition + (-vQuad1 - vQuad2)),1.0f);
+	point = gl_in[0].gl_Position.xyz + (-vQuad1 - vQuad2);
+	gl_Position = PVMMatrix * vec4(point,1.0f);
 	TexCoords = vec2(0.0f, 0.0f);
-	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 - vQuad2)),1.0f);
+	point = gl_in[0].gl_Position.xyz + (vQuad1 - vQuad2);
+	gl_Position = PVMMatrix * vec4(point,1.0f);
 	TexCoords = vec2(1.0f, 0.0f);
-	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition +  (-vQuad1 + vQuad2)),1.0f);
+	point = gl_in[0].gl_Position.xyz + (-vQuad1 + vQuad2);
+	gl_Position = PVMMatrix * vec4(point,1.0f);
 	TexCoords = vec2(0.0f, 1.0f);
-	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 - vQuad2)),1.0f);
+	point = gl_in[0].gl_Position.xyz + (vQuad1 - vQuad2);
+	gl_Position = PVMMatrix * vec4(point,1.0f);
 	TexCoords = vec2(1.0f, 0.0f);
-	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 
-	gl_Position = gs_in[0].PVMMatrix * vec4((gs_in[0].AttribPosition +  (vQuad1 + vQuad2)),1.0f);
+	point = gl_in[0].gl_Position.xyz + (vQuad1 + vQuad2);
+	gl_Position = PVMMatrix * vec4(point,1.0f);
 	TexCoords = vec2(1.0f, 1.0f);
-	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
 }

@@ -10,6 +10,7 @@
 
 #pragma once
 #include "Particle.h"
+#define NUM_PARTICLES 128 * 100
 
 class ParticleSystem
 {
@@ -68,8 +69,12 @@ public:
 	void Draw();
 
 	void SetParticleVelocity(glm::vec3 _velocity);
+	
+	void SetParticleVelocity(std::function<glm::vec3()> _velocityFunction);
 
 	void SetGravity(bool _gravity);
+
+	void SetLooping(bool _looping);
 
 	void SetLifetime(float _lifetime);
 
@@ -77,21 +82,33 @@ public:
 
 	void Burst(int _count);
 
+	void SetColor(glm::vec3 _color);
+
+	void Init();
+	
 	glm::vec3 m_EmissionPosition{};
 private:
+	GLuint m_ShaderID{};
+
+	GLuint m_VertexArrayID{};
+	GLuint m_VertexBufferID{};
+
+	Transform m_Transform{};
 	Texture m_Texture{};
 	std::vector<Particle> m_Particles{};
+	std::vector<glm::vec3> m_Positions{};
 
+	std::function<glm::vec3()> m_VelocityFunction{ nullptr };
 	bool m_UseManualVelocity{};
 	glm::vec3 m_Velocity{};
 	float m_EmissionRate{};
 	float m_EmissionTimer{};
 	float m_Lifetime{0.7f};
 	glm::vec4 m_ColorOverLifetime{1,1,1,1};
+	glm::vec3 m_Color{ 1,1,1 };
 
 	bool m_Gravity{ true };
 	bool m_Paused{ false };
-
-	GLuint m_ShaderID{};
+	bool m_Looping{ true };
 };
 

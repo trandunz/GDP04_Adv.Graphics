@@ -20,7 +20,7 @@ public:
 	/// <param name="_pos"></param>
 	/// <param name="_velocity"></param>
 	/// <param name="_lifeTime"></param>
-	Particle(glm::vec3 _pos, glm::vec3 _velocity, float _lifeTime, bool _gravity = true);
+	Particle(glm::vec3 _pos, glm::vec3 _velocity, float _lifeTime, bool _gravity = true, bool _looping = true, glm::vec3 _color = {1,1,1});
 	/// <summary>
 	/// Particle Destructor
 	/// </summary>
@@ -30,22 +30,24 @@ public:
 	/// Particle update
 	/// </summary>
 	void Update();
-	/// <summary>
-	/// Draw the particle
-	/// </summary>
-	void Draw(GLuint _shader);
+
+	void SetColorOverLifetime(glm::vec4 _color);
+	void SetAlphaOverLifetime(float _alpha);
 
 	bool Gravity{ true };
-	glm::vec4 m_ColorOverLifetime{ 1,1,1,1 };
+	bool Looping{ true };
+
+	Transform m_Transform{};
+	glm::vec4 m_Color{ 1,1,1,1 };
 private:
 	/// <summary>
 	/// Reset the particles values back to the ones specified on construction
 	/// </summary>
 	void ResetToInitialValues();
 
-	glm::vec4 m_Color{ 1,1,1,1 };
+	glm::vec4 m_ColorOverLifetime{ 1,1,1,1 };
 
-	Transform m_Transform{};
+
 	glm::vec3 m_Velocity{};
 	float m_LifeTime{};
 

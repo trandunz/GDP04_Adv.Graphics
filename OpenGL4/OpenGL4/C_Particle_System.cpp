@@ -40,9 +40,9 @@ void C_Particle_System::Init()
 		m_InitialPosition[i] = glm::vec4(m_EmissionPosition + EmissionOffset, RandomFloat() * m_Lifetime);
 		glm::vec3 velocity =
 		{
-			0.25f * cosf(m_InitialPosition.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f,
+			0.25f * cosf(m_InitialPosition.size() * 0.0167f) + 0.95f * RandomFloat() - (0.95f / 2.0f),
 			YVelocity + 0.25f * RandomFloat() - 0.125f,
-			0.25f * sinf(m_InitialPosition.size() * 0.1167f) + 0.95f * RandomFloat() - 0.25f
+			0.25f * sinf(m_InitialPosition.size() * 0.0167f) + 0.95f * RandomFloat() - (0.95f / 2.0f)
 		};
 		m_InitialVelocity[i] = glm::vec4(velocity, RandomFloat() * m_Lifetime);
 	}

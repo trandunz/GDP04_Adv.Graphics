@@ -17,6 +17,8 @@ layout(std430, binding = 0) buffer positionBuffer{vec4 position[]; };
 layout(std430, binding = 1) buffer velocityBuffer{vec4 velocity[]; };
 layout(std430, binding = 2) buffer initVelocityBuffer{vec4 initVelocity[]; };
 
+#define TWOPI 6.28318531
+
 uniform float DeltaTime;
 uniform float Gravity;
 uniform float Lifetime;
