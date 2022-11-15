@@ -1000,7 +1000,7 @@ void ClothParticle::Update()
 	{
 		CleanupAllJoints();
 		m_IsPinned = false;
-		FireSystem->Stop();
+		FireSystem->Pause();
 	}
 	// else if its alive and burning, decreease its head and play the fire particle system,
 	if (IsBurning && Health > 0)

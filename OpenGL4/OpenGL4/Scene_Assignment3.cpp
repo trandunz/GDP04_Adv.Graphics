@@ -101,18 +101,18 @@ void Scene_Assignment3::Start()
 	Statics::SceneCamera.SetPitch(-110);
 	Statics::SceneCamera.SetYaw(90);
 
-	m_ParticleSystem = new ParticleSystem({0,-25,-15 }, 0.2f);
+	m_ParticleSystem = new ParticleSystem({0,-25,-15 }, 0.1f);
 	m_ParticleSystem->SetParticleTexture(TextureLoader::LoadTexture("Flame.png"));
 	m_ParticleSystem->SetGravity(false);
 	m_ParticleSystem->SetLifetime(0.1f);
-	m_ParticleSystem->SetAlphaOverLifetime(1);
+	m_ParticleSystem->SetAlphaOverLifetime(0);
 	m_ParticleSystem->Init();
 
-	m_SmokeSystem = new ParticleSystem({ 0,-23.5f,-15 }, 0.1f);
+	m_SmokeSystem = new ParticleSystem({ 0,-23.5f,-15 }, 3.0f);
 	m_SmokeSystem->SetParticleTexture(TextureLoader::LoadTexture("Smoke.png"));
 	m_SmokeSystem->SetGravity(false);
 	m_SmokeSystem->SetLifetime(3.0f);
-	m_SmokeSystem->SetAlphaOverLifetime(1);
+	m_SmokeSystem->SetAlphaOverLifetime(0);
 	m_SmokeSystem->Init();
 
 	m_FountainSystem = new C_Particle_System({ 0,-23.7f,-5 }, 0.1f);
@@ -163,10 +163,10 @@ void Scene_Assignment3::Update()
 		m_SnowSystem->Update();
 	}
 
-	//for (auto& firework : m_Fireworks)
-	//{
-	//	firework->Update();
-	//}
+	for (auto& firework : m_Fireworks)
+	{
+		firework->Update();
+	}
 		
 
 	if (m_AssimpObject)
@@ -205,7 +205,7 @@ void Scene_Assignment3::KeyEvents()
 		{
 			if (key.first == GLFW_KEY_P)
 			{
-				//m_Fireworks.emplace_back(new Firework({ 0,-25, -10 }));
+				m_Fireworks.emplace_back(new Firework({ 0,-25, -10 }));
 				key.second = false;
 			}
 		}
@@ -240,6 +240,9 @@ void Scene_Assignment3::Draw()
 
 	if (m_Fountain)
 		m_Fountain->Draw();
+
+	for (auto& firework : m_Fireworks)
+		firework->Draw();
 
 	if (m_SmokeSystem)
 		m_SmokeSystem->Draw();

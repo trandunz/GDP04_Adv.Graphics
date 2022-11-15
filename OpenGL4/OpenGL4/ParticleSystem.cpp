@@ -23,7 +23,7 @@ ParticleSystem::ParticleSystem(glm::vec3 _emissionPos, float _emissionRate)
 	m_Transform.translation = m_EmissionPosition;
 	UpdateModelValueOfTransform(m_Transform);
 
-	SetShader("PointToQuad.vert", "PointToQuad.geo", "SingleTexture_Coloured.frag");
+	m_ShaderID = ShaderLoader::CreateShader("PointToQuad.vert", "PointToQuad.geo", "SingleTexture_Coloured.frag");
 }
 
 ParticleSystem::~ParticleSystem()
@@ -51,12 +51,6 @@ void ParticleSystem::Pause()
 	m_Paused = true;
 }
 
-void ParticleSystem::Stop()
-{
-	m_Paused = true;
-	m_Particles.clear();
-}
-
 void ParticleSystem::Play()
 {
 	m_Paused = false;
@@ -64,50 +58,72 @@ void ParticleSystem::Play()
 
 void ParticleSystem::Update()
 {
-	for (int i = 0; i < m_Particles.size(); i++)
+	if (!m_Paused)
 	{
-		m_Particles[i].Update();
-		m_Positions[i] = m_Particles[i].m_Transform.translation;
+		m_EmissionTimer -= Statics::DeltaTime;
+
+		if (m_Looping && m_EmissionTimer <= 0.0f)
+			m_EmissionTimer = m_EmissionRate;
+
+		for (int i = 0; i < m_Particles.size(); i++)
+		{
+			m_Particles[i].SetStartPosition(m_EmissionPosition);
+			m_Particles[i].Update();
+			m_Positions[i] = m_Particles[i].m_Transform.translation;
+		}
 	}
 }
 
 void ParticleSystem::Draw()
 {
-	glUseProgram(m_ShaderID);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask(GL_FALSE);
+	if (m_EmissionTimer > 0)
+	{
+		glBindVertexArray(m_VertexArrayID);
 
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * m_Positions.size(), &m_Positions[0]);
 
-	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_Texture.ID);
-	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 
-	glm::vec3 vQuad1, vQuad2;
-	glm::vec3 camFront = Statics::SceneCamera.GetFront();
-	camFront = glm::normalize(camFront);
-	vQuad1 = glm::cross(camFront, Statics::SceneCamera.GetUp());
-	vQuad1 = glm::normalize(vQuad1);
-	vQuad2 = glm::cross(camFront, vQuad1);
-	vQuad2 = glm::normalize(vQuad2);
-	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "vQuad1", vQuad1);
-	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "vQuad2", vQuad2);
+		glUseProgram(m_ShaderID);
 
-	ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "Color", glm::vec4(m_Color, 1.0f));
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix());
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, m_Positions.size() * sizeof(glm::vec3), &m_Positions[0], GL_STATIC_DRAW);
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "TextureCount", 1);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_Texture.ID);
+		ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
 
-	glBindVertexArray(m_VertexArrayID);
-	glDrawArrays(GL_POINTS, 0, NUM_PARTICLES);
-	glBindVertexArray(0);
+		glm::vec3 vQuad1, vQuad2;
+		glm::vec3 camFront = Statics::SceneCamera.GetFront();
+		camFront = glm::normalize(camFront);
+		vQuad1 = glm::cross(camFront, Statics::SceneCamera.GetUp());
+		vQuad1 = glm::normalize(vQuad1);
+		vQuad2 = glm::cross(camFront, vQuad1);
+		vQuad2 = glm::normalize(vQuad2);
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "vQuad1", vQuad1);
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "vQuad2", vQuad2);
 
-	glDepthMask(GL_TRUE);
-	glDisable(GL_BLEND);
-	glUseProgram(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+		ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "Color", glm::vec4(m_Color, 1.0f));
+		//ShaderLoader::SetUniform1f(std::move(m_ShaderID), "AlphaOverLifetime", m_ColorOverLifetime.w);
+		//ShaderLoader::SetUniform1f(std::move(m_ShaderID), "LifeTime", m_EmissionTimer / m_EmissionRate);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDepthMask(GL_FALSE);
+
+		glDrawArrays(GL_POINTS, 0, ParticleCount);
+
+		glDepthMask(GL_TRUE);
+
+		glDisableVertexAttribArray(0);
+		glUseProgram(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glBindVertexArray(0);
+	}
 }
 
 void ParticleSystem::SetParticleVelocity(glm::vec3 _velocity)
@@ -182,6 +198,7 @@ void ParticleSystem::Burst(int _count)
 void ParticleSystem::SetColor(glm::vec3 _color)
 {
 	m_Color = _color;
+	m_ColorOverLifetime = { m_Color.x, m_Color.y, m_Color.z, m_ColorOverLifetime.w };
 	for (auto& particle : m_Particles)
 	{
 		particle.m_Color.x = _color.x;
@@ -192,7 +209,7 @@ void ParticleSystem::SetColor(glm::vec3 _color)
 
 void ParticleSystem::Init()
 {
-	for (int i = 0; i < NUM_PARTICLES; i++)
+	for (int i = 0; i < ParticleCount; i++)
 	{
 		if (!m_UseManualVelocity)
 		{
@@ -210,6 +227,7 @@ void ParticleSystem::Init()
 		m_Particles.emplace_back(Particle(m_EmissionPosition, m_Velocity, m_Lifetime, m_Gravity, m_Looping, m_Color));
 		m_Particles.back().SetAlphaOverLifetime(m_ColorOverLifetime.w);
 		m_Positions.push_back(m_EmissionPosition);
+		m_Particles.back().SetElaspedTime((RandomFloat() + 0.25f) * m_Lifetime);
 	}
 
 	// Vertex Array
@@ -219,7 +237,7 @@ void ParticleSystem::Init()
 	// Vertex Buffer
 	glGenBuffers(1, &m_VertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Positions), &m_Positions[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_Positions.size(), &m_Positions[0], GL_STATIC_DRAW);
 
 	// Layouts
 	glEnableVertexAttribArray(0);

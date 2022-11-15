@@ -10,7 +10,6 @@
 
 #pragma once
 #include "Particle.h"
-#define NUM_PARTICLES 128 * 100
 
 class ParticleSystem
 {
@@ -50,10 +49,7 @@ public:
 	/// Pause the particle system
 	/// </summary>
 	void Pause();
-	/// <summary>
-	/// Stop the particle system
-	/// </summary>
-	void Stop();
+
 	/// <summary>
 	/// Play the particle systems
 	/// </summary>
@@ -86,6 +82,7 @@ public:
 
 	void Init();
 	
+	int ParticleCount{128 * 100};
 	glm::vec3 m_EmissionPosition{};
 private:
 	GLuint m_ShaderID{};
@@ -99,7 +96,7 @@ private:
 	std::vector<glm::vec3> m_Positions{};
 
 	std::function<glm::vec3()> m_VelocityFunction{ nullptr };
-	bool m_UseManualVelocity{};
+	bool m_UseManualVelocity{false};
 	glm::vec3 m_Velocity{};
 	float m_EmissionRate{};
 	float m_EmissionTimer{};

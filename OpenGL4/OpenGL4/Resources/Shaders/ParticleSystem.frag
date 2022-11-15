@@ -13,12 +13,41 @@
 layout (location = 0) out vec4 FragColor;
 
 // Input from Previous Shader
-in float LifeTime;
+in vec2 TexCoords;
 
-uniform vec4 ColorOverLifetime;
+uniform sampler2D Texture0;
+uniform int TextureCount;
+
+uniform float AlphaOverLifetime;
+uniform vec4 Color;
+
+uniform float LifeTime;
+
+// Available Helper function Forward Declerations
+vec4 ColourFromTextureORWhite(vec2 _texCoords);
 
 // Main function that gets called per vertex fragment.
 void main()
 {
-    FragColor = mix(vec4( 0.0f, 0.48f, 0.58f, 1 ), ColorOverLifetime, 0);
+    FragColor = mix(vec4(ColourFromTextureORWhite(TexCoords).rgb, AlphaOverLifetime), ColourFromTextureORWhite(TexCoords), LifeTime);
+}
+
+// Checks for number a texture and returns the colour output accordingly.
+vec4 ColourFromTextureORWhite(vec2 _texCoords)
+{
+    vec4 outputColour;
+    switch(TextureCount)
+    {
+        case 0:
+        {
+            outputColour = vec4(1.0f,1.0f,1.0f,1.0f);
+            break;
+        }
+        default:
+        {
+            outputColour = texture(Texture0,_texCoords);
+            break;
+        }
+    }
+    return outputColour * Color;
 }

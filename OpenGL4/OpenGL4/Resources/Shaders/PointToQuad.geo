@@ -13,7 +13,7 @@ layout (points) in;
 layout (triangle_strip, max_vertices = 6) out;
 
 out vec2 TexCoords;
-out mat4 PVMMatrix;
+uniform mat4 PVMMatrix;
 
 uniform vec3 vQuad1, vQuad2;
 
@@ -48,4 +48,6 @@ void main()
 	gl_Position = PVMMatrix * vec4(point,1.0f);
 	TexCoords = vec2(1.0f, 1.0f);
 	EmitVertex();
+
+	EndPrimitive();
 }

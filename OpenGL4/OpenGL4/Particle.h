@@ -33,6 +33,8 @@ public:
 
 	void SetColorOverLifetime(glm::vec4 _color);
 	void SetAlphaOverLifetime(float _alpha);
+	void SetElaspedTime(float _elapsedTime);
+	void SetStartPosition(glm::vec3 _pos);
 
 	bool Gravity{ true };
 	bool Looping{ true };

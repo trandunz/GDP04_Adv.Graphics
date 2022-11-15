@@ -55,4 +55,6 @@ void main()
 	TexCoords = vec2(1.0f, 1.0f);
 	LifeTime = gs_in[0].LifeTime;
 	EmitVertex();
+
+	EndPrimitive();
 }

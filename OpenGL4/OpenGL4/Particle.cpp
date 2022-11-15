@@ -16,6 +16,7 @@ Particle::Particle(glm::vec3 _pos, glm::vec3 _velocity, float _lifeTime, bool _g
 {
 	m_StartPos = _pos;
 	m_StartVelocity = _velocity;
+	m_Velocity = _velocity;
 	m_LifeTime = _lifeTime;
 	Looping = _looping;
 	Gravity = _gravity;
@@ -58,6 +59,16 @@ void Particle::SetColorOverLifetime(glm::vec4 _color)
 void Particle::SetAlphaOverLifetime(float _alpha)
 {
 	m_ColorOverLifetime.w = _alpha;
+}
+
+void Particle::SetElaspedTime(float _elapsedTime)
+{
+	m_ElapsedTime = _elapsedTime;
+}
+
+void Particle::SetStartPosition(glm::vec3 _pos)
+{
+	m_StartPos = _pos;
 }
 
 void Particle::ResetToInitialValues()
