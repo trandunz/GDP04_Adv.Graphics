@@ -28,6 +28,7 @@ public:
 	static bool BlackBars;
 	static bool ActiveCursor;
 	static bool DSA;
+	static Camera* ActiveCamera;
 	static Camera SceneCamera;
 	static KEYMAP Keymap;
 

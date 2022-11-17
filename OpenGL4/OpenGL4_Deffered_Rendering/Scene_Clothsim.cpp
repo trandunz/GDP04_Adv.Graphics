@@ -70,8 +70,8 @@ void Scene_Clothsim::Start()
 void Scene_Clothsim::Update()
 {
 	m_ElapsedTime += Statics::DeltaTime;
-	Statics::SceneCamera.Movement_Capture();
-	Statics::SceneCamera.Movement();
+	Statics::ActiveCamera.Movement_Capture();
+	Statics::ActiveCamera.Movement();
 
 	if (m_CollisionSphere)
 	{
@@ -101,7 +101,7 @@ void Scene_Clothsim::KeyEvents()
 void Scene_Clothsim::CursorMoveEvent(double& xpos, double& ypos)
 {
 	if (!Statics::ActiveCursor)
-		Statics::SceneCamera.MouseLook({ xpos, ypos });
+		Statics::ActiveCamera.MouseLook({ xpos, ypos });
 }
 
 void Scene_Clothsim::CursorClickEvent(int button, int action, int mods)

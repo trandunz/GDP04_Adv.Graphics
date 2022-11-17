@@ -14,13 +14,14 @@ Player::~Player()
 void Player::Update()
 {
 	Movement();
+	m_ThirdPersonCamera.SetPosition(m_Transform.translation - (m_ThirdPersonCamera.GetFront() * 5.0f) + Up * 2.5f);
 }
 
 void Player::Movement()
 {
 	m_Velocity.x = 0;
 	m_Velocity.z = 0;
-	if (Statics::ActiveCursor)
+	if (Statics::ActiveCursor || m_IsThirdPerson)
 	{
 		for (auto& key : Statics::Keymap)
 		{
@@ -44,6 +45,21 @@ void Player::Movement()
 				}
 			}
 		}
+	}
+
+	if (m_IsThirdPerson && glm::length(glm::vec2(m_Velocity.x, m_Velocity.z)) > 0.1f)
+	{
+		glm::vec3 camForward = Statics::ActiveCamera->GetFront();
+		camForward.y = 0;
+		glm::vec3 camRight = Statics::ActiveCamera->GetRight();
+		camRight.y = 0;
+
+		glm::vec3 forwardRelativeInput = -m_Velocity.z * camForward;
+		glm::vec3 rightRelativeInput = m_Velocity.x * camRight;
+		glm::vec3 cameraRelativeMovement = forwardRelativeInput + rightRelativeInput;
+		cameraRelativeMovement = glm::normalize(cameraRelativeMovement);
+		m_Velocity.x = cameraRelativeMovement.x;
+		m_Velocity.z = cameraRelativeMovement.z;
 	}
 	
 	m_Velocity.x *= m_MoveSpeed;
@@ -84,39 +100,60 @@ void Player::SetGround(GameObject* _ground)
 	m_Ground = _ground;
 }
 
+void Player::ToggleThirdPersonCamera(bool _thirdPersonCamera)
+{
+	m_IsThirdPerson = _thirdPersonCamera;
+
+	if (_thirdPersonCamera)
+	{
+		Statics::ActiveCamera = &m_ThirdPersonCamera;
+	}
+	else
+	{
+		Statics::ActiveCamera = &Statics::SceneCamera;
+	}
+}
+
 void Player::AlignWithInput()
 {
-	if (m_Velocity.z < 0 && m_Velocity.x > 0)
+	if (m_IsThirdPerson)
 	{
-		SetRotation({ 0,1,0 }, -45);
+		SetRotation({ 0,1,0}, -Statics::ActiveCamera->GetYaw() - 90);
 	}
-	else if (m_Velocity.z > 0 && m_Velocity.x == 0)
+	else
 	{
-		SetRotation({ 0,1,0 }, 180);
-	}
-	else if (m_Velocity.z == 0 && m_Velocity.x > 0)
-	{
-		SetRotation({ 0,1,0 }, -90);
-	}
-	else if (m_Velocity.z == 0 && m_Velocity.x < 0)
-	{
-		SetRotation({ 0,1,0 }, 90);
-	}
-	else if (m_Velocity.z < 0 && m_Velocity.x < 0)
-	{
-		SetRotation({ 0,1,0 }, 45);
-	}
-	else if (m_Velocity.z > 0 && m_Velocity.x < 0)
-	{
-		SetRotation({ 0,1,0 }, 135);
-	}
-	else if (m_Velocity.z < 0 && m_Velocity.x == 0)
-	{
-		SetRotation({ 0,1,0 }, 0);
-	}
-	else if (m_Velocity.z > 0 && m_Velocity.x > 0)
-	{
-		SetRotation({ 0,1,0 }, 225);
+		if (m_Velocity.z < 0 && m_Velocity.x > 0)
+		{
+			SetRotation({ 0,1,0 }, -45);
+		}
+		else if (m_Velocity.z > 0 && m_Velocity.x == 0)
+		{
+			SetRotation({ 0,1,0 }, 180);
+		}
+		else if (m_Velocity.z == 0 && m_Velocity.x > 0)
+		{
+			SetRotation({ 0,1,0 }, -90);
+		}
+		else if (m_Velocity.z == 0 && m_Velocity.x < 0)
+		{
+			SetRotation({ 0,1,0 }, 90);
+		}
+		else if (m_Velocity.z < 0 && m_Velocity.x < 0)
+		{
+			SetRotation({ 0,1,0 }, 45);
+		}
+		else if (m_Velocity.z > 0 && m_Velocity.x < 0)
+		{
+			SetRotation({ 0,1,0 }, 135);
+		}
+		else if (m_Velocity.z < 0 && m_Velocity.x == 0)
+		{
+			SetRotation({ 0,1,0 }, 0);
+		}
+		else if (m_Velocity.z > 0 && m_Velocity.x > 0)
+		{
+			SetRotation({ 0,1,0 }, 225);
+		}
 	}
 }
 

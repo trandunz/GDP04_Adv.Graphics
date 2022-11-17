@@ -59,8 +59,8 @@ void Scene_Assignment3::Start()
 void Scene_Assignment3::Update()
 {
 	m_ElapsedTime += Statics::DeltaTime;
-	Statics::SceneCamera.Movement_Capture();
-	Statics::SceneCamera.Movement();
+	Statics::ActiveCamera.Movement_Capture();
+	Statics::ActiveCamera.Movement();
 
 	if (m_AssimpObject)
 		m_AssimpObject->Update();
@@ -73,7 +73,7 @@ void Scene_Assignment3::KeyEvents()
 void Scene_Assignment3::CursorMoveEvent(double& xpos, double& ypos)
 {
 	if (!Statics::ActiveCursor)
-		Statics::SceneCamera.MouseLook({ xpos, ypos });
+		Statics::ActiveCamera.MouseLook({ xpos, ypos });
 }
 
 void Scene_Assignment3::CursorClickEvent(int button, int action, int mods)

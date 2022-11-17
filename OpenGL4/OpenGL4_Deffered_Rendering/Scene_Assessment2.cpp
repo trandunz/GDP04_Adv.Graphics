@@ -153,8 +153,8 @@ void Scene_Assessment2::Update()
 	// If mouse is not active, move camera else move the cube
 	if (!Statics::ActiveCursor)
 	{
-		Statics::SceneCamera.Movement_Capture();
-		Statics::SceneCamera.Movement();
+		Statics::ActiveCamera.Movement_Capture();
+		Statics::ActiveCamera.Movement();
 	}
 	else
 	{
@@ -187,7 +187,7 @@ void Scene_Assessment2::CursorMoveEvent(double& xpos, double& ypos)
 	m_CursorPos = { xpos , ypos };
 
 	if (!Statics::ActiveCursor)
-		Statics::SceneCamera.MouseLook({ xpos, ypos });
+		Statics::ActiveCamera.MouseLook({ xpos, ypos });
 }
 
 void Scene_Assessment2::CursorClickEvent(int button, int action, int mods)

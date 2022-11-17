@@ -81,6 +81,32 @@ void Camera::SetPitch(float _pitch)
     m_Pitch = _pitch;
 }
 
+void Camera::SetPosition(glm::vec3 _newPos)
+{
+    m_Position = _newPos;
+}
+
+void Camera::LookAt(glm::vec3 _point)
+{
+    float xdis = _point.x - m_Position.x;
+    float ydis = _point.z - m_Position.z;
+    float zdis = _point.y - m_Position.y;
+    float xzdis = sqrtf(xdis * xdis + zdis * zdis);
+
+    m_Yaw = -atan2f(ydis, xzdis);
+    m_Pitch = -(atan2f(-xdis, zdis));
+}
+
+float Camera::GetPitch()
+{
+    return m_Pitch;
+}
+
+float Camera::GetYaw()
+{
+    return m_Yaw;
+}
+
 void Camera::UpdateRotationVectors()
 {
     // Set thee new front vector

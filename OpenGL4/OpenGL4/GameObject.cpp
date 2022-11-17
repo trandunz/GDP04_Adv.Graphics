@@ -321,7 +321,7 @@ void GameObject::Draw()
             glUseProgram(m_StencilShaderID);
             
             // Projection * View * Model Matrix
-            ShaderLoader::SetUniformMatrix4fv(std::move(m_StencilShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+            ShaderLoader::SetUniformMatrix4fv(std::move(m_StencilShaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * m_Transform.transform);
 
             // Set Model Matrix
             ShaderLoader::SetUniformMatrix4fv(std::move(m_StencilShaderID), "ModelMatrix", m_Transform.transform);
@@ -332,7 +332,7 @@ void GameObject::Draw()
             {
                 ShaderLoader::SetUniform1f(std::move(m_StencilShaderID), "FogStart", 5.0f);
                 ShaderLoader::SetUniform1f(std::move(m_StencilShaderID), "FogDepth", 10.0f);
-                ShaderLoader::SetUniform3fv(std::move(m_StencilShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+                ShaderLoader::SetUniform3fv(std::move(m_StencilShaderID), "CameraPos", Statics::ActiveCamera->GetPosition());
                 ShaderLoader::SetUniform4fv(std::move(m_StencilShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
             }
             
@@ -656,7 +656,7 @@ void GameObject::SetBlinnFong3DUniforms()
     ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Shininess", 32.0f * 5);
     
     // Set Camera Position
-    ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+    ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::ActiveCamera->GetPosition());
 
     // Set Point Light Uniforms From Light Manager
     std::vector<PointLight>& pointLights = LightManager::GetInstance().GetPointLights();
@@ -688,8 +688,8 @@ void GameObject::SetBlinnFong3DUniforms()
         // If the spotlight is attached to the camera, Set Uniforms Accordingly
         if (spotLights[i].IsAttachedToCamera)
         {
-            ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Position", Statics::SceneCamera.GetPosition());
-            ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Direction", Statics::SceneCamera.GetFront());
+            ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Position", Statics::ActiveCamera->GetPosition());
+            ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Direction", Statics::ActiveCamera->GetFront());
         }
         // Else Apply Assigned Starting Positon And Direction
         else
@@ -722,7 +722,7 @@ void GameObject::SetRimLighingUniforms()
 void GameObject::SetReflectionUniforms()
 {
     // Set Camera Position
-    ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+    ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::ActiveCamera->GetPosition());
 
     // Bind And Set Skybox Texture Uniform
     glActiveTexture(GL_TEXTURE0);
@@ -745,7 +745,7 @@ void GameObject::SetReflectionMapUniforms()
         ShaderLoader::SetUniform1i(std::move(m_ShaderID), "ReflectionMap", 1);
     }
     // Set Camera Pos
-    ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+    ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::ActiveCamera->GetPosition());
 
     // Bind And Set Skybox Texture Uniform
     glActiveTexture(GL_TEXTURE2);
@@ -755,7 +755,7 @@ void GameObject::SetReflectionMapUniforms()
 
 void GameObject::BillboardObjectToCamera(glm::vec3 _relativePos, glm::vec3 _scale)
 {
-    SetModel(glm::scale(glm::inverse(glm::lookAt(Statics::SceneCamera.GetPosition() + _relativePos, Statics::SceneCamera.GetPosition(), Statics::SceneCamera.GetUp())), _scale));
+    SetModel(glm::scale(glm::inverse(glm::lookAt(Statics::ActiveCamera->GetPosition() + _relativePos, Statics::ActiveCamera->GetPosition(), Statics::ActiveCamera->GetUp())), _scale));
 }
 
 void GameObject::SetShowNormals(bool _showNormals)
@@ -781,7 +781,7 @@ glm::vec4 GameObject::GetInput()
 void GameObject::SetNormals3DVertUniforms(GLuint _shaderID)
 {
     // Projection * View * Model Matrix
-    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * m_Transform.transform);
 
     // Set Model Matrix
     ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "ModelMatrix", m_Transform.transform);
@@ -799,7 +799,7 @@ void GameObject::SetSingleTextureUniforms()
     }
 
     // Projection * View * Model Matrix
-    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * m_Transform.transform);
 }
 
 void GameObject::SetFogUniforms()
@@ -815,14 +815,14 @@ void GameObject::SetFogUniforms()
 
     // Set Model Matrix
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
-    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::ActiveCamera->GetPVMatrix());
 
     ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Foggy", Statics::Foggy);
     if (Statics::Foggy)
     {
         ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
         ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
-        ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+        ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::ActiveCamera->GetPosition());
         ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
     }
 }
@@ -848,7 +848,7 @@ void GameObject::SetMossUniforms()
 void GameObject::SetPositionOnlyUniforms()
 {
     // Projection * View * Model Matrix
-    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * m_Transform.transform);
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "LightVPMatrix", ShadowMap::GetInstance().GetLightVPMatrix());
     ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
 }
@@ -868,7 +868,7 @@ void GameObject::SetSingleColorUniforms(GLuint _shaderID, glm::vec3 _color)
 
 void GameObject::SetTrianglePatchLODUniforms(GLuint _shaderID)
 {
-    ShaderLoader::SetUniform3fv(std::move(_shaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+    ShaderLoader::SetUniform3fv(std::move(_shaderID), "CameraPos", Statics::ActiveCamera->GetPosition());
 }
 
 void GameObject::SetHeightMapUniforms(GLuint _shaderID)
@@ -885,7 +885,7 @@ void GameObject::SetHeightMapUniforms(GLuint _shaderID)
     }
 
     ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "Model", m_Transform.transform);
-    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+    ShaderLoader::SetUniformMatrix4fv(std::move(_shaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * m_Transform.transform);
 }
 
 void GameObject::SetBlinnFong3DShadowsUniform()
@@ -909,7 +909,7 @@ void GameObject::SetSkinnedMeshUniforms()
 {
     if (m_SkinnedMesh)
     {
-        ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
+        ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::ActiveCamera->GetPVMatrix());
         ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "ModelMatrix", m_Transform.transform);
 
         for (unsigned int i = 0; i < ARRAY_SIZE(m_SkinnedMesh->BoneLocation); i++)

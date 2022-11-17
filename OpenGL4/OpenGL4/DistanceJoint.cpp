@@ -63,7 +63,7 @@ void DistanceJoint::Update()
 void DistanceJoint::Draw(glm::vec3 _colour)
 {
 	glUseProgram(m_ShaderID);
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix()); 
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::ActiveCamera->GetPVMatrix());
 	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[0]", m_P1->GetPosition());
 	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_P2->GetPosition());
 	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "Points[1]", m_P2->GetPosition());

@@ -63,7 +63,7 @@ void Terrain::Draw()
 	glUseProgram(m_ShaderID);
 
 	// Projection * View * Model Matrix
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::ActiveCamera.GetPVMatrix() * m_Transform.transform);
 
 	// Set Model Matrix
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "ModelMatrix", m_Transform.transform);
@@ -76,7 +76,7 @@ void Terrain::Draw()
 	{
 		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
 		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
-		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::ActiveCamera.GetPosition());
 		ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
 	}
 
@@ -402,7 +402,7 @@ void Terrain::SetBlinnFong3DUniforms()
 	ShaderLoader::SetUniform1f(std::move(m_ShaderID), "Shininess", 32.0f * 5);
 
 	// Set Camera Position
-	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::ActiveCamera.GetPosition());
 
 	// Set Point Light Uniforms From Light Manager
 	std::vector<PointLight>& pointLights = LightManager::GetInstance().GetPointLights();
@@ -434,8 +434,8 @@ void Terrain::SetBlinnFong3DUniforms()
 		// If the spotlight is attached to the camera, Set Uniforms Accordingly
 		if (spotLights[i].IsAttachedToCamera)
 		{
-			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Position", Statics::SceneCamera.GetPosition());
-			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Direction", Statics::SceneCamera.GetFront());
+			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Position", Statics::ActiveCamera.GetPosition());
+			ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "SpotLights[" + std::to_string(i) + "].Direction", Statics::ActiveCamera.GetFront());
 		}
 		// Else Apply Assigned Starting Positon And Direction
 		else

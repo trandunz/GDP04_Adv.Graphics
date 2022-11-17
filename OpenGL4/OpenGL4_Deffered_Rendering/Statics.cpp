@@ -13,7 +13,7 @@
 glm::ivec2 Statics::WindowSize{};
 GLFWwindow* Statics::RenderWindow = nullptr;
 KEYMAP Statics::Keymap{};
-Camera Statics::SceneCamera{};
+Camera Statics::ActiveCamera{};
 float Statics::DeltaTime{};
 float Statics::LastTime{};
 bool Statics::StencilTest{ false };

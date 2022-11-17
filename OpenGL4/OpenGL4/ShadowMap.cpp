@@ -96,7 +96,7 @@ glm::mat4 ShadowMap::GetLightVPMatrix()
 	}
 
 	// times it by the cameras projection matrix
-	glm::mat4 lightVPMatrix = Statics::SceneCamera.GetProjectionMatrix() * lightViewMatrix;
+	glm::mat4 lightVPMatrix = Statics::ActiveCamera->GetProjectionMatrix() * lightViewMatrix;
 
 	return lightVPMatrix;
 }

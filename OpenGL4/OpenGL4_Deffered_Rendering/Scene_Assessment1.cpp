@@ -162,8 +162,8 @@ void Scene_Assessment1::Start()
 void Scene_Assessment1::Update()
 {
 	m_ElapsedTime += Statics::DeltaTime;
-	Statics::SceneCamera.Movement_Capture();
-	Statics::SceneCamera.Movement();
+	Statics::ActiveCamera.Movement_Capture();
+	Statics::ActiveCamera.Movement();
 
 	if (m_ModelObject)
 		m_ModelObject->Rotate({ 0,1,0 }, 1000 * glm::radians(Statics::DeltaTime));
@@ -173,13 +173,13 @@ void Scene_Assessment1::Update()
 	if (m_LeftQuad)
 	{
 		m_LeftQuad->BillboardObjectToCamera(
-			(Statics::SceneCamera.GetFront() * 3.0f) - Statics::SceneCamera.GetRight(),
+			(Statics::ActiveCamera.GetFront() * 3.0f) - Statics::ActiveCamera.GetRight(),
 			{ 0.25f ,0.25f,0.25f });
 	}
 	if (m_RightQuad)
 	{
 		m_RightQuad->BillboardObjectToCamera(
-			(Statics::SceneCamera.GetFront() * 3.0f) + Statics::SceneCamera.GetRight(),
+			(Statics::ActiveCamera.GetFront() * 3.0f) + Statics::ActiveCamera.GetRight(),
 			{ 0.25f ,0.25f,0.25f });
 	}
 }
@@ -214,7 +214,7 @@ void Scene_Assessment1::CursorMoveEvent(double& xpos, double& ypos)
 	m_CursorPos = { xpos , ypos };
 
 	if (!Statics::ActiveCursor)
-		Statics::SceneCamera.MouseLook({ xpos, ypos });
+		Statics::ActiveCamera.MouseLook({ xpos, ypos });
 }
 
 void Scene_Assessment1::CursorClickEvent(int button, int action, int mods)
@@ -276,8 +276,8 @@ void Scene_Assessment1::HandleMousePickingInteractions()
 		{
 			// Create a ray
 			Ray cameraRay{};
-			cameraRay.origin = Statics::SceneCamera.GetPosition();
-			cameraRay.direction = Statics::SceneCamera.GetRayCursorRayDirection(m_CursorPos);
+			cameraRay.origin = Statics::ActiveCamera.GetPosition();
+			cameraRay.direction = Statics::ActiveCamera.GetRayCursorRayDirection(m_CursorPos);
 
 			// Check for intersection with left quad
 			if (m_LeftQuad)
@@ -285,7 +285,7 @@ void Scene_Assessment1::HandleMousePickingInteractions()
 				bool intersection = m_LeftQuad->RayIntersection(cameraRay);
 				if (intersection)
 				{
-					Statics::SceneCamera.MoveForward();
+					Statics::ActiveCamera.MoveForward();
 				}
 			}
 			// Check for intersection with right quad
@@ -294,7 +294,7 @@ void Scene_Assessment1::HandleMousePickingInteractions()
 				bool intersection = m_RightQuad->RayIntersection(cameraRay);
 				if (intersection)
 				{
-					Statics::SceneCamera.MoveBackward();
+					Statics::ActiveCamera.MoveBackward();
 				}
 			}
 			// Check for intersection with flat quad

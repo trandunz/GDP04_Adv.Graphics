@@ -5,6 +5,7 @@
 
 Scene_Assignment3::Scene_Assignment3()
 {
+	InitImGUI();
 	Start();
 }
 
@@ -56,6 +57,8 @@ Scene_Assignment3::~Scene_Assignment3()
 			delete firework;
 		firework = nullptr;
 	}
+
+	CleanupImGUI();
 }
 
 void Scene_Assignment3::Start()
@@ -99,8 +102,8 @@ void Scene_Assignment3::Start()
 	m_Bonfire->SetActiveTextures({ TextureLoader::LoadTexture("Bonfire.jpg") });
 	m_Bonfire->Rotate({ 1,0,0 }, 90);
 
-	Statics::SceneCamera.SetPitch(-110);
-	Statics::SceneCamera.SetYaw(90);
+	Statics::ActiveCamera->SetPitch(-110);
+	Statics::ActiveCamera->SetYaw(90);
 
 	m_ParticleSystem = new ParticleSystem({0,-25,-15 }, 0.1f);
 	m_ParticleSystem->SetParticleTexture(TextureLoader::LoadTexture("Flame.png"));
@@ -140,8 +143,8 @@ void Scene_Assignment3::Update()
 	m_ElapsedTime += Statics::DeltaTime;
 	if (!Statics::ActiveCursor)
 	{
-		Statics::SceneCamera.Movement_Capture();
-		Statics::SceneCamera.Movement();
+		Statics::ActiveCamera->Movement_Capture();
+		Statics::ActiveCamera->Movement();
 	}
 
 	if (m_ParticleSystem)
@@ -194,7 +197,7 @@ void Scene_Assignment3::KeyEvents()
 void Scene_Assignment3::CursorMoveEvent(double& xpos, double& ypos)
 {
 	if (!Statics::ActiveCursor)
-		Statics::SceneCamera.MouseLook({ xpos, ypos });
+		Statics::ActiveCamera->MouseLook({ xpos, ypos });
 }
 
 void Scene_Assignment3::CursorClickEvent(int button, int action, int mods)
@@ -236,5 +239,55 @@ void Scene_Assignment3::Draw()
 		m_SnowSystem->Draw();
 
 	FrameBuffer::GetInstance().Unbind();
+
+	BindImGUI();
+	HandleDebugTools();
+	DrawImGUI();
+
 	glfwSwapBuffers(Statics::RenderWindow);
+}
+
+void Scene_Assignment3::InitImGUI()
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	m_Io = &ImGui::GetIO();
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(Statics::RenderWindow, true);
+	ImGui_ImplOpenGL3_Init("#version 460");
+}
+
+void Scene_Assignment3::BindImGUI()
+{
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+}
+
+void Scene_Assignment3::DrawImGUI()
+{
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Scene_Assignment3::CleanupImGUI()
+{
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	if (m_Io)
+		delete m_Io;
+	m_Io = nullptr;
+}
+
+void Scene_Assignment3::HandleDebugTools()
+{
+	ImGui::Begin("Camera Settings");
+	ImGui::Checkbox("ThirdPersonCamera", &m_ThirdPersonCamera);
+	if (m_Player)
+	{
+		m_Player->ToggleThirdPersonCamera(m_ThirdPersonCamera);
+	}
+	ImGui::End();
 }

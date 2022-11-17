@@ -92,7 +92,7 @@ void Cloth::Draw()
 		DebugDrawJoints();
 
 		glUseProgram(m_ShaderID);
-		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::ActiveCamera->GetPVMatrix());
 		
 		glBindTexture(GL_TEXTURE_2D, m_Texture.ID);
 		glActiveTexture(0);
@@ -602,7 +602,7 @@ void Cloth::HandlePushing(int _x, int _y)
 		int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
 		if (state == GLFW_PRESS)
 		{
-			Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+			Ray cursorRay = Statics::ActiveCamera->GetRayCursorRay();
 
 			Transform triangleCenterTransform = m_Particles[_y][_x]->GetTransform();
 
@@ -625,7 +625,7 @@ void Cloth::HandlePulling(int _x, int _y)
 		int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
 		if (state == GLFW_PRESS)
 		{
-			Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+			Ray cursorRay = Statics::ActiveCamera->GetRayCursorRay();
 
 			Transform triangleCenterTransform = m_Particles[_y][_x]->GetTransform();
 
@@ -647,7 +647,7 @@ void Cloth::HandleGrab(int _x, int _y)
 		int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
 		if (state == GLFW_PRESS)
 		{
-			Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+			Ray cursorRay = Statics::ActiveCamera->GetRayCursorRay();
 
 			if (!m_PointIsGrabbed)
 			{
@@ -677,7 +677,7 @@ void Cloth::HandleTear(int _x, int _y)
 		int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
 		if (state == GLFW_PRESS)
 		{
-			Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+			Ray cursorRay = Statics::ActiveCamera->GetRayCursorRay();
 
 			Transform triangleCenterTransform = m_Particles[_y][_x]->GetTransform();
 
@@ -697,7 +697,7 @@ void Cloth::ApplyBurn(int _x, int _y)
 		int state = glfwGetMouseButton(Statics::RenderWindow, GLFW_MOUSE_BUTTON_LEFT);
 		if (state == GLFW_PRESS)
 		{
-			Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+			Ray cursorRay = Statics::ActiveCamera->GetRayCursorRay();
 
 			Transform triangleCenterTransform = m_Particles[_y][_x]->GetTransform();
 
@@ -740,7 +740,7 @@ void Cloth::HandleGrabbedPoint()
 		{
 			if (m_Particles[m_GrabbedPoint.y][m_GrabbedPoint.x])
 			{
-				Ray cursorRay = Statics::SceneCamera.GetRayCursorRay();
+				Ray cursorRay = Statics::ActiveCamera->GetRayCursorRay();
 				glm::vec3 newPos = cursorRay.origin + (glm::normalize(cursorRay.direction) * m_GrabDistance);
 				m_Particles[m_GrabbedPoint.y][m_GrabbedPoint.x]->SetPosition(newPos);
 			}

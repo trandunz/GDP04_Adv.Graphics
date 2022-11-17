@@ -33,7 +33,7 @@ void LightManager::Draw()
 	glUseProgram(m_UnlitMeshShaderID);
 	for (auto& light : m_PointLights)
 	{
-		ShaderLoader::SetUniformMatrix4fv(std::move(m_UnlitMeshShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * glm::translate(glm::mat4(1), light.Position));
+		ShaderLoader::SetUniformMatrix4fv(std::move(m_UnlitMeshShaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * glm::translate(glm::mat4(1), light.Position));
 		ShaderLoader::SetUniform3fv(std::move(m_UnlitMeshShaderID), "Color", light.Color);
 		StaticMesh::Sphere->Draw();
 	}

@@ -158,6 +158,12 @@ public:
 
     void SetYaw(float _yaw);
     void SetPitch(float _pitch);
+
+    void SetPosition(glm::vec3 _newPos);
+    void LookAt(glm::vec3 _point);
+
+    float GetPitch();
+    float GetYaw();
 private:
 
     /// <summary>

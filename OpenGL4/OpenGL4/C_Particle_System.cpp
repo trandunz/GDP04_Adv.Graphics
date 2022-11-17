@@ -95,7 +95,7 @@ void C_Particle_System::Draw()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, NULL, 0);
 
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * m_Transform.transform);
 
 	ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "ColorOverLifetime", { 1, 1, 1, 0 });
 
@@ -105,9 +105,9 @@ void C_Particle_System::Draw()
 	ShaderLoader::SetUniform1i(std::move(m_ShaderID), "Texture0", 0);
 
 	glm::vec3 vQuad1, vQuad2;
-	glm::vec3 camFront = Statics::SceneCamera.GetFront();
+	glm::vec3 camFront = Statics::ActiveCamera->GetFront();
 	camFront = glm::normalize(camFront);
-	vQuad1 = glm::cross(camFront, Statics::SceneCamera.GetUp());
+	vQuad1 = glm::cross(camFront, Statics::ActiveCamera->GetUp());
 	vQuad1 = glm::normalize(vQuad1);
 	vQuad2 = glm::cross(camFront, vQuad1);
 	vQuad2 = glm::normalize(vQuad2);

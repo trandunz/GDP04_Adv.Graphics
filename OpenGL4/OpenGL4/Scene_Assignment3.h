@@ -20,6 +20,27 @@ public:
 	virtual void Draw() override;
 
 private:
+	/// <summary>
+	/// Initialize ImGUI
+	/// </summary>
+	void InitImGUI();
+	/// <summary>
+	/// Bind ImGUI
+	/// </summary>
+	void BindImGUI();
+	/// <summary>
+	/// Draw all ImGUI Elements
+	/// </summary>
+	void DrawImGUI();
+	/// <summary>
+	/// Cleanup ImGUI
+	/// </summary>
+	void CleanupImGUI();
+	void HandleDebugTools();
+
+	void* m_Io{ nullptr };
+	bool m_ThirdPersonCamera{};
+
 	glm::vec2 m_CursorPos{};
 
 	SkinnedMesh* m_AnimatedModel{ nullptr };
@@ -31,7 +52,7 @@ private:
 	C_Particle_System* m_FountainSystem{ nullptr };
 	C_Particle_System* m_SnowSystem{ nullptr };
 
-	std::vector< Firework*> m_Fireworks{};
+	std::vector<Firework*> m_Fireworks{};
 
 	GameObject* m_Fountain{ nullptr };
 	Player* m_Player{ nullptr };

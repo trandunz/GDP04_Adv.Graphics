@@ -46,13 +46,13 @@ void Skybox::Draw()
 	{
 		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogStart", 5.0f);
 		ShaderLoader::SetUniform1f(std::move(m_ShaderID), "FogDepth", 10.0f);
-		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+		ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "CameraPos", Statics::ActiveCamera.GetPosition());
 		ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
 	}
 
 	// Pass In PVM Matrix
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "Model", m_Transform.transform);
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * m_Transform.transform);
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::ActiveCamera.GetPVMatrix() * m_Transform.transform);
 
 	StaticMesh::InvertedCube->Draw();
 	
@@ -132,8 +132,8 @@ void Skybox::DrawCloud()
 
 	// PVM Uniforms
 	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "Model", hemiSphereTransform.transform);
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "PVMatrix", Statics::SceneCamera.GetPVMatrix());
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "PVMMatrix", Statics::SceneCamera.GetPVMatrix() * hemiSphereTransform.transform);
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "PVMatrix", Statics::ActiveCamera.GetPVMatrix());
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_CloudShaderID), "PVMMatrix", Statics::ActiveCamera.GetPVMatrix() * hemiSphereTransform.transform);
 	
 	// Texture uniform
 	glActiveTexture(GL_TEXTURE0);
@@ -147,7 +147,7 @@ void Skybox::DrawCloud()
 	{
 		ShaderLoader::SetUniform1f(std::move(m_CloudShaderID), "FogStart", 5.0f);
 		ShaderLoader::SetUniform1f(std::move(m_CloudShaderID), "FogDepth", 10.0f);
-		ShaderLoader::SetUniform3fv(std::move(m_CloudShaderID), "CameraPos", Statics::SceneCamera.GetPosition());
+		ShaderLoader::SetUniform3fv(std::move(m_CloudShaderID), "CameraPos", Statics::ActiveCamera.GetPosition());
 		ShaderLoader::SetUniform4fv(std::move(m_CloudShaderID), "FogColor", { 0.5f, 0.5f, 0.5f, 1.0f });
 	}
 	

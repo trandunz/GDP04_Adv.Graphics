@@ -152,6 +152,7 @@ void InitGLFW()
 
 void Start()
 {
+	Statics::ActiveCamera = &Statics::SceneCamera;
 	Statics::UpdateWindowSize();
 	StaticMesh::Init();
 	SceneManager::LoadScene(SCENES::ASSESSMENT3);
