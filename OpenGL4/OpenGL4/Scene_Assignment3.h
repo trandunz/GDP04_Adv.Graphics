@@ -1,6 +1,6 @@
 #pragma once
 #include "Scene.h"
-#include "GameObject.h"
+#include "Player.h"
 #include "Skybox.h"
 #include "Firework.h"
 #include "C_Particle_System.h"
@@ -20,15 +20,11 @@ public:
 	virtual void Draw() override;
 
 private:
-	void AlignPlayerWithInput();
-
 	glm::vec2 m_CursorPos{};
 
 	SkinnedMesh* m_AnimatedModel{ nullptr };
 	SkinnedMesh* m_BonfireModel{ nullptr };
 	SkinnedMesh* m_FountainModel{ nullptr };
-
-	bool m_CharacterMoving{};
 
 	ParticleSystem* m_ParticleSystem{ nullptr };
 	ParticleSystem* m_SmokeSystem{ nullptr };
@@ -38,7 +34,7 @@ private:
 	std::vector< Firework*> m_Fireworks{};
 
 	GameObject* m_Fountain{ nullptr };
-	GameObject* m_AssimpObject{ nullptr };
+	Player* m_Player{ nullptr };
 	GameObject* m_Plane{ nullptr };
 	GameObject* m_Bonfire{ nullptr };
 };

@@ -70,8 +70,11 @@ void SkinnedMesh::Draw(GLuint _shaderID)
 	glBindVertexArray(0);
 }
 
-void SkinnedMesh::SetCurrentAnimation(int startFrameNum, int endFramNum)
+void SkinnedMesh::SetCurrentAnimation(int startFrameNum, int endFramNum, bool _loops)
 {
+	m_Looping = _loops;
+	m_AnimStartFrame = startFrameNum;
+	m_AnimEndFrame = endFramNum;
 	m_AnimStartTime = startFrameNum / float(m_AnimFPS);
 	m_AnimEndTime = endFramNum / float(m_AnimFPS);
 
@@ -100,11 +103,13 @@ void SkinnedMesh::LoadBoneHierarchy()
 
 void SkinnedMesh::BoneTransforms(float timeInSeconds, std::vector<Matrix4f>& transforms)
 {
-	m_AnimTime += m_AnimTick;
-
-	if (m_AnimTime >= m_AnimEndTime) 
+	if (m_AnimTime >= m_AnimEndTime && m_Looping) 
 	{
 		m_AnimTime = m_AnimStartTime;
+	}
+	else
+	{
+		m_AnimTime += m_AnimTick;
 	}
 
 	Matrix4f Identity;
@@ -121,6 +126,16 @@ void SkinnedMesh::BoneTransforms(float timeInSeconds, std::vector<Matrix4f>& tra
 	{
 		transforms[i] = m_BoneTransformInfo[i].FinalTransformation;
 	}
+}
+
+int SkinnedMesh::GetStartFrame()
+{
+	return m_AnimStartFrame;
+}
+
+int SkinnedMesh::GetEndFrame()
+{
+	return m_AnimEndFrame;
 }
 
 bool SkinnedMesh::InitFromScene(const aiScene* pScene, const std::string Filename)

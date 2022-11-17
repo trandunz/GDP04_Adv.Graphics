@@ -31,8 +31,6 @@ out vec3 Position;
 void main()
 {
 	TexCoords = l_texCoords;
-	Position = vec3(ModelMatrix * vec4(l_position, 1.0f));
-	Normals = mat3(transpose(inverse(ModelMatrix))) * l_normals;
 
     vec4 totalLocalPosition = vec4(0.0f);
 	vec4 totalNormal = vec4(0.0f);
@@ -40,9 +38,12 @@ void main()
 	{
 		vec4 posePosition = jointTransforms[l_boneIDs[i]] * vec4(l_position, 1.0);
 		totalLocalPosition += posePosition * l_weights[i];
-		vec4 worldNormal = jointTransforms[l_boneIDs[i]] * vec4(l_normals, 0.0);
+		vec4 worldNormal = normalize(transpose(inverse(jointTransforms[l_boneIDs[i]])) * vec4(l_normals, 0.0));
 		totalNormal += worldNormal * l_weights[i];
 	}
+
+	Normals = vec3(totalNormal);
+	Position = vec3(ModelMatrix * vec4(totalLocalPosition.xyz, 1.0f));
 
 	gl_Position = PVMatrix * ModelMatrix * totalLocalPosition;
 }

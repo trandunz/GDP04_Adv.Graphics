@@ -5,7 +5,7 @@
 #define INVALID_MATERIAL 0xFFFFFFFF
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 #define ARRAY_SIZE(array) (sizeof(array)/sizeof(array[0]))
-#define ASSIMP_LOAD_FLAGS (aiProcess_Triangulate | aiProcess_OptimizeGraph | aiProcess_OptimizeMeshes | aiProcess_MakeLeftHanded | aiProcess_GenSmoothNormals )
+#define ASSIMP_LOAD_FLAGS (aiProcess_Triangulate | aiProcess_OptimizeGraph | aiProcess_FixInfacingNormals | aiProcess_OptimizeMeshes | aiProcess_MakeLeftHanded)
 #define GLCheckError() (glGetError() == GL_NO_ERROR)
 
 struct BoneInfo
@@ -89,9 +89,12 @@ public:
     ~SkinnedMesh();
     void Draw(GLuint _shaderID);
 
-    void SetCurrentAnimation(int startFrameNum, int endFramNum);
+    void SetCurrentAnimation(int startFrameNum, int endFramNum, bool _loops = true);
 
     void BoneTransforms(float timeInSeconds, std::vector<Matrix4f>& transforms);
+
+    int GetStartFrame();
+    int GetEndFrame();
 
     GLuint BoneLocation[100]{};
 private:
@@ -120,6 +123,7 @@ private:
     float m_AnimStartTime{};
     float m_AnimEndTime{};
     float m_AnimTime{};
+    bool m_Looping{ true };
 
     void LoadBoneHierarchy();
 
