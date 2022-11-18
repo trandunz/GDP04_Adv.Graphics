@@ -10,6 +10,7 @@ public:
 	void Update();
 	void Draw();
 
+	void Reset();
 private:
 	Transform m_Transform;
 	glm::vec3 m_Colour{1,1,1};
@@ -17,6 +18,7 @@ private:
 	float m_ExplosionHeight{ 10.0f };
 	float m_MoveSpeed{ 10.0f };
 	bool m_HasExploded{};
+	bool m_Paused{true};
 	ParticleSystem* m_TrailSystem{ nullptr };
 	ParticleSystem* m_ExplosionSystem{ nullptr };
 };

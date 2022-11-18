@@ -36,16 +36,18 @@ public:
 	void SetElaspedTime(float _elapsedTime);
 	void SetStartPosition(glm::vec3 _pos);
 
+	/// <summary>
+	/// Reset the particles values back to the ones specified on construction
+	/// </summary>
+	void ResetToInitialValues();
+
 	bool Gravity{ true };
 	bool Looping{ true };
 
 	Transform m_Transform{};
 	glm::vec4 m_Color{ 1,1,1,1 };
 private:
-	/// <summary>
-	/// Reset the particles values back to the ones specified on construction
-	/// </summary>
-	void ResetToInitialValues();
+
 
 	glm::vec4 m_ColorOverLifetime{ 1,1,1,1 };
 

@@ -38,7 +38,9 @@ public:
 
 	void InitBuffers();
 
-	glm::vec3 EmissionOffset{};
+	void SetParticleOffset(std::function<glm::vec3()> _offsetFunction);
+
+	std::function<glm::vec3()> EmissionOffset{nullptr};
 	float YVelocity{ 2.0f };
 	float m_Lifetime{ 1.0f };
 private:
@@ -46,6 +48,7 @@ private:
 	Transform m_Transform{};
 	std::vector<glm::vec4> m_InitialPosition{};
 	std::vector<glm::vec4> m_InitialVelocity{};
+	std::vector<float> m_InitialRotation{};
 	glm::vec3 m_EmissionPosition{};
 
 	bool m_Paused{};
@@ -57,8 +60,10 @@ private:
 	GLuint m_ShaderID{};
 	GLuint m_ComputeID{};
 	GLuint m_PositionBuffer{};
+	GLuint m_RotationBuffer{};
 	GLuint m_VelocityBuffer{};
 	GLuint m_InitialVelocityBuffer{};
+	GLuint m_InitialPositionBuffer{};
 	GLuint m_ParticleVertexArray{};
 };
 

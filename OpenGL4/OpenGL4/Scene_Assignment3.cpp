@@ -123,12 +123,15 @@ void Scene_Assignment3::Start()
 	m_FountainSystem->SetParticleTexture(TextureLoader::LoadTexture("Water.png"));
 	m_FountainSystem->Init();
 
-	m_SnowSystem = new C_Particle_System({ 0,0,-10 }, 0.1f);
+	m_SnowSystem = new C_Particle_System({ -7.5f,-5,-17.5 }, 0.1f);
 	m_SnowSystem->SetParticleTexture(TextureLoader::LoadTexture("Snowflake.png"));
-	m_SnowSystem->SetGravity(0.5f);
+	m_SnowSystem->SetGravity(0.25f);
 	m_SnowSystem->YVelocity = 0;
-	m_SnowSystem->m_Lifetime = 10;
-	m_SnowSystem->EmissionOffset = { rand() % 100, 0, rand() % 100 };
+	m_SnowSystem->m_Lifetime = 15;
+	m_SnowSystem->SetParticleOffset([]()->glm::vec3
+		{
+			return glm::vec3{ rand() % 1500, 0 , rand() % 1500 };
+		});
 	m_SnowSystem->Init();
 
 	m_Fountain = new GameObject({ 0,-25,-5 });
@@ -136,6 +139,11 @@ void Scene_Assignment3::Start()
 	m_Fountain->SetShader("Normals3D.vert", "BlinnFong3D.frag");
 	m_Fountain->SetActiveTextures({ TextureLoader::LoadTexture("lambert1_Base_Color.png") });
 	m_Fountain->SetScale({ 0.1f,0.1f,0.1f });
+
+	m_Fireworks.emplace_back(new Firework({ 10,-25, -20 }));
+	m_Fireworks.emplace_back(new Firework({ -10,-25, -20 }));
+	m_Fireworks.emplace_back(new Firework({ 10,-25, 0 }));
+	m_Fireworks.emplace_back(new Firework({ -10,-25, 0 }));
 }
 
 void Scene_Assignment3::Update()
@@ -187,7 +195,10 @@ void Scene_Assignment3::KeyEvents()
 		{
 			if (key.first == GLFW_KEY_P)
 			{
-				m_Fireworks.emplace_back(new Firework({ 0,-25, -10 }));
+				for (auto& firework : m_Fireworks)
+				{
+					firework->Reset();
+				}
 				key.second = false;
 			}
 		}

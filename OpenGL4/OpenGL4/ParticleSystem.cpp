@@ -248,3 +248,17 @@ void ParticleSystem::Init()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+
+void ParticleSystem::ResetParticles()
+{
+	m_EmissionTimer = m_EmissionRate;
+
+	for (int i = 0; i < m_Particles.size(); i++)
+	{
+		m_Particles[i].SetStartPosition(m_EmissionPosition);
+		m_Particles[i].ResetToInitialValues();
+		m_Particles[i].SetAlphaOverLifetime(m_ColorOverLifetime.w);
+		m_Particles[i].SetElaspedTime((RandomFloat() + 0.25f) * m_Lifetime);
+		m_Positions[i] = m_EmissionPosition;
+	}
+}

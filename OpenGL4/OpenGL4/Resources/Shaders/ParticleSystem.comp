@@ -16,6 +16,8 @@ layout(local_size_x = WORK_GROUP_SIZE, local_size_y = 1, local_size_z = 1) in;
 layout(std430, binding = 0) buffer positionBuffer{vec4 position[]; };
 layout(std430, binding = 1) buffer velocityBuffer{vec4 velocity[]; };
 layout(std430, binding = 2) buffer initVelocityBuffer{vec4 initVelocity[]; };
+layout(std430, binding = 3) buffer initPositionBuffer{vec4 initPosition[]; };
+layout(std430, binding = 4) buffer rotationBuffer{float rotation[]; };
 
 #define TWOPI 6.28318531
 
@@ -34,9 +36,15 @@ void main()
 	position[i].xyz += velocity[i].xyz;
 	position[i].w -= DeltaTime;
 
+	if (rotation[i] >= TWOPI)
+	{
+		rotation[i] = 0;
+	}
+	rotation[i] += DeltaTime;
+
 	if (position[i].w <= 0.0f)
 	{
-		position[i].xyzw = vec4(0.0f,0.0f,0.0f, initVelocity[i].w);
+		position[i].xyzw = vec4(initPosition[i].xyz, initVelocity[i].w);
 		velocity[i] = initVelocity[i];
 	}
 }

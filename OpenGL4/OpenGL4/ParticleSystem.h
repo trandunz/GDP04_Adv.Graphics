@@ -81,6 +81,8 @@ public:
 	void SetColor(glm::vec3 _color);
 
 	void Init();
+
+	void ResetParticles();
 	
 	int ParticleCount{128 * 100};
 	glm::vec3 m_EmissionPosition{};

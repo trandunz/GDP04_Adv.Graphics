@@ -23,7 +23,13 @@ C_Particle_System::C_Particle_System(glm::vec3 _emissionPos, float _emissionRate
 	m_ShaderID = ShaderLoader::CreateShader("ParticleSystem.vert", "ParticleSystem.geo", "SingleTexture_Coloured.frag");
 	m_ComputeID = ShaderLoader::CreateShader("ParticleSystem.comp");
 	m_InitialPosition.resize(NUM_PARTICLES);
+	m_InitialRotation.resize(NUM_PARTICLES);
 	m_InitialVelocity.resize(NUM_PARTICLES);
+
+	EmissionOffset = []()->glm::vec3
+	{
+		return glm::vec3{ };
+	};
 }
 
 C_Particle_System::~C_Particle_System()
@@ -36,8 +42,7 @@ void C_Particle_System::Init()
 {
 	for (int i = 0; i < NUM_PARTICLES; i++)
 	{
-		srand(i);
-		m_InitialPosition[i] = glm::vec4(m_EmissionPosition + EmissionOffset, RandomFloat() * m_Lifetime);
+		m_InitialPosition[i] = glm::vec4(m_EmissionPosition + EmissionOffset(), RandomFloat() * m_Lifetime);
 		glm::vec3 velocity =
 		{
 			0.25f * cosf(m_InitialPosition.size() * 0.0167f) + 0.95f * RandomFloat() - (0.95f / 2.0f),
@@ -73,6 +78,8 @@ void C_Particle_System::Draw()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_PositionBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_VelocityBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_InitialVelocityBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_InitialPositionBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, m_RotationBuffer);
 
 	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "DeltaTime", Statics::DeltaTime);
 
@@ -95,7 +102,13 @@ void C_Particle_System::Draw()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, NULL, 0);
 
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * m_Transform.transform);
+	glBindBuffer(GL_ARRAY_BUFFER, m_RotationBuffer);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, NULL, 0);
+
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::ActiveCamera->GetPVMatrix());
+	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "uTranslation", m_Transform.translation);
+	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "uScale", m_Transform.scale);
 
 	ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "ColorOverLifetime", { 1, 1, 1, 0 });
 
@@ -150,6 +163,17 @@ void C_Particle_System::InitBuffers()
 	glBufferData(GL_SHADER_STORAGE_BUFFER, m_InitialVelocity.size() * sizeof(glm::vec4), m_InitialVelocity.data(), GL_DYNAMIC_DRAW);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_InitialVelocityBuffer);
 
+
+	glGenBuffers(1, &m_InitialPositionBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_InitialPositionBuffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, m_InitialPosition.size() * sizeof(glm::vec4), m_InitialPosition.data(), GL_DYNAMIC_DRAW);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_InitialPositionBuffer);
+
+	glGenBuffers(1, &m_RotationBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RotationBuffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, m_InitialRotation.size() * sizeof(float), m_InitialRotation.data(), GL_DYNAMIC_DRAW);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, m_RotationBuffer);
+
 	glGenVertexArrays(1, &m_ParticleVertexArray);
 	glBindVertexArray(m_ParticleVertexArray);
 
@@ -157,7 +181,17 @@ void C_Particle_System::InitBuffers()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, NULL, 0);
 
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_RotationBuffer);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, NULL, 0);
+
 	glBindVertexArray(0);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void C_Particle_System::SetParticleOffset(std::function<glm::vec3()> _offsetFunction)
+{
+	EmissionOffset = _offsetFunction;
 }
