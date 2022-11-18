@@ -921,7 +921,7 @@ void GameObject::SetSkinnedMeshUniforms()
         }
 
         std::vector<Matrix4f> transforms;
-        m_SkinnedMesh->BoneTransforms(Statics::DeltaTime, transforms);
+        m_SkinnedMesh->BoneTransforms(transforms);
 
         for (int i = 0; i < (int)transforms.size(); i++)
         {

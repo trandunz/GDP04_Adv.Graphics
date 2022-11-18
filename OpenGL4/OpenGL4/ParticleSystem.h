@@ -64,28 +64,66 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// Sets the particle velocity
+	/// </summary>
+	/// <param name="_velocity"></param>
 	void SetParticleVelocity(glm::vec3 _velocity);
 	
+	/// <summary>
+	/// Sets the particle velocity function
+	/// </summary>
+	/// <param name="_velocityFunction"></param>
 	void SetParticleVelocity(std::function<glm::vec3()> _velocityFunction);
 
+	/// <summary>
+	/// sets the particle gravity strength
+	/// </summary>
+	/// <param name="_gravity"></param>
 	void SetGravity(bool _gravity);
 
+	/// <summary>
+	/// Sets if its looping
+	/// </summary>
+	/// <param name="_looping"></param>
 	void SetLooping(bool _looping);
 
+	/// <summary>
+	/// Sets particle lifetime
+	/// </summary>
+	/// <param name="_lifetime"></param>
 	void SetLifetime(float _lifetime);
 
+	/// <summary>
+	/// Sets alpha over lifetime
+	/// </summary>
+	/// <param name="_alpha"></param>
 	void SetAlphaOverLifetime(float _alpha);
 
+	/// <summary>
+	/// Creates a particle burst of the specified amount
+	/// </summary>
+	/// <param name="_count"></param>
 	void Burst(int _count);
 
+	/// <summary>
+	/// Sets trhe color of the particles
+	/// </summary>
+	/// <param name="_color"></param>
 	void SetColor(glm::vec3 _color);
 
+	/// <summary>
+	/// Initializes the particle system
+	/// </summary>
 	void Init();
 
+	/// <summary>
+	/// Resets the particle system
+	/// </summary>
 	void ResetParticles();
 	
 	int ParticleCount{128 * 100};
-	glm::vec3 m_EmissionPosition{};
+	glm::vec3 EmissionPosition{};
 private:
 	GLuint m_ShaderID{};
 

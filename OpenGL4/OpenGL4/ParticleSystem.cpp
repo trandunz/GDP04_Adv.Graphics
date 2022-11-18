@@ -15,12 +15,12 @@
 
 ParticleSystem::ParticleSystem(glm::vec3 _emissionPos, float _emissionRate)
 {
-	m_EmissionPosition = _emissionPos;
+	EmissionPosition = _emissionPos;
 	m_EmissionRate = _emissionRate;
 	m_EmissionTimer = m_EmissionRate;
 
-	m_EmissionPosition = _emissionPos;
-	m_Transform.translation = m_EmissionPosition;
+	EmissionPosition = _emissionPos;
+	m_Transform.translation = EmissionPosition;
 	UpdateModelValueOfTransform(m_Transform);
 
 	m_ShaderID = ShaderLoader::CreateShader("PointToQuad.vert", "PointToQuad.geo", "SingleTexture_Coloured.frag");
@@ -65,11 +65,11 @@ void ParticleSystem::Update()
 		if (m_Looping && m_EmissionTimer <= 0.0f)
 			m_EmissionTimer = m_EmissionRate;
 
-		for (int i = 0; i < m_Particles.size(); i++)
+		for (int i = 0; i < (int)m_Particles.size(); i++)
 		{
-			m_Particles[i].SetStartPosition(m_EmissionPosition);
+			m_Particles[i].SetStartPosition(EmissionPosition);
 			m_Particles[i].Update();
-			m_Positions[i] = m_Particles[i].m_Transform.translation;
+			m_Positions[i] = m_Particles[i].Transform.translation;
 		}
 	}
 }
@@ -185,7 +185,7 @@ void ParticleSystem::Burst(int _count)
 			{
 				m_Velocity = m_VelocityFunction();
 			}
-			m_Particles.emplace_back(Particle(m_EmissionPosition, m_Velocity, m_Lifetime, m_Gravity, m_Looping, m_Color));
+			m_Particles.emplace_back(Particle(EmissionPosition, m_Velocity, m_Lifetime, m_Gravity, m_Looping, m_Color));
 			m_Particles.back().SetAlphaOverLifetime(m_ColorOverLifetime.w);
 		}
 	}
@@ -201,9 +201,9 @@ void ParticleSystem::SetColor(glm::vec3 _color)
 	m_ColorOverLifetime = { m_Color.x, m_Color.y, m_Color.z, m_ColorOverLifetime.w };
 	for (auto& particle : m_Particles)
 	{
-		particle.m_Color.x = _color.x;
-		particle.m_Color.y = _color.y;
-		particle.m_Color.z = _color.z;
+		particle.Color.x = _color.x;
+		particle.Color.y = _color.y;
+		particle.Color.z = _color.z;
 	}
 }
 
@@ -224,9 +224,9 @@ void ParticleSystem::Init()
 		{
 			m_Velocity = m_VelocityFunction();
 		}
-		m_Particles.emplace_back(Particle(m_EmissionPosition, m_Velocity, m_Lifetime, m_Gravity, m_Looping, m_Color));
+		m_Particles.emplace_back(Particle(EmissionPosition, m_Velocity, m_Lifetime, m_Gravity, m_Looping, m_Color));
 		m_Particles.back().SetAlphaOverLifetime(m_ColorOverLifetime.w);
-		m_Positions.push_back(m_EmissionPosition);
+		m_Positions.push_back(EmissionPosition);
 		m_Particles.back().SetElaspedTime((RandomFloat() + 0.25f) * m_Lifetime);
 	}
 
@@ -253,12 +253,12 @@ void ParticleSystem::ResetParticles()
 {
 	m_EmissionTimer = m_EmissionRate;
 
-	for (int i = 0; i < m_Particles.size(); i++)
+	for (int i = 0; i < (int)m_Particles.size(); i++)
 	{
-		m_Particles[i].SetStartPosition(m_EmissionPosition);
+		m_Particles[i].SetStartPosition(EmissionPosition);
 		m_Particles[i].ResetToInitialValues();
 		m_Particles[i].SetAlphaOverLifetime(m_ColorOverLifetime.w);
 		m_Particles[i].SetElaspedTime((RandomFloat() + 0.25f) * m_Lifetime);
-		m_Positions[i] = m_EmissionPosition;
+		m_Positions[i] = EmissionPosition;
 	}
 }

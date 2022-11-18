@@ -177,9 +177,6 @@
     <ClCompile Include="SkinnedMesh.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix4f.cpp">
-      <Filter>Source Files\Statics</Filter>
-    </ClCompile>
     <ClCompile Include="C_Particle_System.cpp">
       <Filter>Source Files\ParticleSystem</Filter>
     </ClCompile>

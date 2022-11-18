@@ -31,14 +31,18 @@ public:
 	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// Draw the distance joint
+	/// </summary>
+	/// <param name="_colour"></param>
 	void Draw(glm::vec3 _colour = {1,1,1});
 
 	ClothParticle* GetP1();
 	ClothParticle* GetP2();
 
-	float m_Stiffness{ 500.0f };
-	float m_Length{};
-	float m_MaxForce{ 1000.0f };
+	float Stiffness{ 500.0f };
+	float Length{};
+	float MaxForce{ 1000.0f };
 	bool Destroy{};
 private:
 	GLuint m_ShaderID{};

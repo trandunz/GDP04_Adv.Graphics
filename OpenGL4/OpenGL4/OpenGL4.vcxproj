@@ -171,7 +171,6 @@
     <ClCompile Include="include\ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Matrix4f.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Noise.cpp" />
     <ClCompile Include="Particle.cpp" />

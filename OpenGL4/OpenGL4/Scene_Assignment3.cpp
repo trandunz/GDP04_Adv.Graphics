@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Scene_Assignment3.cpp 
+// Description : Scene_Assignment3 Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Scene_Assignment3.h"
 #include "TextureLoader.h"
 #include "FrameBuffer.h"
@@ -79,6 +89,7 @@ void Scene_Assignment3::Start()
 
 	m_AnimatedModel = new SkinnedMesh("Resources/Models/Dude/Dude.dae");
 	m_AnimatedModel->SetCurrentAnimation(0, 30);
+	m_AnimatedModel->SetAnimSpeed(0.5f);
 
 	m_FountainModel = new SkinnedMesh("Resources/Models/Fountain/Fountain.fbx");
 
@@ -119,7 +130,7 @@ void Scene_Assignment3::Start()
 	m_SmokeSystem->SetAlphaOverLifetime(0);
 	m_SmokeSystem->Init();
 
-	m_FountainSystem = new C_Particle_System({ 0,-23.7f,-5 }, 0.1f);
+	m_FountainSystem = new C_Particle_System({ 0,-23.45f,-5 }, 0.1f);
 	m_FountainSystem->SetParticleTexture(TextureLoader::LoadTexture("Water.png"));
 	m_FountainSystem->Init();
 
@@ -127,7 +138,7 @@ void Scene_Assignment3::Start()
 	m_SnowSystem->SetParticleTexture(TextureLoader::LoadTexture("Snowflake.png"));
 	m_SnowSystem->SetGravity(0.25f);
 	m_SnowSystem->YVelocity = 0;
-	m_SnowSystem->m_Lifetime = 15;
+	m_SnowSystem->Lifetime = 15;
 	m_SnowSystem->SetParticleOffset([]()->glm::vec3
 		{
 			return glm::vec3{ rand() % 1500, 0 , rand() % 1500 };

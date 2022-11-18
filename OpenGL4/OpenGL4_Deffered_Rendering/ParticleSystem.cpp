@@ -14,7 +14,7 @@
 
 ParticleSystem::ParticleSystem(glm::vec3 _emissionPos, float _emissionRate)
 {
-	m_EmissionPosition = _emissionPos;
+	EmissionPosition = _emissionPos;
 	m_EmissionRate = _emissionRate;
 }
 
@@ -57,7 +57,7 @@ void ParticleSystem::Update()
 		if (m_EmissionTimer >= m_EmissionRate)
 		{
 			m_EmissionTimer = 0.0f;
-			m_Particles.emplace_back(Particle(m_EmissionPosition, { 0,-9.81,0.0f }, 2.0f));
+			m_Particles.emplace_back(Particle(EmissionPosition, { 0,-9.81,0.0f }, 2.0f));
 			m_Particles.back().SetShader(m_ShaderID);
 		}
 	}

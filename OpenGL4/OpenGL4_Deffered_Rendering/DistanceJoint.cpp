@@ -18,7 +18,7 @@ DistanceJoint::DistanceJoint(ClothParticle* _p1, ClothParticle* _p2, float _leng
 	m_P2 = _p2;
 	m_P1->ConstraintLength = _length;
 	m_P2->ConstraintLength = _length;
-	m_Length = _length;
+	Length = _length;
 }
 
 DistanceJoint::~DistanceJoint()
@@ -31,11 +31,11 @@ void DistanceJoint::Update()
 {
 	glm::vec3 delta = m_P1->GetPosition() - m_P2->GetPosition();
 	float deltaLength = glm::length(delta);
-	float difference = (m_Length - deltaLength) / deltaLength;
+	float difference = (Length - deltaLength) / deltaLength;
 	auto im1 = 1 / m_P1->GetMass();
 	auto im2 = 1 / m_P2->GetMass();
-	auto force1 = delta * (im1 / (im1 + im2)) * m_Stiffness * difference;
-	auto force2 = -delta * (im2 / (im1 + im2)) * m_Stiffness * difference;
+	auto force1 = delta * (im1 / (im1 + im2)) * Stiffness * difference;
+	auto force2 = -delta * (im2 / (im1 + im2)) * Stiffness * difference;
 
     m_P1->ApplyForce(force1);
 	m_P2->ApplyForce(force2);

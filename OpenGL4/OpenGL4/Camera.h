@@ -156,13 +156,37 @@ public:
     /// <returns></returns>
     void MoveBackward();
 
+    /// <summary>
+    /// Manually sets the yaw of the camera
+    /// </summary>
+    /// <param name="_yaw"></param>
     void SetYaw(float _yaw);
+    /// <summary>
+    /// Set the pitch of the camera
+    /// </summary>
+    /// <param name="_pitch"></param>
     void SetPitch(float _pitch);
 
+    /// <summary>
+    /// Set the cameras position
+    /// </summary>
+    /// <param name="_newPos"></param>
     void SetPosition(glm::vec3 _newPos);
+    /// <summary>
+    /// Make the camera look at  apoint (broken)
+    /// </summary>
+    /// <param name="_point"></param>
     void LookAt(glm::vec3 _point);
 
+    /// <summary>
+    /// Gets the pitch of the camera
+    /// </summary>
+    /// <returns></returns>
     float GetPitch();
+    /// <summary>
+    /// Gets the yaw of the camera
+    /// </summary>
+    /// <returns></returns>
     float GetYaw();
 private:
 

@@ -20,10 +20,10 @@ Particle::Particle(glm::vec3 _pos, glm::vec3 _velocity, float _lifeTime, bool _g
 	m_LifeTime = _lifeTime;
 	Looping = _looping;
 	Gravity = _gravity;
-	m_Color.x = _color.x;
-	m_Color.y = _color.y;
-	m_Color.z = _color.z;
-	m_ColorOverLifetime = { m_Color.x, m_Color.y, m_Color.z, 1.0f };
+	Color.x = _color.x;
+	Color.y = _color.y;
+	Color.z = _color.z;
+	m_ColorOverLifetime = { Color.x, Color.y, Color.z, 1.0f };
 
 	ResetToInitialValues();
 }
@@ -45,9 +45,9 @@ void Particle::Update()
 		if (Gravity)
 			m_Velocity += glm::vec3{0.0f, -9.81f, 0.0f} * Statics::DeltaTime;
 
-		m_Transform.translation += m_Velocity * Statics::DeltaTime;
-		m_Transform.scale = { 1.0f, 1.0f, 1.0f };
-		UpdateModelValueOfTransform(m_Transform);
+		Transform.translation += m_Velocity * Statics::DeltaTime;
+		Transform.scale = { 1.0f, 1.0f, 1.0f };
+		UpdateModelValueOfTransform(Transform);
 	}
 }
 
@@ -73,8 +73,8 @@ void Particle::SetStartPosition(glm::vec3 _pos)
 
 void Particle::ResetToInitialValues()
 {
-	m_Transform.translation = m_StartPos;
+	Transform.translation = m_StartPos;
 	m_Velocity = m_StartVelocity;
 	m_ElapsedTime = m_LifeTime;
-	UpdateModelValueOfTransform(m_Transform);
+	UpdateModelValueOfTransform(Transform);
 }

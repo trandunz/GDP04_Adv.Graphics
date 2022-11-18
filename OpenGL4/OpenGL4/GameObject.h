@@ -77,6 +77,10 @@ public:
 	/// <returns></returns>
 	Mesh* GetMesh();
 
+	/// <summary>
+	/// Sets the skinned mesh renderer
+	/// </summary>
+	/// <param name="_skinnedMesh"></param>
 	void SetSkinnedMesh(SkinnedMesh* _skinnedMesh);
 
 	/// <summary>
@@ -204,6 +208,11 @@ public:
 	/// <returns></returns>
 	bool RayIntersection(Ray _ray, glm::vec3& _point);
 
+	/// <summary>
+	/// Checks for point intersection with the gameobject
+	/// </summary>
+	/// <param name="_point"></param>
+	/// <returns></returns>
 	bool PointIntersection(glm::vec3 _point);
 
 	/// <summary>
@@ -226,9 +235,21 @@ public:
 	/// <param name="_showNormals"></param>
 	void SetShowNormals(bool _showNormals);
 
+	/// <summary>
+	/// Sets the collider of the gameobject
+	/// </summary>
+	/// <param name="_collider"></param>
 	void SetCollider(Collider* _collider);
+	/// <summary>
+	/// Returns the collider of the gamebject
+	/// </summary>
+	/// <returns></returns>
 	Collider* GetCollider();
 
+	/// <summary>
+	/// Returns the input vector of the gamobject
+	/// </summary>
+	/// <returns></returns>
 	glm::vec4 GetInput();
 
 protected:
@@ -320,8 +341,10 @@ protected:
 	/// </summary>
 	void SetHeightmapShadowsUniforms();
 
+	/// <summary>
+	/// Sets the uniforms for the skinned mesh shader
+	/// </summary>
 	void SetSkinnedMeshUniforms();
-
 
 	bool m_ShowNormals = false;
 	bool m_RimLighting = false;

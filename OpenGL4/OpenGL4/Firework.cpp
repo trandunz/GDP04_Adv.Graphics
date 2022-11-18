@@ -1,3 +1,14 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Firework.cpp 
+// Description : Firework Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
+
 #include "Firework.h"
 #include "TextureLoader.h"
 
@@ -48,8 +59,8 @@ void Firework::Update()
 {
 	if (!m_Paused)
 	{
-		m_TrailSystem->m_EmissionPosition = m_Transform.translation;
-		m_ExplosionSystem->m_EmissionPosition = m_Transform.translation;
+		m_TrailSystem->EmissionPosition = m_Transform.translation;
+		m_ExplosionSystem->EmissionPosition = m_Transform.translation;
 
 		if (m_Transform.translation.y < m_InitialPosition.y + m_ExplosionHeight)
 		{
@@ -92,7 +103,7 @@ void Firework::Reset()
 
 	m_Paused = false;
 	m_HasExploded = false;
-	m_TrailSystem->m_EmissionPosition = m_Transform.translation;
+	m_TrailSystem->EmissionPosition = m_Transform.translation;
 	m_TrailSystem->ResetParticles();
 	m_TrailSystem->SetLooping(true);
 	m_TrailSystem->Play();

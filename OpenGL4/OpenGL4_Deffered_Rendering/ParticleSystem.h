@@ -63,7 +63,7 @@ public:
 private:
 	Texture m_Texture{};
 	std::vector<Particle> m_Particles{};
-	glm::vec3 m_EmissionPosition{};
+	glm::vec3 EmissionPosition{};
 	float m_EmissionRate{};
 	float m_EmissionTimer{};
 

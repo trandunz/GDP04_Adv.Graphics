@@ -33,8 +33,8 @@ public:
 	ClothParticle* GetP1();
 	ClothParticle* GetP2();
 
-	float m_Stiffness{ 500.0f };
-	float m_Length{};
+	float Stiffness{ 500.0f };
+	float Length{};
 private:
 
 	ClothParticle* m_P1{};

@@ -202,9 +202,9 @@ void Cloth::SetElasticity(float _amount)
 {
 	for (auto& distanceJoint : m_DistanceJoints)
 	{
-		if (distanceJoint->m_Stiffness != _amount)
+		if (distanceJoint->Stiffness != _amount)
 		{
-			distanceJoint->m_Stiffness = _amount;
+			distanceJoint->Stiffness = _amount;
 		}
 	}
 }
@@ -213,7 +213,7 @@ float Cloth::GetElasticity()
 {
 	if (m_DistanceJoints.size() > 0)
 	{
-		return m_DistanceJoints[0]->m_Stiffness;
+		return m_DistanceJoints[0]->Stiffness;
 	}
 
 	return 0.0f;

@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : C_Particle_System.h 
+// Description : C_Particle_System Header File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #pragma once
 #include "Particle.h"
 
@@ -17,6 +27,9 @@ public:
 	/// </summary>
 	~C_Particle_System();
 
+	/// <summary>
+	/// Initializes the particle system
+	/// </summary>
 	void Init();
 
 	/// <summary>
@@ -25,6 +38,10 @@ public:
 	/// <param name="_texture"></param>
 	void SetParticleTexture(Texture _texture);
 
+	/// <summary>
+	/// Sets the strength of gravity
+	/// </summary>
+	/// <param name="_strength"></param>
 	void SetGravity(float _strength);
 
 	/// <summary>
@@ -36,13 +53,20 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// Initializes the buffers
+	/// </summary>
 	void InitBuffers();
 
+	/// <summary>
+	/// Sets the offset function
+	/// </summary>
+	/// <param name="_offsetFunction"></param>
 	void SetParticleOffset(std::function<glm::vec3()> _offsetFunction);
 
 	std::function<glm::vec3()> EmissionOffset{nullptr};
 	float YVelocity{ 2.0f };
-	float m_Lifetime{ 1.0f };
+	float Lifetime{ 1.0f };
 private:
 	Texture m_Texture{};
 	Transform m_Transform{};

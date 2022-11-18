@@ -234,6 +234,11 @@ inline void Print(float&& _float, bool _newLine = true)
 		std::cout << std::endl;
 }
 
+/// <summary>
+/// Converts assimp matrix to glm matrix
+/// </summary>
+/// <param name="_matrix"></param>
+/// <returns></returns>
 inline glm::mat4 ConvertMatrixToGLMFormat(aiMatrix4x4 _matrix)
 {
 	glm::mat4 outputMatrix{};
@@ -256,16 +261,30 @@ inline glm::mat4 ConvertMatrixToGLMFormat(aiMatrix4x4 _matrix)
 	return outputMatrix;
 }
 
+/// <summary>
+/// Converts assimp vector to glm vector
+/// </summary>
+/// <param name="_vector"></param>
+/// <returns></returns>
 inline glm::vec3 ConvertVecToGLMFormat(aiVector3D _vector)
 {
 	return {_vector.x, _vector.y,_vector.z};
 }
 
+/// <summary>
+/// Converts assimp quaternion to glm quaternion
+/// </summary>
+/// <param name="_quat"></param>
+/// <returns></returns>
 inline glm::quat ConvertQuatToGLMFormat(aiQuaternion _quat)
 {
 	return { _quat.x, _quat.y,_quat.z, _quat.w };
 }
 
+/// <summary>
+/// Returns a ranom float between 0 and 1
+/// </summary>
+/// <returns></returns>
 inline float RandomFloat() 
 {
 	float r = (float)rand() / (float)RAND_MAX;

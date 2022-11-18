@@ -3,8 +3,8 @@
 // Auckland 
 // New Zealand 
 // (c) Media Design School
-// File Name : ParticleSystem.cpp 
-// Description : ParticleSystem Implementation File
+// File Name : C_Particle_System.cpp 
+// Description : C_Particle_System Implementation File
 // Author : William Inman
 // Mail : william.inman@mds.ac.nz
 
@@ -36,20 +36,22 @@ C_Particle_System::~C_Particle_System()
 {
 	m_InitialPosition.clear();
 	m_InitialVelocity.clear();
+	m_InitialRotation.clear();
 }
 
 void C_Particle_System::Init()
 {
 	for (int i = 0; i < NUM_PARTICLES; i++)
 	{
-		m_InitialPosition[i] = glm::vec4(m_EmissionPosition + EmissionOffset(), RandomFloat() * m_Lifetime);
+		m_InitialPosition[i] = glm::vec4(m_EmissionPosition + EmissionOffset(), RandomFloat() * Lifetime);
 		glm::vec3 velocity =
 		{
 			0.25f * cosf(m_InitialPosition.size() * 0.0167f) + 0.95f * RandomFloat() - (0.95f / 2.0f),
 			YVelocity + 0.25f * RandomFloat() - 0.125f,
 			0.25f * sinf(m_InitialPosition.size() * 0.0167f) + 0.95f * RandomFloat() - (0.95f / 2.0f)
 		};
-		m_InitialVelocity[i] = glm::vec4(velocity, RandomFloat() * m_Lifetime);
+		m_InitialVelocity[i] = glm::vec4(velocity, RandomFloat() * Lifetime);
+		m_InitialRotation[i] = 0;
 	}
 
 	InitBuffers();
@@ -79,11 +81,10 @@ void C_Particle_System::Draw()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_VelocityBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_InitialVelocityBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_InitialPositionBuffer);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, m_RotationBuffer);
 
 	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "DeltaTime", Statics::DeltaTime);
 
-	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "Lifetime", m_Lifetime);
+	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "Lifetime", Lifetime);
 
 	ShaderLoader::SetUniform1f(std::move(m_ComputeID), "Gravity", m_Gravity);
 
@@ -102,13 +103,7 @@ void C_Particle_System::Draw()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, NULL, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_RotationBuffer);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, NULL, 0);
-
-	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMatrix", Statics::ActiveCamera->GetPVMatrix());
-	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "uTranslation", m_Transform.translation);
-	ShaderLoader::SetUniform3fv(std::move(m_ShaderID), "uScale", m_Transform.scale);
+	ShaderLoader::SetUniformMatrix4fv(std::move(m_ShaderID), "PVMMatrix", Statics::ActiveCamera->GetPVMatrix() * m_Transform.transform);
 
 	ShaderLoader::SetUniform4fv(std::move(m_ShaderID), "ColorOverLifetime", { 1, 1, 1, 0 });
 
@@ -169,22 +164,12 @@ void C_Particle_System::InitBuffers()
 	glBufferData(GL_SHADER_STORAGE_BUFFER, m_InitialPosition.size() * sizeof(glm::vec4), m_InitialPosition.data(), GL_DYNAMIC_DRAW);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_InitialPositionBuffer);
 
-	glGenBuffers(1, &m_RotationBuffer);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RotationBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, m_InitialRotation.size() * sizeof(float), m_InitialRotation.data(), GL_DYNAMIC_DRAW);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, m_RotationBuffer);
-
 	glGenVertexArrays(1, &m_ParticleVertexArray);
 	glBindVertexArray(m_ParticleVertexArray);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_PositionBuffer);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, NULL, 0);
-
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_RotationBuffer);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, NULL, 0);
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);

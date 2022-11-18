@@ -54,7 +54,7 @@ private:
 	/// </summary>
 	void ResetToInitialValues();
 
-	Transform m_Transform{};
+	Transform Transform{};
 	glm::vec3 m_Velocity{};
 	float m_LifeTime{};
 

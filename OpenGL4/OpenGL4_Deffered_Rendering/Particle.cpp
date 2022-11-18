@@ -34,7 +34,7 @@ void Particle::Update()
 	else
 	{
 		m_ElapsedTime += Statics::DeltaTime;
-		m_Transform.translation += m_Velocity * Statics::DeltaTime;
+		Transform.translation += m_Velocity * Statics::DeltaTime;
 	}
 }
 
@@ -62,7 +62,7 @@ void Particle::SetShader(GLuint _shader)
 
 void Particle::ResetToInitialValues()
 {
-	m_Transform.translation = m_StartPos;
+	Transform.translation = m_StartPos;
 	m_Velocity = m_StartVelocity;
 	m_ElapsedTime = m_LifeTime;
 }

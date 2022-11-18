@@ -1,3 +1,13 @@
+// Bachelor of Software Engineering 
+// Media Design School 
+// Auckland 
+// New Zealand 
+// (c) Media Design School
+// File Name : Player.cpp 
+// Description : Player Implementation File
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+
 #include "Player.h"
 #include "Physics.h"
 
@@ -76,6 +86,7 @@ void Player::Movement()
 			if (!m_IsMoving || m_SkinnedMesh->GetStartFrame() == 71)
 			{
 				m_SkinnedMesh->SetCurrentAnimation(31, 50);
+				m_SkinnedMesh->SetAnimSpeed(0.9f);
 			}
 			m_IsMoving = true;
 		}
@@ -84,6 +95,7 @@ void Player::Movement()
 			if (m_IsMoving || m_SkinnedMesh->GetStartFrame() == 71)
 			{
 				m_SkinnedMesh->SetCurrentAnimation(0, 30);
+				m_SkinnedMesh->SetAnimSpeed(0.5f);
 			}
 			m_IsMoving = false;
 		}
@@ -196,6 +208,7 @@ void Player::HandleJump()
 					m_IsGrounded = false;
 					m_Velocity.y = 10.0f;
 					m_SkinnedMesh->SetCurrentAnimation(71, 80, false);
+					m_SkinnedMesh->SetAnimSpeed(0.1f);
 				}
 			}
 		}

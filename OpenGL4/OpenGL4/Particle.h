@@ -31,9 +31,25 @@ public:
 	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// Sets the colour over lifetime
+	/// </summary>
+	/// <param name="_color"></param>
 	void SetColorOverLifetime(glm::vec4 _color);
+	/// <summary>
+	/// Sets the apha over lifetime
+	/// </summary>
+	/// <param name="_alpha"></param>
 	void SetAlphaOverLifetime(float _alpha);
+	/// <summary>
+	/// Sets the elasped time
+	/// </summary>
+	/// <param name="_elapsedTime"></param>
 	void SetElaspedTime(float _elapsedTime);
+	/// <summary>
+	/// Sets the start position
+	/// </summary>
+	/// <param name="_pos"></param>
 	void SetStartPosition(glm::vec3 _pos);
 
 	/// <summary>
@@ -44,13 +60,10 @@ public:
 	bool Gravity{ true };
 	bool Looping{ true };
 
-	Transform m_Transform{};
-	glm::vec4 m_Color{ 1,1,1,1 };
+	Transform Transform{};
+	glm::vec4 Color{ 1,1,1,1 };
 private:
-
-
 	glm::vec4 m_ColorOverLifetime{ 1,1,1,1 };
-
 
 	glm::vec3 m_Velocity{};
 	float m_LifeTime{};

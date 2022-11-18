@@ -237,9 +237,9 @@ void Cloth::SetElasticity(float _amount)
 	{
 		if (distanceJoint)
 		{
-			if (distanceJoint->m_Stiffness != _amount)
+			if (distanceJoint->Stiffness != _amount)
 			{
-				distanceJoint->m_Stiffness = _amount;
+				distanceJoint->Stiffness = _amount;
 			}
 		}
 	}
@@ -249,7 +249,7 @@ float Cloth::GetElasticity()
 {
 	if (m_DistanceJoints.size() > 0)
 	{
-		return m_DistanceJoints[0]->m_Stiffness;
+		return m_DistanceJoints[0]->Stiffness;
 	}
 
 	return 0.0f;
@@ -1005,7 +1005,7 @@ void ClothParticle::Update()
 	// else if its alive and burning, decreease its head and play the fire particle system,
 	if (IsBurning && Health > 0)
 	{
-		FireSystem->m_EmissionPosition = m_Transform.translation;
+		FireSystem->EmissionPosition = m_Transform.translation;
 		Health -= Statics::DeltaTime;
 		FireSystem->Play();
 	}
